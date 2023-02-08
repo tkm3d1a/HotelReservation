@@ -1,0 +1,2 @@
+https://github.com/mariadb-developers/java-quickstart/tree/main/spring-boot-jpa
+https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.data-initialization.using-hibernate
