@@ -28,11 +28,11 @@ public class SecurityConfiguration{
     private HotelUserDetailsService hotelUserDetailsService;
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(request -> request.requestMatchers("/").permitAll().anyRequest().authenticated());
-        http.formLogin();
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(request -> request.requestMatchers("/", "/login").permitAll().anyRequest().authenticated());
+        http.formLogin(form -> form.loginPage("/login"));
         http.httpBasic();
-        http.csrf().disable();
+//        http.csrf().disable();
         return (SecurityFilterChain)http.build();
     }
 
