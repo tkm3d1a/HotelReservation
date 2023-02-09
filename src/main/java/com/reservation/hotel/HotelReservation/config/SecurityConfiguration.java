@@ -34,7 +34,7 @@ public class SecurityConfiguration{
 
         http.formLogin(form -> form.loginPage("/login").successHandler(loginSuccessHandler));
         http.httpBasic();
-//        http.csrf().disable();
+        http.csrf().disable();
         return (SecurityFilterChain)http.build();
     }
 

@@ -31,7 +31,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                 }
             } else if(authority.getAuthority().equals("ROLE_CLERK")) {
                 try {
-                    redirectStrategy.sendRedirect(request, response, "/admin");
+                    redirectStrategy.sendRedirect(request, response, "/clerkprofile");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

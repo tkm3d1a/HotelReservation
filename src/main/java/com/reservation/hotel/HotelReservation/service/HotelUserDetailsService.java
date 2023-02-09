@@ -27,7 +27,7 @@ public class HotelUserDetailsService implements UserDetailsService {
         UserDetails userDetails = User.withUsername(hotelUser.getUsername())
                 .password(hotelUser.getPassword())
                 .authorities(hotelUser.getRole()).build();
-        log.info("{}:{}", hotelUser.getUsername(), hotelUser.getPassword());
+        log.info("{}", hotelUser);
 
         return userDetails;
     }
