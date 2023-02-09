@@ -19,11 +19,6 @@ public class TeamController {
         this.baseballDataService = baseballDataService;
     }
 
-    @GetMapping("/hello")
-    public String getMessage(){
-        return "Hello World!";
-    }
-
     @GetMapping("/teams")
     public ResponseEntity<List<TeamsFranchise>> getAllTeamFranchises(){
         return ResponseEntity.ok(baseballDataService.listAllTeamsFranchises());
