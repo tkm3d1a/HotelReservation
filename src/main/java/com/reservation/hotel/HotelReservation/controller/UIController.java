@@ -14,4 +14,9 @@ public class UIController {
     public String loginUser(){
         return "login";
     }
+
+    @GetMapping("/guestprofile")
+    public String getUserProfile(){
+        return "guestprofile";
+    }
 }
