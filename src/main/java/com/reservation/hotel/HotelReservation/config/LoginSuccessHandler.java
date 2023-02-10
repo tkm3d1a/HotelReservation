@@ -24,6 +24,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         authorities.forEach(authority -> {
             if(authority.getAuthority().equals("ROLE_GUEST")) {
                 try {
+                    //TODO : Figure out how to pass the user model that is pulled for auth?
                     redirectStrategy.sendRedirect(request, response, "/guestprofile");
                 } catch (Exception e) {
                     e.printStackTrace();

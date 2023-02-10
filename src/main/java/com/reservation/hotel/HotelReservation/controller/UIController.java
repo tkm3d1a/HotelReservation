@@ -40,11 +40,10 @@ public class UIController {
     @PostMapping("/register")
     public String registerUser(@ModelAttribute User user, Model model){
         model.addAttribute("user", user);
-        user.setRole("ROLE_GUEST");
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         log.info("User inserted into the hotel Database: {}", user);
-        return "result";
+        return "redirect:/login";
     }
 
     @GetMapping("/result")
@@ -53,7 +52,8 @@ public class UIController {
     }
 
     @GetMapping("/guestprofile")
-    public String getUserProfile(){
+    public String getUserProfile(@ModelAttribute User user, Model model){
+        model.addAttribute("user", user);
         return "guestprofile";
     }
 }

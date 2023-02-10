@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -20,7 +20,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" th:href="@{/}">Home <span class="sr-only">(current)</span></a>
             </li>
 <!--            <li class="nav-item">-->
 <!--                <a class="nav-link" href="#">Link</a>-->
@@ -28,10 +28,10 @@
         </ul>
         <span class="form-inline my-2 my-lg-0">
             <div class="btn-group mr-2" role="group" aria-label="Guest login">
-                <a href="/login" class="btn btn-light active" role="button" aria-pressed="true">Guest Login</a>
+                <a th:href="@{/login}" class="btn btn-light active" role="button" aria-pressed="true">Guest Login</a>
             </div>
             <div class="btn-group mr-2" role="group" aria-label="Employee login">
-                <a href="/login" class="btn btn-light active" role="button" aria-pressed="true">Employee Login</a>
+                <a th:href="@{/login}" class="btn btn-light active" role="button" aria-pressed="true">Employee Login</a>
             </div>
         </span>
     </div>

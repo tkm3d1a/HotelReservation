@@ -31,18 +31,13 @@ public class User {
             nullable = false
     )
     private String email;
-
-    @Column(
-            columnDefinition = "varchar(255) default 'ROLE_GUEST'",
-            nullable = false
-    )
-    private String role;
-
+    private String role = "ROLE_GUEST";
     private String firstName;
     private String lastName;
     private String streetAddress;
     private String city;
     private String state;
+
     @Column(
             nullable = false,
             length = 5
