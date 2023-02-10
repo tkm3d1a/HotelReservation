@@ -56,4 +56,19 @@ public class UIController {
         model.addAttribute("user", user);
         return "guestprofile";
     }
+
+    @GetMapping("/admin")
+    public String adminDashboard(@ModelAttribute User user, Model model){
+        model.addAttribute("newEmployee", user);
+        return "admin-dashboard";
+    }
+
+    @PostMapping("/admin/addNew")
+    public String addClerkProfile(@ModelAttribute User user, Model model){
+        return "redirect:/admin";
+    }
+
+    private void addNewEmployee(){
+        log.info("Clicked 'addNewEmployee'");
+    }
 }

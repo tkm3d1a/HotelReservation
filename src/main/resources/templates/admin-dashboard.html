@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+	<title>Admin Dashboard</title>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-sm navbar-light" style="background-color: #e3f2fd;">
+	<a class="navbar-brand" href="#">Welcome to The White Lotus</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+
+	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item active">
+				<a class="nav-link" th:href="@{/}">Home <span class="sr-only">(current)</span></a>
+			</li>
+			<!--            <li class="nav-item">-->
+			<!--                <a class="nav-link" href="#">Link</a>-->
+			<!--            </li>-->
+		</ul>
+	</div>
+</nav>
+
+<div class="container">
+	<form th:action="@{/admin/addNew}" th:object="${newEmployee}" method="post" class="form-inline m-4">
+		<div class="form-group">
+			<label for="employeeFirstName">First Name</label>
+			<input type="text" class="form-control m-2" id="employeeFirstName" placeholder="Jane">
+		</div>
+		<div class="form-group">
+			<label for="employeeLastName">Last Name</label>
+			<input type="text" class="form-control m-2" id="employeeLastName" placeholder="Doe">
+		</div>
+		<div class="form-group">
+			<label for="employeeEmail">Email</label>
+			<input type="email" class="form-control m-2" id="employeeEmail" placeholder="jane.doe@example.com">
+		</div>
+		<button type="submit" class="btn btn-info m-2">Create New Employee</button>
+	</form>
+	<h3 class="text-center">
+		Current Employees
+	</h3>
+	<div class="table-responsive">
+		<table class="table table-striped table-bordered">
+			<tr class="table-header text-center">
+				<th>Company</th>
+				<th>Contact</th>
+				<th>Country</th>
+			</tr>
+			<tr>
+				<td>Alfreds Futterkiste</td>
+				<td>Maria Anders</td>
+				<td>Germany</td>
+			</tr>
+			<tr>
+				<td>Centro comercial Moctezuma</td>
+				<td>Francisco Chang</td>
+				<td>Mexico</td>
+			</tr>
+		</table>
+	</div>
+</div>
+
+</body>
+</html>

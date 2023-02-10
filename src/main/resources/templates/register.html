@@ -44,27 +44,27 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputEmail4">Username</label>
-                    <input type="text" th:field="*{username}" class="form-control" id="inputEmail4" placeholder="Username">
+                    <input type="text" th:field="*{username}" class="form-control" id="inputEmail4" placeholder="Username" required>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="inputPassword4">Password</label>
-                    <input type="password" th:field="*{password}" class="form-control" id="inputPassword4" placeholder="Password">
+                    <input type="password" th:field="*{password}" class="form-control" id="inputPassword4" placeholder="Password" required>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputFirstName">First Name</label>
-                    <input type="text" th:field="*{firstName}" class="form-control" id="inputFirstName" placeholder="Username">
+                    <input type="text" th:field="*{firstName}" class="form-control" id="inputFirstName" placeholder="Jane">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="inputLastName">Last Name</label>
-                    <input type="text" th:field="*{lastName}" class="form-control" id="inputLastName" placeholder="Password">
+                    <input type="text" th:field="*{lastName}" class="form-control" id="inputLastName" placeholder="Doe">
                 </div>
             </div>
 	        <div class="form-row">
 	            <div class="form-group col-md-6">
 	                <label for="inputEmail">Email</label>
-	                <input type="email" th:field="*{email}" class="form-control" id="inputEmail" placeholder="user@domain.com">
+	                <input type="email" th:field="*{email}" class="form-control" id="inputEmail" placeholder="user@domain.com" required>
 	            </div>
 		        <div class="form-group col-md-6">
 			        <label for="inputPhone">Phone Number</label>
@@ -78,15 +78,15 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputCity">City</label>
-                    <input type="text" th:field="*{city}" class="form-control" id="inputCity">
+                    <input type="text" th:field="*{city}" class="form-control" id="inputCity" placeholder="Some City">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputState">State</label>
-                    <input type="text" th:field="*{state}" class="form-control" id="inputState">
+                    <input type="text" th:field="*{state}" class="form-control" id="inputState" placeholder="Some State">
                 </div>
                 <div class="form-group col-md-2">
                     <label for="inputZip">Zip</label>
-                    <input type="text" th:field="*{zipCode}" class="form-control" id="inputZip">
+                    <input type="text" th:field="*{zipCode}" class="form-control" id="inputZip" placeholder="12345" required>
                 </div>
             </div>
             <button type="submit" class="btn btn-info">Create Account</button>

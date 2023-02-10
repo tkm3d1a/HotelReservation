@@ -11,22 +11,30 @@
     <title>Hello, world!</title>
 </head>
 <body>
-<section style="background-color: #eee;" th:object="${user}">
-    <div class="container py-5">
-        <div class="row">
-            <div class="col">
-                <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
-                    <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Guest Profile</li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
 
-        <div class="row">
+<nav class="navbar navbar-expand-sm navbar-light" style="background-color: #e3f2fd;">
+	<a class="navbar-brand" href="#">Guest Profile Page</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+
+	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item active">
+				<a class="nav-link" th:href="@{/}">Home <span class="sr-only">(current)</span></a>
+			</li>
+			<!--            <li class="nav-item">-->
+			<!--                <a class="nav-link" href="#">Link</a>-->
+			<!--            </li>-->
+		</ul>
+	</div>
+</nav>
+
+<section class="m-4" th:object="${user}">
+
+        <div class="row" >
             <div class="col-lg-4">
-                <div class="card mb-4">
+                <div class="card mb-4" style="background-color: #e3f2fd;">
                     <div class="card-body text-center">
                         <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
                              class="rounded-circle img-fluid" style="width: 150px;">
@@ -41,7 +49,7 @@
                 </div>
             </div>
             <div class="col-lg-8">
-                <div class="card mb-4">
+                <div class="card mb-4" style="background-color: #e3f2fd;">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-sm-3">
