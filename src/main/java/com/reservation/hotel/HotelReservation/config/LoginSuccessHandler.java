@@ -9,7 +9,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -37,7 +36,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                 }
             } else if(authority.getAuthority().equals("ROLE_ADMIN")) {
                 try {
-                    redirectStrategy.sendRedirect(request, response, "/admin");
+                    redirectStrategy.sendRedirect(request, response, "/adminprofile");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -47,6 +47,7 @@ public class UIController {
         log.info("User inserted into the hotel Database: {}", newuser);
         return "result";
     }
+
     @GetMapping("/result")
     public String afterSignup(){
         return "result";
