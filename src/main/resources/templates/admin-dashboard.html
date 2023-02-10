@@ -31,18 +31,18 @@
 </nav>
 
 <div class="container">
-	<form th:action="@{/admin/addNew}" th:object="${newEmployee}" method="post" class="form-inline m-4">
+	<form action="#" th:action="@{/admin/addNew}" th:object="${newEmployee}" method="post" class="form-inline m-4">
 		<div class="form-group">
 			<label for="employeeFirstName">First Name</label>
-			<input type="text" class="form-control m-2" id="employeeFirstName" placeholder="Jane">
+			<input type="text" class="form-control m-2" id="employeeFirstName" placeholder="Jane" th:field="*{firstName}" required>
 		</div>
 		<div class="form-group">
 			<label for="employeeLastName">Last Name</label>
-			<input type="text" class="form-control m-2" id="employeeLastName" placeholder="Doe">
+			<input type="text" class="form-control m-2" id="employeeLastName" placeholder="Doe" th:field="*{lastName}" required>
 		</div>
 		<div class="form-group">
 			<label for="employeeEmail">Email</label>
-			<input type="email" class="form-control m-2" id="employeeEmail" placeholder="jane.doe@example.com">
+			<input type="email" class="form-control m-2" id="employeeEmail" placeholder="jane.doe@example.com" th:field="*{email}" required>
 		</div>
 		<button type="submit" class="btn btn-info m-2">Create New Employee</button>
 	</form>
@@ -51,21 +51,20 @@
 	</h3>
 	<div class="table-responsive">
 		<table class="table table-striped table-bordered">
-			<tr class="table-header text-center">
-				<th>Company</th>
-				<th>Contact</th>
-				<th>Country</th>
-			</tr>
-			<tr>
-				<td>Alfreds Futterkiste</td>
-				<td>Maria Anders</td>
-				<td>Germany</td>
-			</tr>
-			<tr>
-				<td>Centro comercial Moctezuma</td>
-				<td>Francisco Chang</td>
-				<td>Mexico</td>
-			</tr>
+			<thead>
+				<tr class="table-header text-center">
+					<th>Employee ID</th>
+					<th>Name</th>
+					<th>Email</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="employee: ${employeeList}">
+					<td th:text="*{employee.id}">Emp ID</td>
+					<td th:text="*{employee.firstName + ' ' + employee.lastName}">Name</td>
+					<td th:text="*{employee.email}">Email</td>
+				</tr>
+			</tbody>
 		</table>
 	</div>
 </div>

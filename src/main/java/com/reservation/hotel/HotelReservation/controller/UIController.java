@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.List;
+
 @Slf4j
 @Controller
 public class UIController {
@@ -60,15 +62,29 @@ public class UIController {
     @GetMapping("/admin")
     public String adminDashboard(@ModelAttribute User user, Model model){
         model.addAttribute("newEmployee", user);
+        List<User> userList = userRepository.findAll();
+        model.addAttribute("employeeList", userList);
         return "admin-dashboard";
     }
 
     @PostMapping("/admin/addNew")
-    public String addClerkProfile(@ModelAttribute User user, Model model){
+    public String addClerkProfile(@ModelAttribute("user") User user){
+        addNewEmployee(user);
         return "redirect:/admin";
     }
 
-    private void addNewEmployee(){
+    private void addNewEmployee(User user){
+        String userName = user.getFirstName().substring(0,1);
+        if(user.getLastName().length() > 7){
+            userName += user.getLastName().substring(0,7);
+        } else {
+            userName += user.getLastName();
+        }
+        user.setUsername(userName);
+        user.setPassword(bCryptPasswordEncoder.encode("default1234"));
+        user.setRole("ROLE_CLERK");
+        user.setZipCode("99999");
+        userRepository.save(user);
         log.info("Clicked 'addNewEmployee'");
     }
 }

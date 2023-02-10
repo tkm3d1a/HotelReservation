@@ -24,7 +24,7 @@ public class SecurityConfiguration{
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(request -> request
                 .requestMatchers("/guestprofile").hasAnyRole("GUEST", "ROLE_GUEST")
-                .requestMatchers("/", "/login", "/register", "/result")
+                .requestMatchers("/", "/login", "/register", "/result", "/admin/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated());
