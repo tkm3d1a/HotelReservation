@@ -1,6 +1,6 @@
 package com.reservation.hotel.HotelReservation.controller;
 
-import com.reservation.hotel.HotelReservation.model.HotelUser;
+import com.reservation.hotel.HotelReservation.model.User;
 import com.reservation.hotel.HotelReservation.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,18 +33,17 @@ public class UIController {
 
     @GetMapping("/register")
     public String register(Model model){
-        model.addAttribute("user", new HotelUser());
+        model.addAttribute("user", new User());
         return "register";
     }
 
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute HotelUser user, Model model){
+    public String registerUser(@ModelAttribute User user, Model model){
         model.addAttribute("user", user);
-        HotelUser newuser = user;
-        newuser.setRole("ROLE_GUEST");
-        newuser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userRepository.save(newuser);
-        log.info("User inserted into the hotel Database: {}", newuser);
+        user.setRole("ROLE_GUEST");
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+        log.info("User inserted into the hotel Database: {}", user);
         return "result";
     }
 

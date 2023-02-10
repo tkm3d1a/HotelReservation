@@ -1,6 +1,6 @@
 package com.reservation.hotel.HotelReservation.config;
 
-import com.reservation.hotel.HotelReservation.service.HotelUserDetailsService;
+import com.reservation.hotel.HotelReservation.service.UserService;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfiguration{
 
     @Resource
-    private HotelUserDetailsService hotelUserDetailsService;
+    private UserService userService;
 
     @Autowired
     private LoginSuccessHandler loginSuccessHandler;
