@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<html lang="en">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <title>Hotel</title>
+    <title>Hello, world!</title>
 </head>
 <body>
 <nav class="navbar navbar-expand-sm navbar-light" style="background-color: #e3f2fd;">
@@ -27,40 +27,15 @@
             <!--            </li>-->
         </ul>
         <span class="form-inline my-2 my-lg-0">
-            <div class="btn-group mr-2" role="group" aria-label="Basic example">
-                <a href="#" class="btn btn-light active" role="button" aria-disabled="true">Guest Login</a>
+            <div class="btn-group mr-2" role="group" aria-label="Guest login">
+                <a href="/login" class="btn btn-light active" role="button" aria-pressed="true">Guest Login</a>
             </div>
-            <div class="btn-group mr-2" role="group" aria-label="Basic example">
-                <a href="#" class="btn btn-light active" role="button" aria-disabled="true">Employee Login</a>
+            <div class="btn-group mr-2" role="group" aria-label="Employee login">
+                <a href="/login" class="btn btn-light active" role="button" aria-pressed="true">Employee Login</a>
             </div>
         </span>
     </div>
 </nav>
-
-<div class="container">
-    <h3 class="text-center">Please Log In</h3>
-    <div th:if="${param.error}">
-        <p class="text-danger">Invalid username and password!</p>
-    </div>
-    <div th:if="${param.logout}">
-        <p class="text-info">You have been logged out.</p>
-    </div>
-    <form th:action="@{/login}" method="post">
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" required>
-        </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-        </div>
-        <button type="submit" class="btn btn-info">Login</button>
-    </form>
-    <p>Don't have an account? <a href="/register">Register</a></p>
-</div>
-
-
-
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

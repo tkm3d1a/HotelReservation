@@ -7,10 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -26,7 +24,7 @@ public class SecurityConfiguration{
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(request -> request
                 .requestMatchers("/guestprofile").hasAnyRole("GUEST", "ROLE_GUEST")
-                .requestMatchers("/", "/login")
+                .requestMatchers("/", "/login", "/register", "/result")
                 .permitAll()
                 .anyRequest()
                 .authenticated());
@@ -39,8 +37,8 @@ public class SecurityConfiguration{
     }
 
     @Bean
-    public static PasswordEncoder passwordEncoder(){
-        return NoOpPasswordEncoder.getInstance();
+    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 
 }

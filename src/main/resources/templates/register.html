@@ -38,28 +38,55 @@
 </nav>
 
 <div class="container">
-    <h3 class="text-center">Please Log In</h3>
-    <div th:if="${param.error}">
-        <p class="text-danger">Invalid username and password!</p>
+    <h3 class="text-center">Please Sign Up</h3>
+    <div>
+        <form th:action="@{/register}" th:object="${user}" method="post">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="inputEmail4">Username</label>
+                    <input type="text" th:field="*{username}" class="form-control" id="inputEmail4" placeholder="Username">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="inputPassword4">Password</label>
+                    <input type="password" th:field="*{password}" class="form-control" id="inputPassword4" placeholder="Password">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="inputFirstName">First Name</label>
+                    <input type="text" th:field="*{firstName}" class="form-control" id="inputFirstName" placeholder="Username">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="inputLastName">Last Name</label>
+                    <input type="text" th:field="*{lastName}" class="form-control" id="inputLastName" placeholder="Password">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputEmail">Email</label>
+                <input type="email" th:field="*{email}" class="form-control" id="inputEmail" placeholder="user@domain.com">
+            </div>
+            <div class="form-group">
+                <label for="inputAddress">Street Address</label>
+                <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="inputCity">City</label>
+                    <input type="text" class="form-control" id="inputCity">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputState">State</label>
+                    <input type="text" class="form-control" id="inputState">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="inputZip">Zip</label>
+                    <input type="text" class="form-control" id="inputZip">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-info">Create Account</button>
+        </form>
     </div>
-    <div th:if="${param.logout}">
-        <p class="text-info">You have been logged out.</p>
-    </div>
-    <form th:action="@{/login}" method="post">
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" required>
-        </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-        </div>
-        <button type="submit" class="btn btn-info">Login</button>
-    </form>
-    <p>Don't have an account? <a href="/register">Register</a></p>
 </div>
-
-
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
