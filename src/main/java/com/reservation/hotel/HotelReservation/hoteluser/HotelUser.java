@@ -1,4 +1,4 @@
-package com.reservation.hotel.HotelReservation.model;
+package com.reservation.hotel.HotelReservation.hoteluser;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class User {
+public class HotelUser{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

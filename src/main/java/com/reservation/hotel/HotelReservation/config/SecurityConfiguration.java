@@ -1,6 +1,6 @@
 package com.reservation.hotel.HotelReservation.config;
 
-import com.reservation.hotel.HotelReservation.service.UserService;
+import com.reservation.hotel.HotelReservation.hoteluser.HotelUserService;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfiguration{
 
     @Resource
-    private UserService userService;
+    private HotelUserService hotelUserService;
 
     @Autowired
     private LoginSuccessHandler loginSuccessHandler;
@@ -23,8 +23,9 @@ public class SecurityConfiguration{
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(request -> request
-                .requestMatchers("/guestprofile").hasAnyRole("GUEST", "ROLE_GUEST")
-                .requestMatchers("/", "/login", "/register", "/result", "/admin/**")
+//                .requestMatchers("/guestprofile").hasAnyRole("ROLE_GUEST")
+//                .requestMatchers("/admin").hasAnyRole("ROLE_CLERK")
+                .requestMatchers("/", "/login", "/register/**", "/result")
                 .permitAll()
                 .anyRequest()
                 .authenticated());

@@ -1,13 +1,13 @@
 package com.reservation.hotel.HotelReservation.config;
 
-import com.reservation.hotel.HotelReservation.model.User;
+import com.reservation.hotel.HotelReservation.hoteluser.HotelUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
 public class CustomUserDetails implements UserDetails {
-    private User user;
+    private HotelUser hotelUser;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

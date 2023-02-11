@@ -54,6 +54,7 @@
 			<thead>
 				<tr class="table-header text-center">
 					<th>Employee ID</th>
+					<th>Employee Username</th>
 					<th>Name</th>
 					<th>Email</th>
 				</tr>
@@ -61,6 +62,7 @@
 			<tbody>
 				<tr th:each="employee: ${employeeList}">
 					<td th:text="*{employee.id}">Emp ID</td>
+					<td	th:text="*{employee.username}">Emp Username</td>
 					<td th:text="*{employee.firstName + ' ' + employee.lastName}">Name</td>
 					<td th:text="*{employee.email}">Email</td>
 				</tr>

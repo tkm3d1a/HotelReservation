@@ -29,21 +29,27 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                 try {
                     //TODO : Figure out how to pass the user model that is pulled for auth?
                     User user = (User) authentication.getPrincipal();
-                    String userNamePassed = user.getUsername();
-                    log.info(userNamePassed);
-                    redirectStrategy.sendRedirect(request, response, "/guestprofile");
+                    log.info("{}", user);
+                    log.info("Guest log in success!");
+                    redirectStrategy.sendRedirect(request, response, "/guest-profile");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else if(authority.getAuthority().equals("ROLE_CLERK")) {
                 try {
-                    redirectStrategy.sendRedirect(request, response, "/clerkprofile");
+                    User user = (User) authentication.getPrincipal();
+                    log.info("{}", user);
+                    log.info("Clerk log in success!");
+                    redirectStrategy.sendRedirect(request, response, "/clerk-profile");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else if(authority.getAuthority().equals("ROLE_ADMIN")) {
                 try {
-                    redirectStrategy.sendRedirect(request, response, "/adminprofile");
+                    User user = (User) authentication.getPrincipal();
+                    log.info("{}", user);
+                    log.info("Clerk log in success!");
+                    redirectStrategy.sendRedirect(request, response, "/admin-profile");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
