@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Hotel</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-sm navbar-light" style="background-color: #e3f2fd;">
+	<a class="navbar-brand">Welcome to The White Lotus</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+
+	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item active">
+				<a class="nav-link" th:href="@{/}">Home</a>
+			</li>
+			<!--            <li class="nav-item">-->
+			<!--                <a class="nav-link" href="#">Link</a>-->
+			<!--            </li>-->
+		</ul>
+<!--		<span class="form-inline my-2 my-lg-0">-->
+<!--            <div class="btn-group mr-2" role="group" aria-label="Login">-->
+<!--                <a th:href="@{/login}" class="btn btn-light active" role="button" aria-pressed="true">Login</a>-->
+<!--            </div>-->
+<!--            <div class="btn-group mr-2" role="group" aria-label="Logout">-->
+<!--                <a th:href="@{/logout}" class="btn btn-light active" role="button" aria-pressed="true">Logout</a>-->
+<!--            </div>-->
+<!--        </span>-->
+	</div>
+</nav>
+
+<div class="container">
+    <h3 class="text-center">Edit your info</h3>
+    <div>
+        <form th:action="@{/result}" th:object="${hotelUser}" method="post">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="username">Username</label>
+                    <input type="text" th:text="*{username}" class="form-control" id="username" placeholder="Username" readonly>
+                </div>
+	            <!--TODO: figure out button centering-->
+	            <!--TODO: stop change password button from doing form validation-->
+                <div class="form-group col-md-2 align-right">
+	                <button class="form-control btn btn-info" name="changePassword">Change Password</button>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="inputFirstName">First Name</label>
+                    <input type="text" th:field="*{firstName}" class="form-control" id="inputFirstName" placeholder="Jane">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="inputLastName">Last Name</label>
+                    <input type="text" th:field="*{lastName}" class="form-control" id="inputLastName" placeholder="Doe">
+                </div>
+            </div>
+	        <div class="form-row">
+	            <div class="form-group col-md-6">
+	                <label for="inputEmail">Email</label>
+	                <input type="email" th:text="*{email}" class="form-control" id="inputEmail" placeholder="hotelUser@domain.com" readonly>
+	            </div>
+		        <div class="form-group col-md-6">
+			        <label for="inputPhone">Phone Number</label>
+			        <input type="text" th:field="*{phoneNumber}" class="form-control" id="inputPhone" placeholder="(555) 123-4567">
+		        </div>
+	        </div>
+            <div class="form-group">
+                <label for="inputAddress">Street Address</label>
+                <input type="text" th:field="*{streetAddress}" class="form-control" id="inputAddress" placeholder="1234 Main St">
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="inputCity">City</label>
+                    <input type="text" th:field="*{city}" class="form-control" id="inputCity" placeholder="Some City">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputState">State</label>
+                    <input type="text" th:field="*{state}" class="form-control" id="inputState" placeholder="Some State">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="inputZip">Zip</label>
+                    <input type="text" th:field="*{zipCode}" class="form-control" id="inputZip" placeholder="12345" required>
+                </div>
+            </div>
+            <button name="updateAccount" class="btn btn-info">Update Account</button>
+        </form>
+    </div>
+</div>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>

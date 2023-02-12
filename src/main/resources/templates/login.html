@@ -12,29 +12,29 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-sm navbar-light" style="background-color: #e3f2fd;">
-    <a class="navbar-brand" href="#">Welcome to The White Lotus</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+	<a class="navbar-brand">Welcome to The White Lotus</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <!--            <li class="nav-item">-->
-            <!--                <a class="nav-link" href="#">Link</a>-->
-            <!--            </li>-->
-        </ul>
-        <span class="form-inline my-2 my-lg-0">
-            <div class="btn-group mr-2" role="group" aria-label="Basic example">
-                <a href="#" class="btn btn-light active" role="button" aria-disabled="true">Guest Login</a>
+	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item active">
+				<a class="nav-link" th:href="@{/}">Home</a>
+			</li>
+			<!--            <li class="nav-item">-->
+			<!--                <a class="nav-link" href="#">Link</a>-->
+			<!--            </li>-->
+		</ul>
+		<span class="form-inline my-2 my-lg-0">
+            <div class="btn-group mr-2" role="group" aria-label="Login">
+                <a th:href="@{/login}" class="btn btn-light active" role="button" aria-pressed="true">Login</a>
             </div>
-            <div class="btn-group mr-2" role="group" aria-label="Basic example">
-                <a href="#" class="btn btn-light active" role="button" aria-disabled="true">Employee Login</a>
+            <div class="btn-group mr-2" role="group" aria-label="Logout">
+                <a th:href="@{/logout}" class="btn btn-light active" role="button" aria-pressed="true">Logout</a>
             </div>
         </span>
-    </div>
+	</div>
 </nav>
 
 <div class="container">

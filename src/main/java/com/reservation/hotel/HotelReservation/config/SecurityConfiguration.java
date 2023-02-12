@@ -25,7 +25,7 @@ public class SecurityConfiguration{
         http.authorizeHttpRequests(request -> request
 //                .requestMatchers("/guestprofile").hasAnyRole("ROLE_GUEST")
 //                .requestMatchers("/admin").hasAnyRole("ROLE_CLERK")
-                .requestMatchers("/", "/login", "/register/**", "/result")
+                .requestMatchers("/", "/login", "/register/**", "/result", "/admin/**", "/edit-profile/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated());

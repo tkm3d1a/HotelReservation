@@ -27,11 +27,13 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         authorities.forEach(authority -> {
             if(authority.getAuthority().equals("ROLE_GUEST")) {
                 try {
-                    //TODO : Figure out how to pass the user model that is pulled for auth?
+                    //TODO : need to extend hoteluser to add info here for security methods
                     User user = (User) authentication.getPrincipal();
                     log.info("{}", user);
                     log.info("Guest log in success!");
-                    redirectStrategy.sendRedirect(request, response, "/guest-profile");
+                    String query = user.getUsername();
+                    String url = "/guest-profile" + "?username=" + query;
+                    redirectStrategy.sendRedirect(request, response, url);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -40,7 +42,9 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                     User user = (User) authentication.getPrincipal();
                     log.info("{}", user);
                     log.info("Clerk log in success!");
-                    redirectStrategy.sendRedirect(request, response, "/clerk-profile");
+                    String query = user.getUsername();
+                    String url = "/clerk-profile" + "?username=" + query;
+                    redirectStrategy.sendRedirect(request, response, url);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

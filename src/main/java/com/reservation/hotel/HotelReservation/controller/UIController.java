@@ -55,25 +55,30 @@ public class UIController {
         return "result";
     }
 
+    @PostMapping("/result")
+    public String resultTest(){
+        return "result";
+    }
+
     @GetMapping("/guest-profile")
-    public String getUserProfile(@RequestParam(name = "uid", required = false) int userID, Model model){
-        // TODO: Remove temporary user once able to pass id
-        HotelUser hotelUser = new HotelUser();
-        Optional<HotelUser> optionalHotelUser = hotelUserRepository.findById(userID);
-        if(optionalHotelUser.isPresent()){
-            hotelUser = optionalHotelUser.get();
-        } else {
-            hotelUser.setUsername("FakeTest");
-            hotelUser.setEmail("FakeEmail@fake.com");
-            hotelUser.setZipCode("00000");
-            hotelUser.setFirstName("Fake");
-            hotelUser.setLastName("Test");
-            hotelUser.setStreetAddress("999 Fake rd");
-            hotelUser.setCity("Fake");
-            hotelUser.setState("TST");
-        }
+    public String getUserProfile(@RequestParam(name = "username", required = false) String username, Model model){
+        HotelUser hotelUser = getUserInfo(username);
         model.addAttribute("hotelUser", hotelUser);
         return "guest-profile";
+    }
+
+    @GetMapping("/clerk-profile")
+    public String getClerkProfile(@RequestParam(name = "username", required = false) String username, Model model){
+        HotelUser hotelUser = getUserInfo(username);
+        model.addAttribute("hotelUser", hotelUser);
+        return "clerk-profile";
+    }
+
+    @GetMapping("/edit-profile")
+    public String editProfile(@RequestParam(name = "username") String username, Model model){
+        HotelUser hotelUser = hotelUserRepository.findByUsername(username);
+        model.addAttribute("hotelUser", hotelUser);
+        return "edit-profile";
     }
 
     @GetMapping("/admin")
@@ -105,5 +110,23 @@ public class UIController {
         hotelUser.setZipCode("99999");
         hotelUserRepository.save(hotelUser);
         log.info("Added: {}", hotelUser);
+    }
+
+    private HotelUser getUserInfo(String username) {
+        HotelUser hotelUser = new HotelUser();
+        if(username == null){
+            hotelUser.setUsername("FakeTest");
+            hotelUser.setEmail("FakeEmail@fake.com");
+            hotelUser.setZipCode("00000");
+            hotelUser.setFirstName("Fake");
+            hotelUser.setLastName("Test");
+            hotelUser.setStreetAddress("999 Fake rd");
+            hotelUser.setCity("Fake");
+            hotelUser.setState("TST");
+        } else {
+            hotelUser = hotelUserRepository.findByUsername(username);
+        }
+
+        return hotelUser;
     }
 }
