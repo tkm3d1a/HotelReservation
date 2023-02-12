@@ -46,12 +46,17 @@
                         <h5 class="my-3" th:text="*{firstName +' '+ lastName}"></h5>
                         <div class="d-flex justify-content-center mb-2">
 	                        <form th:action="@{/edit-profile}" method="get">
-		                        <button type="submit" th:name="username" th:value="${hotelUser.username}" class="btn btn-info">Edit Profile</button>
+		                        <button type="submit" class="btn btn-info">Edit Profile</button>
 	                        </form>
                         </div>
                         <div class="d-flex justify-content-center mb-2">
-                            <button type="button" class="btn btn-info">View my reservations</button>
+                            <button type="button" class="btn btn-info">View Rooms</button>
                         </div>
+	                    <div th:if="${hotelUser.role == 'ROLE_ADMIN'}" class="d-flex justify-content-center mb-2">
+		                    <form th:action="@{/admin}" method="get">
+			                    <button type="submit" class="btn btn-info">Admin Dashboard</button>
+		                    </form>
+	                    </div>
                     </div>
                 </div>
             </div>
@@ -120,7 +125,6 @@
                                 <p class="text-muted mb-0" th:text="*{username}"></p>
                             </div>
                         </div>
-                        <hr>
                         </div>
                     </div>
                 </div>

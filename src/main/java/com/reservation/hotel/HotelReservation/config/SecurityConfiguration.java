@@ -23,9 +23,11 @@ public class SecurityConfiguration{
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(request -> request
-//                .requestMatchers("/guestprofile").hasAnyRole("ROLE_GUEST")
-//                .requestMatchers("/admin").hasAnyRole("ROLE_CLERK")
-                .requestMatchers("/", "/login", "/register/**", "/result", "/admin/**", "/edit-profile/**")
+                //TODO: Figure out why the role assigned does not work?
+                //TODO: update so that only admins can access admin page/guests guest pages/clerks clerk pages
+//                .requestMatchers("/guest-profile/**").hasAnyRole("ROLE_GUEST")
+//                .requestMatchers("/clerk-profile/**").hasAnyRole("ROLE_CLERK")
+                .requestMatchers("/", "/login", "/register/**", "/result", "/admin/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated());
@@ -34,7 +36,7 @@ public class SecurityConfiguration{
         http.formLogin(form -> form.loginPage("/login").successHandler(loginSuccessHandler));
         http.httpBasic();
         http.csrf().disable();
-        return (SecurityFilterChain)http.build();
+        return http.build();
     }
 
     @Bean

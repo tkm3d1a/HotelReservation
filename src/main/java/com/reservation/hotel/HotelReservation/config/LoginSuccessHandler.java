@@ -32,7 +32,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                     log.info("{}", user);
                     log.info("Guest log in success!");
                     String query = user.getUsername();
-                    String url = "/guest-profile" + "?username=" + query;
+//                    String url = "/guest-profile" + "?username=" + query;
+                    String url = "/guest-profile";
                     redirectStrategy.sendRedirect(request, response, url);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -50,10 +51,13 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                 }
             } else if(authority.getAuthority().equals("ROLE_ADMIN")) {
                 try {
+                    // TODO: update to point to an admin profile page instead of clerk profile
                     User user = (User) authentication.getPrincipal();
                     log.info("{}", user);
                     log.info("Clerk log in success!");
-                    redirectStrategy.sendRedirect(request, response, "/admin-profile");
+                    String query = user.getUsername();
+                    String url = "/clerk-profile" + "?username=" + query;
+                    redirectStrategy.sendRedirect(request, response, url);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

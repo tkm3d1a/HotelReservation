@@ -2,8 +2,14 @@ package com.reservation.hotel.HotelReservation.controller;
 
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUser;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUserRepository;
+import jakarta.annotation.security.DenyAll;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +35,13 @@ public class UIController {
 
     @GetMapping("/")
     public String getMessage(){
+//        if(request != null){
+//            Principal principal = request.getUserPrincipal();
+//            log.info("{}", principal.getName());
+//        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        log.info("{}", currentPrincipalName);
         return "index";
     }
 
@@ -63,8 +77,15 @@ public class UIController {
         return "result";
     }
 
+    /*
+    Profile related endpoints
+     */
     @GetMapping("/guest-profile")
-    public String getUserProfile(@RequestParam(name = "username", required = false) String username, Model model){
+//    @RolesAllowed("ROLE_GUEST") //TODO: Investigate RolesAllowed as another security method
+    public String getUserProfile(Model model){
+        //TODO: Apply auth retrieval of username to all places where it can be done
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
         HotelUser hotelUser = getUserInfo(username);
         model.addAttribute("hotelUser", hotelUser);
         return "guest-profile";
@@ -78,7 +99,9 @@ public class UIController {
     }
 
     @GetMapping("/edit-profile")
-    public String editProfile(@RequestParam(name = "username") String username, Model model){
+    public String editProfile(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
         HotelUser hotelUser = hotelUserRepository.findByUsername(username);
         model.addAttribute("hotelUser", hotelUser);
         log.info("Viewing user: {}", hotelUser);
@@ -86,21 +109,23 @@ public class UIController {
     }
 
     @PostMapping("/edit-profile")
-    public String updateProfile(@ModelAttribute HotelUser hotelUser, RedirectAttributes redirectAttributes){
-        HotelUser toUpdate = hotelUserRepository.findByUsername(hotelUser.getUsername());
-        log.info("Updating user: {}", toUpdate);
-        if(toUpdate.getRole().equals("ROLE_GUEST")){
-            toUpdate.setFirstName(hotelUser.getFirstName());
-            toUpdate.setLastName(hotelUser.getLastName());
+//    @RolesAllowed("")
+    public String updateProfile(@ModelAttribute HotelUser modelHotelUser, RedirectAttributes redirectAttributes){
+        HotelUser dbHotelUser = hotelUserRepository.findByUsername(modelHotelUser.getUsername());
+        log.info("Updating user: {}", dbHotelUser);
+        if(dbHotelUser.getRole().equals("ROLE_GUEST")){
+            dbHotelUser.setFirstName(modelHotelUser.getFirstName());
+            dbHotelUser.setLastName(modelHotelUser.getLastName());
         }
-        toUpdate.setPhoneNumber(hotelUser.getPhoneNumber());
-        toUpdate.setStreetAddress(hotelUser.getStreetAddress());
-        toUpdate.setCity(hotelUser.getCity());
-        toUpdate.setState(hotelUser.getState());
-        toUpdate.setZipCode(hotelUser.getZipCode());
-        log.info("Updated user: {}", toUpdate);
-        hotelUserRepository.save(toUpdate);
-        redirectAttributes.addAttribute("username", toUpdate.getUsername());
+        dbHotelUser.setPhoneNumber(modelHotelUser.getPhoneNumber());
+        dbHotelUser.setStreetAddress(modelHotelUser.getStreetAddress());
+        dbHotelUser.setCity(modelHotelUser.getCity());
+        dbHotelUser.setState(modelHotelUser.getState());
+        dbHotelUser.setZipCode(modelHotelUser.getZipCode());
+        log.info("Updated user: {}", dbHotelUser);
+        hotelUserRepository.save(dbHotelUser);
+        redirectAttributes.addAttribute("username", dbHotelUser.getUsername());
+        //TODO: manage which profile returns to (clerk vs employee)
         return "redirect:/guest-profile";
     }
 
@@ -129,7 +154,8 @@ public class UIController {
         }
         hotelUser.setUsername(userName);
         hotelUser.setPassword(bCryptPasswordEncoder.encode("default1234"));
-        hotelUser.setRole("ROLE_CLERK");
+        //TODO: change back to ROLE_CLERK
+        hotelUser.setRole("ROLE_ADMIN");
         hotelUser.setZipCode("99999");
         hotelUserRepository.save(hotelUser);
         log.info("Added: {}", hotelUser);
