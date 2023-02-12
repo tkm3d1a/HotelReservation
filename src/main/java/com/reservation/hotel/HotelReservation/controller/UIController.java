@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,11 +43,13 @@ public class UIController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute HotelUser hotelUser, Model model){
-        model.addAttribute("user", hotelUser);
+    public String registerUser(@ModelAttribute HotelUser hotelUser, RedirectAttributes redirectAttributes){
         hotelUser.setPassword(bCryptPasswordEncoder.encode(hotelUser.getPassword()));
         hotelUserRepository.save(hotelUser);
-        log.info("User inserted into the hotel Database: {}", hotelUser);
+        log.info("User inserted: {}", hotelUser);
+        //TODO: Right now, spring-security captures and redirects to login -> update to follow correct redirect path
+        //      on new register
+        redirectAttributes.addAttribute("username", hotelUser.getUsername());
         return "redirect:/guest-profile";
     }
 
@@ -78,7 +81,27 @@ public class UIController {
     public String editProfile(@RequestParam(name = "username") String username, Model model){
         HotelUser hotelUser = hotelUserRepository.findByUsername(username);
         model.addAttribute("hotelUser", hotelUser);
+        log.info("Viewing user: {}", hotelUser);
         return "edit-profile";
+    }
+
+    @PostMapping("/edit-profile")
+    public String updateProfile(@ModelAttribute HotelUser hotelUser, RedirectAttributes redirectAttributes){
+        HotelUser toUpdate = hotelUserRepository.findByUsername(hotelUser.getUsername());
+        log.info("Updating user: {}", toUpdate);
+        if(toUpdate.getRole().equals("ROLE_GUEST")){
+            toUpdate.setFirstName(hotelUser.getFirstName());
+            toUpdate.setLastName(hotelUser.getLastName());
+        }
+        toUpdate.setPhoneNumber(hotelUser.getPhoneNumber());
+        toUpdate.setStreetAddress(hotelUser.getStreetAddress());
+        toUpdate.setCity(hotelUser.getCity());
+        toUpdate.setState(hotelUser.getState());
+        toUpdate.setZipCode(hotelUser.getZipCode());
+        log.info("Updated user: {}", toUpdate);
+        hotelUserRepository.save(toUpdate);
+        redirectAttributes.addAttribute("username", toUpdate.getUsername());
+        return "redirect:/guest-profile";
     }
 
     @GetMapping("/admin")

@@ -22,29 +22,18 @@
 			<li class="nav-item active">
 				<a class="nav-link" th:href="@{/}">Home</a>
 			</li>
-			<!--            <li class="nav-item">-->
-			<!--                <a class="nav-link" href="#">Link</a>-->
-			<!--            </li>-->
 		</ul>
-<!--		<span class="form-inline my-2 my-lg-0">-->
-<!--            <div class="btn-group mr-2" role="group" aria-label="Login">-->
-<!--                <a th:href="@{/login}" class="btn btn-light active" role="button" aria-pressed="true">Login</a>-->
-<!--            </div>-->
-<!--            <div class="btn-group mr-2" role="group" aria-label="Logout">-->
-<!--                <a th:href="@{/logout}" class="btn btn-light active" role="button" aria-pressed="true">Logout</a>-->
-<!--            </div>-->
-<!--        </span>-->
 	</div>
 </nav>
 
 <div class="container">
     <h3 class="text-center">Edit your info</h3>
     <div>
-        <form th:action="@{/result}" th:object="${hotelUser}" method="post">
+        <form th:action="@{/edit-profile}" th:object="${hotelUser}" method="post">
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="username">Username</label>
-                    <input type="text" th:text="*{username}" class="form-control" id="username" placeholder="Username" readonly>
+                    <label for="displayUsername">Username</label>
+                    <input type="text" class="form-control" id="displayUsername" th:placeholder="*{username}" readonly>
                 </div>
 	            <!--TODO: figure out button centering-->
 	            <!--TODO: stop change password button from doing form validation-->
@@ -55,42 +44,45 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputFirstName">First Name</label>
-                    <input type="text" th:field="*{firstName}" class="form-control" id="inputFirstName" placeholder="Jane">
+                    <input type="text" th:field="*{firstName}" class="form-control" id="inputFirstName" th:readonly="${hotelUser.role == 'ROLE_CLERK'}">
                 </div>
                 <div class="form-group col-md-6">
                     <label for="inputLastName">Last Name</label>
-                    <input type="text" th:field="*{lastName}" class="form-control" id="inputLastName" placeholder="Doe">
+                    <input type="text" th:field="*{lastName}" class="form-control" id="inputLastName" th:readonly="${hotelUser.role == 'ROLE_CLERK'}">
                 </div>
             </div>
 	        <div class="form-row">
 	            <div class="form-group col-md-6">
-	                <label for="inputEmail">Email</label>
-	                <input type="email" th:text="*{email}" class="form-control" id="inputEmail" placeholder="hotelUser@domain.com" readonly>
+	                <label for="displayEmail">Email</label>
+	                <input type="email" class="form-control" id="displayEmail" th:placeholder="*{email}" readonly>
 	            </div>
 		        <div class="form-group col-md-6">
 			        <label for="inputPhone">Phone Number</label>
-			        <input type="text" th:field="*{phoneNumber}" class="form-control" id="inputPhone" placeholder="(555) 123-4567">
+			        <input type="text" th:field="*{phoneNumber}" class="form-control" id="inputPhone">
 		        </div>
 	        </div>
             <div class="form-group">
                 <label for="inputAddress">Street Address</label>
-                <input type="text" th:field="*{streetAddress}" class="form-control" id="inputAddress" placeholder="1234 Main St">
+                <input type="text" th:field="*{streetAddress}" class="form-control" id="inputAddress">
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputCity">City</label>
-                    <input type="text" th:field="*{city}" class="form-control" id="inputCity" placeholder="Some City">
+                    <input type="text" th:field="*{city}" class="form-control" id="inputCity">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputState">State</label>
-                    <input type="text" th:field="*{state}" class="form-control" id="inputState" placeholder="Some State">
+                    <input type="text" th:field="*{state}" class="form-control" id="inputState">
                 </div>
                 <div class="form-group col-md-2">
                     <label for="inputZip">Zip</label>
-                    <input type="text" th:field="*{zipCode}" class="form-control" id="inputZip" placeholder="12345" required>
+                    <input type="text" th:field="*{zipCode}" class="form-control" id="inputZip" required>
                 </div>
             </div>
-            <button name="updateAccount" class="btn btn-info">Update Account</button>
+	        <input type="hidden" th:field="*{username}" id="username">
+	        <input type="hidden" th:field="*{email}" id="email">
+	        <input type="hidden" th:field="*{id}" id="id">
+            <button type="submit" class="btn btn-info">Update Profile</button>
         </form>
     </div>
 </div>
