@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +43,8 @@ public class UIController {
 //        }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
-        log.info("{}", currentPrincipalName);
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        log.info("{}, Roles: {}", currentPrincipalName, authorities);
         return "index";
     }
 
@@ -87,12 +90,18 @@ public class UIController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         HotelUser hotelUser = getUserInfo(username);
+        //TODO: fix redirect and merge into one profile page
+        if(!hotelUser.getRole().equals("ROLE_GUEST")){
+            return "redirect:/clerk-profile";
+        }
         model.addAttribute("hotelUser", hotelUser);
         return "guest-profile";
     }
 
     @GetMapping("/clerk-profile")
-    public String getClerkProfile(@RequestParam(name = "username", required = false) String username, Model model){
+    public String getClerkProfile(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
         HotelUser hotelUser = getUserInfo(username);
         model.addAttribute("hotelUser", hotelUser);
         return "clerk-profile";
@@ -126,7 +135,11 @@ public class UIController {
         hotelUserRepository.save(dbHotelUser);
         redirectAttributes.addAttribute("username", dbHotelUser.getUsername());
         //TODO: manage which profile returns to (clerk vs employee)
-        return "redirect:/guest-profile";
+        if(dbHotelUser.getRole().equals("ROLE_CLERK")){
+            return "redirect:/clerk-profile";
+        } else {
+            return "redirect:/guest-profile";
+        }
     }
 
     @GetMapping("/admin")
@@ -154,8 +167,7 @@ public class UIController {
         }
         hotelUser.setUsername(userName);
         hotelUser.setPassword(bCryptPasswordEncoder.encode("default1234"));
-        //TODO: change back to ROLE_CLERK
-        hotelUser.setRole("ROLE_ADMIN");
+        hotelUser.setRole("ROLE_CLERK");
         hotelUser.setZipCode("99999");
         hotelUserRepository.save(hotelUser);
         log.info("Added: {}", hotelUser);

@@ -19,4 +19,8 @@ public class Room {
             nullable = false
     )
     private int roomNumber;
+    private String bedType;
+    private int bedNumber;
+    private String quality;
+    private String smokingStatus;
 }

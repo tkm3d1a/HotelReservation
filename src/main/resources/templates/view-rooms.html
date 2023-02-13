@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+	<title>Admin Dashboard</title>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-sm navbar-light" style="background-color: #e3f2fd;">
+	<a class="navbar-brand" href="#">Welcome to The White Lotus</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+
+	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item active">
+				<a class="nav-link" th:href="@{/}">Home <span class="sr-only">(current)</span></a>
+			</li>
+			<!--            <li class="nav-item">-->
+			<!--                <a class="nav-link" href="#">Link</a>-->
+			<!--            </li>-->
+		</ul>
+	</div>
+</nav>
+
+<div class="container" >
+	<!--TODO: Update has role check based on professor response-->
+	<div sec:authorize="hasRole('ROLE_CLERK')">
+		<form action="#" th:action="@{/rooms/addNew}" th:object="${newRoom}" method="post" class="form-inline m-4">
+			<div class="form-group">
+				<label for="roomNumber">Room Number</label>
+				<input type="number" class="form-control m-2" id="roomNumber" placeholder="Jane" th:field="*{roomNumber}" required>
+			</div>
+			<div class="form-group">
+				<label for="roomQuality">Room Quality Level</label>
+				<input type="text" class="form-control m-2" id="roomQuality" placeholder="Doe" th:field="*{quality}" required>
+			</div>
+			<div class="form-group">
+				<label for="roomSmokingStatus">Room Smoking status</label>
+				<input type="text" class="form-control m-2" id="roomSmokingStatus" placeholder="jane.doe@example.com" th:field="*{smokingStatus}" required>
+			</div>
+			<div class="form-group">
+				<label for="roomBedType">Room Bed Type</label>
+				<input type="text" class="form-control m-2" id="roomBedType" placeholder="jane.doe@example.com" th:field="*{bedType}" required>
+			</div>
+			<div class="form-group">
+				<label for="roomBedCount">Room Bed Count</label>
+				<input type="text" class="form-control m-2" id="roomBedCount" placeholder="jane.doe@example.com" th:field="*{bedNumber}" required>
+			</div>
+			<button type="submit" class="btn btn-info m-2">Add new room</button>
+		</form>
+	</div>
+	<h3 class="text-center">
+		Current Rooms
+	</h3>
+	<div class="table-responsive">
+		<table class="table table-striped table-bordered">
+			<thead>
+				<tr class="table-header text-center">
+					<!--TODO: update room view table-->
+					<!--TODO: add sorting by ?room number/room type?-->
+					<th>Room Number</th>
+					<th>Quality Level</th>
+					<th>Bed Type</th>
+					<th>Number of Beds</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="room: ${allRooms}">
+					<td th:text="*{room.roomNumber}">roomNumber</td>
+					<td	th:text="*{room.quality}">roomQuality</td>
+					<td th:text="*{room.bedType}">bedType</td>
+					<td th:text="*{room.bedNumber}">bedNum</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+</body>
+</html>
