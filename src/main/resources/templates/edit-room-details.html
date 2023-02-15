@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Hotel</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-sm navbar-light" style="background-color: #e3f2fd;">
+	<a class="navbar-brand">Welcome to The White Lotus</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+
+	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item active">
+				<a class="nav-link" th:href="@{/}">Home</a>
+			</li>
+		</ul>
+	</div>
+</nav>
+
+<div class="container">
+    <h3 class="text-center">Edit your info</h3>
+    <div>
+        <form th:action="@{/rooms/{roomNumber}/save-edits(roomNumber = ${room.roomNumber})}" th:object="${room}" method="post">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="roomNumber">Room Number</label>
+                    <input type="number" th:field="*{roomNumber}" class="form-control" id="roomNumber">
+                </div>
+                <div class="form-group col-md-6">
+	                <!--TODO: Turn into select field -->
+                    <label for="roomType">Room Quality level</label>
+                    <input type="text" th:field="*{quality}" class="form-control" id="roomType">
+                </div>
+            </div>
+	        <div class="form-row">
+	            <div class="form-group col-md-6">
+	                <label for="bedType">Bed Type</label>
+	                <input type="text" th:field="*{bedType}" class="form-control" id="bedType">
+	            </div>
+		        <div class="form-group col-md-6">
+			        <label for="bedNumber">Number of Beds</label>
+			        <input type="number" th:field="*{bedNumber}" class="form-control" id="bedNumber">
+		        </div>
+	        </div>
+            <div class="form-group">
+	            <!--TODO: Turn into select field -->
+	            <label for="smokingStatus">Smoking Status</label>
+	            <input type="text" th:field="*{smokingStatus}" class="form-control" id="smokingStatus">
+            </div>
+<!--	        <input type="hidden" th:field="*{username}" id="username">-->
+<!--	        <input type="hidden" th:field="*{email}" id="email">-->
+<!--	        <input type="hidden" th:field="*{id}" id="id">-->
+            <button type="submit" class="btn btn-info">Update Room Information</button>
+        </form>
+    </div>
+</div>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>

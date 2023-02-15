@@ -52,7 +52,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                 }
             } else if(authority.getAuthority().equals("ROLE_ADMIN")) {
                 try {
-                    // TODO: update to point to an admin profile page instead of clerk profile
                     User user = (User) authentication.getPrincipal();
                     log.info("{}", user);
                     log.info("Admin log in success!");

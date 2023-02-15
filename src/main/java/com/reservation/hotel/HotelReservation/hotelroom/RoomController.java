@@ -32,13 +32,41 @@ public class RoomController {
 
     @GetMapping("/{roomNumber}")
     public String viewRoomDetails(@PathVariable String roomNumber, Model model){
-        //TODO: need to add check to make sure room exists? getting the following stacktraceerror when manually entering
+        //TODO: need to add check to make sure room exists? getting the following stacktrace error when manually entering
         //      room numbers that do not exist --
         //          EL1007E: Property or field 'roomNumber' cannot be found on null
         int roomNumberInt = Integer.parseInt(roomNumber);
         Room showRoom = roomRepository.findRoomByRoomNumber(roomNumberInt);
         model.addAttribute("room", showRoom);
         return "room-details";
+    }
+
+    @GetMapping("/{roomNumber}/edit")
+    public String editRoomDetails(@PathVariable String roomNumber, Model model){
+        int roomNumberInt = Integer.parseInt(roomNumber);
+        Room showRoom = roomRepository.findRoomByRoomNumber(roomNumberInt);
+        model.addAttribute("room", showRoom);
+        return "edit-room-details";
+    }
+
+    @PostMapping("/{roomNumber}/save-edits")
+    public String postEditDetails(@PathVariable String roomNumber, @ModelAttribute Room room, @ModelAttribute String newRoomNumber){
+        int roomNumberInt = Integer.parseInt(roomNumber);
+        Room roomToUpdate = roomRepository.findRoomByRoomNumber(roomNumberInt);
+        log.info("Passed room info: {}",room);
+        log.info("Retrieved room info: {}", roomToUpdate);
+
+        //TODO: add check on room number first before setting, return to user they cant use an already taken number
+        roomToUpdate.setRoomNumber(room.getRoomNumber());
+        roomToUpdate.setQuality(room.getQuality());
+        roomToUpdate.setBedType(room.getBedType());
+        roomToUpdate.setBedNumber(room.getBedNumber());
+        roomToUpdate.setSmokingStatus(room.getSmokingStatus());
+
+        roomRepository.save(roomToUpdate);
+        log.info("Updated room info: {}", roomToUpdate);
+        newRoomNumber = Integer.toString(roomToUpdate.getRoomNumber());
+        return "redirect:/rooms/" + newRoomNumber;
     }
 
     private void addNewRoomHelper(Room newRoom){

@@ -31,8 +31,7 @@
 </nav>
 
 <div class="container" >
-	<!--TODO: Update has role check based on professor response-->
-	<div sec:authorize="hasRole('ROLE_CLERK')">
+	<div sec:authorize="hasRole('ROLE_ADMIN')">
 		<form action="#" th:action="@{/rooms/addNew}" th:object="${newRoom}" method="post" class="form-inline m-4">
 			<div class="form-group">
 				<label for="roomNumber">Room Number</label>
@@ -70,6 +69,7 @@
 					<th>Quality Level</th>
 					<th>Bed Type</th>
 					<th>Number of Beds</th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -78,6 +78,9 @@
 					<td	th:text="*{room.quality}">roomQuality</td>
 					<td th:text="*{room.bedType}">bedType</td>
 					<td th:text="*{room.bedNumber}">bedNum</td>
+					<td>
+						<a class="nav-link" th:href="@{/rooms/{roomNumber}(roomNumber = *{room.roomNumber})}">View Room Details</a>
+					</td>
 				</tr>
 			</tbody>
 		</table>

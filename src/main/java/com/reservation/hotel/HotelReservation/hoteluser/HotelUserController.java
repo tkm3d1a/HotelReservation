@@ -61,12 +61,7 @@ public class HotelUserController {
         log.info("Updated user: {}", dbHotelUser);
         hotelUserRepository.save(dbHotelUser);
         redirectAttributes.addAttribute("username", dbHotelUser.getUsername());
-        //TODO: manage which profile returns to (clerk vs employee)
-        if(dbHotelUser.getRole().equals("ROLE_CLERK")){
-            return "redirect:/profile";
-        } else {
-            return "redirect:/profile";
-        }
+        return "redirect:/profile";
     }
 
     private HotelUser getUserInfo(String username) {
