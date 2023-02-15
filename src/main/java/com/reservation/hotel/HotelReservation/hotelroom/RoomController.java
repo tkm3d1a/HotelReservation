@@ -16,7 +16,7 @@ public class RoomController {
     @Autowired
     private RoomRepository roomRepository;
 
-    @GetMapping
+    @GetMapping("")
     public String viewRooms(Model model, @ModelAttribute Room newRoom){
         model.addAttribute("newRoom", newRoom);
         List<Room> allRooms = roomRepository.findAll();
