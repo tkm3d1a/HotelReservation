@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 public class HotelUserService implements UserDetailsService {
@@ -30,5 +32,25 @@ public class HotelUserService implements UserDetailsService {
         log.info("{}", hotelUser);
 
         return userDetails;
+    }
+
+    public Boolean registerNewHotelUser(HotelUser newHotelUser) {
+        if (!isExistingUser(newHotelUser)) {
+            hotelUserRepository.save(newHotelUser);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isExistingUser(HotelUser newHotelUser) {
+        List<HotelUser> allExistingUsers = hotelUserRepository.findAll();
+        for (HotelUser user:allExistingUsers) {
+            if(user.getUsername().equals(newHotelUser.getUsername()) || user.getEmail().equals(newHotelUser.getEmail())){
+                log.info("username: {} and/or Email: {} already exists", newHotelUser.getUsername(), newHotelUser.getEmail());
+                return true;
+            }
+        }
+        return false;
     }
 }

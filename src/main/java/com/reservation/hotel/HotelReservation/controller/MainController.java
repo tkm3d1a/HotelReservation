@@ -2,6 +2,7 @@ package com.reservation.hotel.HotelReservation.controller;
 
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUser;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUserRepository;
+import com.reservation.hotel.HotelReservation.hoteluser.HotelUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -24,6 +25,9 @@ public class MainController {
 
     @Autowired
     HotelUserRepository hotelUserRepository;
+
+    @Autowired
+    HotelUserService hotelUserService;
 
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -55,9 +59,12 @@ public class MainController {
     @PostMapping("/register")
     public String registerUser(@ModelAttribute HotelUser hotelUser, RedirectAttributes redirectAttributes){
         hotelUser.setPassword(bCryptPasswordEncoder.encode(hotelUser.getPassword()));
-        //TODO: I think for the user registering problem this should be moved to hotelUserService and do the business logic checking there
-        hotelUserRepository.save(hotelUser);
-        log.info("User inserted: {}", hotelUser);
+        if (hotelUserService.registerNewHotelUser(hotelUser)){
+            log.info("User inserted: {}", hotelUser);
+        } else {
+            log.error("Unable to register new user, username/email might already exist");
+            return "redirect:/register?error=";
+        }
         //TODO: Right now, spring-security captures and redirects to login -> update to follow correct redirect path
         //      on new register
         redirectAttributes.addAttribute("username", hotelUser.getUsername());
