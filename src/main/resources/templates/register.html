@@ -40,7 +40,10 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label for="password">Password</label>
-                    <input type="password" th:field="*{password}" class="form-control" id="password" placeholder="Password" required>
+                    <input type="password" th:field="*{password}" class="form-control" id="password"
+                           pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
+                           title="minimum 6 chars long and requires at least 1 uppercase, 1 lowercase and 1 number"
+                           placeholder="Password" required>
                 </div>
             </div>
             <div class="form-row">

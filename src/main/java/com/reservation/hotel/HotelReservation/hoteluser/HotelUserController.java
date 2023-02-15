@@ -50,7 +50,6 @@ public class HotelUserController {
     public String updateProfile(@ModelAttribute HotelUser modelHotelUser){
         //TODO: Migrate to HotelUserService
         HotelUser dbHotelUser = hotelUserRepository.findByUsername(modelHotelUser.getUsername());
-        log.info("Updating user: {}", dbHotelUser);
         if(dbHotelUser.getRole().equals("ROLE_GUEST")){
             dbHotelUser.setFirstName(modelHotelUser.getFirstName());
             dbHotelUser.setLastName(modelHotelUser.getLastName());
@@ -64,8 +63,13 @@ public class HotelUserController {
         dbHotelUser.setCity(modelHotelUser.getCity());
         dbHotelUser.setState(modelHotelUser.getState());
         dbHotelUser.setZipCode(modelHotelUser.getZipCode());
-        log.info("Updated user: {}", dbHotelUser);
-        hotelUserRepository.save(dbHotelUser);
+        if(!isHotelUserSame(modelHotelUser,dbHotelUser)){
+            log.info("Updating user: {}", dbHotelUser);
+            hotelUserRepository.save(dbHotelUser);
+            log.info("Updated user: {}", dbHotelUser);
+        } else {
+            log.info("User did not update profile information");
+        }
 
         return "redirect:/profile";
     }
@@ -86,5 +90,16 @@ public class HotelUserController {
         }
 
         return hotelUser;
+    }
+
+    private boolean isHotelUserSame(HotelUser modelUser, HotelUser dbUser){
+        return modelUser.getFirstName() == dbUser.getFirstName()
+                && modelUser.getLastName() == dbUser.getLastName()
+                && modelUser.getStreetAddress() == dbUser.getStreetAddress()
+                && modelUser.getCity() == dbUser.getCity()
+                && modelUser.getState() == dbUser.getState()
+                && modelUser.getZipCode() == dbUser.getZipCode()
+                && modelUser.getPhoneNumber() == dbUser.getPhoneNumber()
+                && modelUser.getPassword().isBlank();
     }
 }
