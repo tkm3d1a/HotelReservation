@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<html lang="en" xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -20,21 +20,20 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" th:href="@{/}">Home</a>
+                <a class="nav-link" th:href="@{/static}">Home</a>
             </li>
             <!--            <li class="nav-item">-->
             <!--                <a class="nav-link" href="#">Link</a>-->
             <!--            </li>-->
         </ul>
         <span class="form-inline my-2 my-lg-0">
-	        <!--TODO: Create view profile endpoint-->
-	        <div class="btn-group mr-2" role="group" aria-label="View Profile">
-                <a th:href="@{/view-profile}" class="btn btn-light active" role="button" aria-pressed="true">View Profile</a>
+	        <div sec:authorize="isAuthenticated()" class="btn-group mr-2" role="group" aria-label="View Profile">
+                <a th:href="@{/profile}" class="btn btn-light active" role="button" aria-pressed="true">View Profile</a>
             </div>
-            <div class="btn-group mr-2" role="group" aria-label="Login">
+            <div sec:authorize="isAnonymous()" class="btn-group mr-2" role="group" aria-label="Login">
                 <a th:href="@{/login}" class="btn btn-light active" role="button" aria-pressed="true">Login</a>
             </div>
-            <div class="btn-group mr-2" role="group" aria-label="Logout">
+            <div sec:authorize="isAuthenticated()" class="btn-group mr-2" role="group" aria-label="Logout">
                 <a th:href="@{/logout}" class="btn btn-light active" role="button" aria-pressed="true">Logout</a>
             </div>
         </span>

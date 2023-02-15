@@ -1,6 +1,5 @@
 package com.reservation.hotel.HotelReservation.hotelroom;
 
-import com.reservation.hotel.HotelReservation.hoteluser.HotelUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,7 +37,7 @@ public class RoomController {
         int roomNumberInt = Integer.parseInt(roomNumber);
         Room showRoom = roomRepository.findRoomByRoomNumber(roomNumberInt);
         model.addAttribute("room", showRoom);
-        return "room-details";
+        return "view-room-details";
     }
 
     @GetMapping("/{roomNumber}/edit")
@@ -50,7 +49,7 @@ public class RoomController {
     }
 
     @PostMapping("/{roomNumber}/save-edits")
-    public String postEditDetails(@PathVariable String roomNumber, @ModelAttribute Room room, @ModelAttribute String newRoomNumber){
+    public String postEditDetails(@PathVariable String roomNumber, @ModelAttribute Room room){
         int roomNumberInt = Integer.parseInt(roomNumber);
         Room roomToUpdate = roomRepository.findRoomByRoomNumber(roomNumberInt);
         log.info("Passed room info: {}",room);
@@ -65,7 +64,7 @@ public class RoomController {
 
         roomRepository.save(roomToUpdate);
         log.info("Updated room info: {}", roomToUpdate);
-        newRoomNumber = Integer.toString(roomToUpdate.getRoomNumber());
+        String newRoomNumber = Integer.toString(roomToUpdate.getRoomNumber());
         return "redirect:/rooms/" + newRoomNumber;
     }
 

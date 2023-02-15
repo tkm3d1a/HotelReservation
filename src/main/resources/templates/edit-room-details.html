@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<html lang="en" xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -23,6 +23,18 @@
 				<a class="nav-link" th:href="@{/}">Home</a>
 			</li>
 		</ul>
+
+		<span class="form-inline my-2 my-lg-0">
+	        <div sec:authorize="isAuthenticated()" class="btn-group mr-2" role="group" aria-label="View Profile">
+                <a th:href="@{/profile}" class="btn btn-light active" role="button" aria-pressed="true">View Profile</a>
+            </div>
+            <div sec:authorize="isAnonymous()" class="btn-group mr-2" role="group" aria-label="Login">
+                <a th:href="@{/login}" class="btn btn-light active" role="button" aria-pressed="true">Login</a>
+            </div>
+            <div sec:authorize="isAuthenticated()" class="btn-group mr-2" role="group" aria-label="Logout">
+                <a th:href="@{/logout}" class="btn btn-light active" role="button" aria-pressed="true">Logout</a>
+            </div>
+        </span>
 	</div>
 </nav>
 

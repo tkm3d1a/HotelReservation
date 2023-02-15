@@ -1,7 +1,5 @@
 package com.reservation.hotel.HotelReservation.hoteluser;
 
-import com.reservation.hotel.HotelReservation.hoteluser.HotelUser;
-import com.reservation.hotel.HotelReservation.hoteluser.HotelUserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -12,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 @Slf4j
 @Controller
@@ -45,7 +43,7 @@ public class HotelUserController {
 
     @PostMapping("/edit-profile")
 //    @RolesAllowed("")
-    public String updateProfile(@ModelAttribute HotelUser modelHotelUser, RedirectAttributes redirectAttributes){
+    public String updateProfile(@ModelAttribute HotelUser modelHotelUser){
         //TODO: Migrate to HotelUserService
         HotelUser dbHotelUser = hotelUserRepository.findByUsername(modelHotelUser.getUsername());
         log.info("Updating user: {}", dbHotelUser);
@@ -60,7 +58,7 @@ public class HotelUserController {
         dbHotelUser.setZipCode(modelHotelUser.getZipCode());
         log.info("Updated user: {}", dbHotelUser);
         hotelUserRepository.save(dbHotelUser);
-        redirectAttributes.addAttribute("username", dbHotelUser.getUsername());
+
         return "redirect:/profile";
     }
 

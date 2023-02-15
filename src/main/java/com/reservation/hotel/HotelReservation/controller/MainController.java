@@ -75,10 +75,8 @@ public class MainController {
     }
 
     /*
-    Profile related endpoints
+    Admin related endpoints
      */
-
-
     @GetMapping("/admin")
     public String adminDashboard(@ModelAttribute HotelUser hotelUser, Model model){
         model.addAttribute("newEmployee", hotelUser);
@@ -108,23 +106,5 @@ public class MainController {
         hotelUser.setZipCode("99999");
         hotelUserRepository.save(hotelUser);
         log.info("Added: {}", hotelUser);
-    }
-
-    private HotelUser getUserInfo(String username) {
-        HotelUser hotelUser = new HotelUser();
-        if(username == null){
-            hotelUser.setUsername("FakeTest");
-            hotelUser.setEmail("FakeEmail@fake.com");
-            hotelUser.setZipCode("00000");
-            hotelUser.setFirstName("Fake");
-            hotelUser.setLastName("Test");
-            hotelUser.setStreetAddress("999 Fake rd");
-            hotelUser.setCity("Fake");
-            hotelUser.setState("TST");
-        } else {
-            hotelUser = hotelUserRepository.findByUsername(username);
-        }
-
-        return hotelUser;
     }
 }
