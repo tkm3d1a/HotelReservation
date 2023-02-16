@@ -40,29 +40,56 @@
 </nav>
 
 <div class="container" >
+	<div th:if="${param.error}">
+		<p class="text-danger">Unable to add new Room</p>
+	</div>
+	<div th:if="${param.success}">
+		<p class="text-success" th:text="'Room ' + ${param.success[0]} + ', added to the system'"></p>
+	</div>
 	<div sec:authorize="hasRole('ROLE_ADMIN')">
-		<form action="#" th:action="@{/rooms/addNew}" th:object="${newRoom}" method="post" class="form-inline m-4">
-			<div class="form-group">
-				<label for="roomNumber">Room Number</label>
-				<input type="number" class="form-control m-2" id="roomNumber" placeholder="Jane" th:field="*{roomNumber}" required>
+		<form action="#" th:action="@{/rooms/addNew}" th:object="${newRoom}" method="post">
+			<div class="form-row">
+				<div class="form-group col-md-2">
+					<label for="roomNumber">Room Number</label>
+					<input type="number" class="form-control" id="roomNumber" min="100"
+					   placeholder="Room Number" th:field="*{roomNumber}" required>
 			</div>
-			<div class="form-group">
-				<label for="roomQuality">Room Quality Level</label>
-				<input type="text" class="form-control m-2" id="roomQuality" placeholder="Doe" th:field="*{quality}" required>
+				<div class="form-group col-md-2">
+				<label for="roomQuality">Quality Level</label>
+				<select id="roomQuality" class="form-control" th:field="*{quality}" required>
+					<option value = "">None</option>
+					<option value = "Executive">Executive</option>
+					<option value = "Business">Business</option>
+					<option value = "Comfort">Comfort</option>
+					<option value = "Economy">Economy</option>
+				</select>
 			</div>
-			<div class="form-group">
-				<label for="roomSmokingStatus">Room Smoking status</label>
-				<input type="text" class="form-control m-2" id="roomSmokingStatus" placeholder="jane.doe@example.com" th:field="*{smokingStatus}" required>
+				<div class="form-group col-md-2">
+				<label for="roomSmokingStatus">Smoking status</label>
+				<select id="roomSmokingStatus" class="form-control" th:field="*{smokingStatus}" required>
+					<option value = "">None</option>
+					<option value = "Smoking">Smoking</option>
+					<option value = "Non Smoking">Non Smoking</option>
+				</select>
+<!--				<input type="text" class="form-control" id="roomSmokingStatus" placeholder="jane.doe@example.com" th:field="*{smokingStatus}" required>-->
 			</div>
-			<div class="form-group">
-				<label for="roomBedType">Room Bed Type</label>
-				<input type="text" class="form-control m-2" id="roomBedType" placeholder="jane.doe@example.com" th:field="*{bedType}" required>
+				<div class="form-group col-md-2">
+					<label for="roomBedType">Bed Type</label>
+					<select id="roomBedType" class="form-control" th:field="*{bedType}" required>
+						<option value = "">None</option>
+						<option value = "Queen">Queen</option>
+						<option value = "King">King</option>
+						<option value = "Twin">Twin</option>
+					</select>
+					<!--				<input type="text" class="form-control" id="roomBedType" placeholder="jane.doe@example.com" th:field="*{bedType}" required>-->
 			</div>
-			<div class="form-group">
-				<label for="roomBedCount">Room Bed Count</label>
-				<input type="text" class="form-control m-2" id="roomBedCount" placeholder="jane.doe@example.com" th:field="*{bedNumber}" required>
+				<div class="form-group col-md-2">
+				<label for="roomBedCount">Number of Beds</label>
+				<input type="number" class="form-control" id="roomBedCount" min="1" max="5"
+					   placeholder="Number of Beds" th:field="*{bedNumber}" required>
 			</div>
-			<button type="submit" class="btn btn-info m-2">Add new room</button>
+			</div>
+				<button type="submit" class="btn btn-info">Add new room</button>
 		</form>
 	</div>
 	<h3 class="text-center">
@@ -95,6 +122,5 @@
 		</table>
 	</div>
 </div>
-
 </body>
 </html>
