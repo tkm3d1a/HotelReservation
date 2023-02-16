@@ -45,6 +45,9 @@
     <div th:if="${param.logout}">
         <p class="text-info">You have been logged out.</p>
     </div>
+    <div th:if="${param.success}">
+        <p class="text-success" th:text="'Username, ' + ${param.success[0]} + ', registered. Please login!'"></p>
+    </div>
     <form th:action="@{/login}" method="post">
         <div class="form-group">
             <label for="username">Username</label>

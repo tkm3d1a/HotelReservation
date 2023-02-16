@@ -68,7 +68,9 @@ public class MainController {
         //TODO: Right now, spring-security captures and redirects to login -> update to follow correct redirect path
         //      on new register
         redirectAttributes.addAttribute("username", hotelUser.getUsername());
-        return "redirect:/profile";
+        StringBuilder redirectURL = new StringBuilder("redirect:/login?success=");
+        redirectURL.append(hotelUser.getUsername());
+        return redirectURL.toString();
     }
 
     @GetMapping("/result")
@@ -95,23 +97,15 @@ public class MainController {
 
     @PostMapping("/admin/addNew")
     public String addClerkProfile(@ModelAttribute("user") HotelUser hotelUser){
-        addNewEmployee(hotelUser);
-        return "redirect:/admin";
-    }
-
-    private void addNewEmployee(HotelUser hotelUser){
-        log.info("Clicked 'addNewEmployee'");
-        String userName = hotelUser.getFirstName().substring(0,1);
-        if(hotelUser.getLastName().length() > 7){
-            userName += hotelUser.getLastName().substring(0,7);
-        } else {
-            userName += hotelUser.getLastName();
-        }
-        hotelUser.setUsername(userName);
         hotelUser.setPassword(bCryptPasswordEncoder.encode("default1234"));
-        hotelUser.setRole("ROLE_CLERK");
-        hotelUser.setZipCode("99999");
-        hotelUserRepository.save(hotelUser);
-        log.info("Added: {}", hotelUser);
+        if(hotelUserService.addNewEmployee(hotelUser)){
+            log.info("Clerk Added: {}", hotelUser);
+        } else {
+            log.error("Unable to add new Clerk, email for clerk might already exist");
+            return "redirect:/admin?error=";
+        }
+        StringBuilder redirectURL = new StringBuilder("redirect:/admin?success=");
+        redirectURL.append(hotelUser.getUsername());
+        return redirectURL.toString();
     }
 }

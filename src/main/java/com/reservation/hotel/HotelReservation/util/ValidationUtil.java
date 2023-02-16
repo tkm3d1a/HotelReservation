@@ -28,11 +28,22 @@ public class ValidationUtil {
         return isHotelUserSame;
     }
 
-    public boolean checkIfUserNameAndEmailAlreadyExistsInDB(String newUserName, String newEmail){
+    public boolean checkIfUserNameAlreadyExistsInDB(String newUserName){
         List<HotelUser> allExistingUsers = hotelUserRepository.findAll();
         for (HotelUser user:allExistingUsers) {
-            if(user.getUsername().equals(newUserName) || user.getEmail().equals(newEmail)){
-                log.info("username: {} and/or Email: {} already exists", newUserName, newEmail);
+            if(user.getUsername().equals(newUserName)){
+                log.info("username: {} already exists", newUserName);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean checkIfEmailAlreadyExistsInDB(String newEmail){
+        List<HotelUser> allExistingUsers = hotelUserRepository.findAll();
+        for (HotelUser user:allExistingUsers) {
+            if(user.getEmail().equals(newEmail)){
+                log.info("Email: {} already exists", newEmail);
                 return true;
             }
         }
