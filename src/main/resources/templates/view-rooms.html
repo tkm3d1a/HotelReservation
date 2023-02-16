@@ -40,10 +40,10 @@
 
 <div class="container" >
 	<div th:if="${param.error}">
-		<p class="text-danger">Unable to add new Room</p>
+		<p class="text-danger">Room already exists. Please update existing room!</p>
 	</div>
 	<div th:if="${param.success}">
-		<p class="text-success" th:text="'Room ' + ${param.success[0]} + ', added to the system'"></p>
+		<p class="text-success" th:text="'Room ' + ${param.success[0]} + ' was added to the system.'"></p>
 	</div>
 	<div sec:authorize="hasRole('ROLE_ADMIN')">
 		<form action="#" th:action="@{/rooms/addNew}" th:object="${newRoom}" method="post">

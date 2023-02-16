@@ -1,5 +1,7 @@
 package com.reservation.hotel.HotelReservation.util;
 
+import com.reservation.hotel.HotelReservation.hotelroom.Room;
+import com.reservation.hotel.HotelReservation.hotelroom.RoomRepository;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUser;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,9 @@ public class ValidationUtil {
 
     @Autowired
     HotelUserRepository hotelUserRepository;
+
+    @Autowired
+    RoomRepository roomRepository;
 
     public boolean checkIfHotelUsersAreSame(HotelUser modelUser, HotelUser dbUser){
         Boolean isHotelUserSame = modelUser.getFirstName().equals(dbUser.getFirstName())
@@ -44,6 +49,17 @@ public class ValidationUtil {
         for (HotelUser user:allExistingUsers) {
             if(user.getEmail().equals(newEmail)){
                 log.info("Email: {} already exists", newEmail);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean checkIfRoomNumberAlreadyExistsInDB(int newRoomNumber){
+        List<Room> allExistingRooms = roomRepository.findAll();
+        for (Room room:allExistingRooms ) {
+            if(newRoomNumber == room.getRoomNumber()) {
+                log.info("Room Number {} already exists", newRoomNumber);
                 return true;
             }
         }

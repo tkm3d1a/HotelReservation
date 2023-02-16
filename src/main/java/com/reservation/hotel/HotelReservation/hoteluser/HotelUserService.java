@@ -38,7 +38,7 @@ public class HotelUserService implements UserDetailsService {
         return userDetails;
     }
 
-    public Boolean registerNewHotelUser(HotelUser newHotelUser) {
+    public boolean registerNewHotelUser(HotelUser newHotelUser) {
         if (!validationUtil.checkIfUserNameAlreadyExistsInDB(newHotelUser.getUsername())
                 || !validationUtil.checkIfEmailAlreadyExistsInDB(newHotelUser.getEmail())) {
             hotelUserRepository.save(newHotelUser);

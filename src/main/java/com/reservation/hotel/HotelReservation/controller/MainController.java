@@ -34,10 +34,6 @@ public class MainController {
 
     @GetMapping("/")
     public String getMessage(){
-//        if(request != null){
-//            Principal principal = request.getUserPrincipal();
-//            log.info("{}", principal.getName());
-//        }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();

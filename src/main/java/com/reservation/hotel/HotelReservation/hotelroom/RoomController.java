@@ -15,6 +15,9 @@ public class RoomController {
     @Autowired
     private RoomRepository roomRepository;
 
+    @Autowired
+    private RoomService roomService;
+
     @GetMapping("")
     public String viewRooms(Model model, @ModelAttribute Room newRoom){
         model.addAttribute("newRoom", newRoom);
@@ -25,8 +28,15 @@ public class RoomController {
 
     @PostMapping("/addNew")
     public String addNewRoom(@ModelAttribute("newRoom") Room newRoom){
-        addNewRoomHelper(newRoom);
-        return "redirect:/rooms";
+        if(roomService.addNewRoom(newRoom)){
+            log.info("Room Added: {}", newRoom);
+        } else {
+            log.error("Unable to add this room, Room Number {} already exists!", newRoom.getRoomNumber());
+            return "redirect:/rooms?error=";
+        }
+        StringBuilder redirectURL = new StringBuilder("redirect:/rooms?success=");
+        redirectURL.append(newRoom.getRoomNumber());
+        return redirectURL.toString();
     }
 
     @GetMapping("/{roomNumber}")
@@ -68,10 +78,4 @@ public class RoomController {
         return "redirect:/rooms/" + newRoomNumber;
     }
 
-    private void addNewRoomHelper(Room newRoom){
-        log.info("Clicked 'addNewRoom'");
-        log.info("Room to be added: {}", newRoom);
-        roomRepository.save(newRoom);
-        log.info("Room {} added", newRoom.getRoomNumber());
-    }
 }
