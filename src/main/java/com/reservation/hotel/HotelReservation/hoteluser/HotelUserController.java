@@ -1,5 +1,6 @@
 package com.reservation.hotel.HotelReservation.hoteluser;
 
+import com.reservation.hotel.HotelReservation.util.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -23,6 +24,9 @@ public class HotelUserController {
 
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    ValidationUtil validationUtil;
 
     @GetMapping("")
 //    @RolesAllowed("ROLE_GUEST") //TODO: Investigate RolesAllowed as another security method
@@ -56,15 +60,17 @@ public class HotelUserController {
         }
         String newPassword = modelHotelUser.getPassword();
         if(!newPassword.isBlank()){
-            dbHotelUser.setPassword(bCryptPasswordEncoder.encode(newPassword));
+            modelHotelUser.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        } else {
+            modelHotelUser.setPassword(dbHotelUser.getPassword());
         }
-        dbHotelUser.setPhoneNumber(modelHotelUser.getPhoneNumber());
-        dbHotelUser.setStreetAddress(modelHotelUser.getStreetAddress());
-        dbHotelUser.setCity(modelHotelUser.getCity());
-        dbHotelUser.setState(modelHotelUser.getState());
-        dbHotelUser.setZipCode(modelHotelUser.getZipCode());
-        if(!isHotelUserSame(modelHotelUser,dbHotelUser)){
+        if(!validationUtil.checkIfHotelUsersAreSame(modelHotelUser,dbHotelUser)){
             log.info("Updating user: {}", dbHotelUser);
+            dbHotelUser.setPhoneNumber(modelHotelUser.getPhoneNumber());
+            dbHotelUser.setStreetAddress(modelHotelUser.getStreetAddress());
+            dbHotelUser.setCity(modelHotelUser.getCity());
+            dbHotelUser.setState(modelHotelUser.getState());
+            dbHotelUser.setZipCode(modelHotelUser.getZipCode());
             hotelUserRepository.save(dbHotelUser);
             log.info("Updated user: {}", dbHotelUser);
         } else {
@@ -90,16 +96,5 @@ public class HotelUserController {
         }
 
         return hotelUser;
-    }
-
-    private boolean isHotelUserSame(HotelUser modelUser, HotelUser dbUser){
-        return modelUser.getFirstName() == dbUser.getFirstName()
-                && modelUser.getLastName() == dbUser.getLastName()
-                && modelUser.getStreetAddress() == dbUser.getStreetAddress()
-                && modelUser.getCity() == dbUser.getCity()
-                && modelUser.getState() == dbUser.getState()
-                && modelUser.getZipCode() == dbUser.getZipCode()
-                && modelUser.getPhoneNumber() == dbUser.getPhoneNumber()
-                && modelUser.getPassword().isBlank();
     }
 }

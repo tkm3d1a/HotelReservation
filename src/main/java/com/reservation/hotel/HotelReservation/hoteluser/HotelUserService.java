@@ -2,6 +2,7 @@ package com.reservation.hotel.HotelReservation.hoteluser;
 
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUser;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUserRepository;
+import com.reservation.hotel.HotelReservation.util.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,9 @@ public class HotelUserService implements UserDetailsService {
 
     @Autowired
     private HotelUserRepository hotelUserRepository;
+
+    @Autowired
+    ValidationUtil validationUtil;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -35,22 +39,11 @@ public class HotelUserService implements UserDetailsService {
     }
 
     public Boolean registerNewHotelUser(HotelUser newHotelUser) {
-        if (!isExistingUser(newHotelUser)) {
+        if (!validationUtil.checkIfUserNameAndEmailAlreadyExistsInDB(newHotelUser.getUsername(), newHotelUser.getEmail())) {
             hotelUserRepository.save(newHotelUser);
             return true;
         } else {
             return false;
         }
-    }
-
-    private boolean isExistingUser(HotelUser newHotelUser) {
-        List<HotelUser> allExistingUsers = hotelUserRepository.findAll();
-        for (HotelUser user:allExistingUsers) {
-            if(user.getUsername().equals(newHotelUser.getUsername()) || user.getEmail().equals(newHotelUser.getEmail())){
-                log.info("username: {} and/or Email: {} already exists", newHotelUser.getUsername(), newHotelUser.getEmail());
-                return true;
-            }
-        }
-        return false;
     }
 }

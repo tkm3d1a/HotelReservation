@@ -23,9 +23,6 @@
 			<li class="nav-item active">
 				<a class="nav-link" th:href="@{/}">Home <span class="sr-only">(current)</span></a>
 			</li>
-			<!--            <li class="nav-item">-->
-			<!--                <a class="nav-link" href="#">Link</a>-->
-			<!--            </li>-->
 		</ul>
 		<span class="form-inline my-2 my-lg-0">
 	        <div sec:authorize="isAuthenticated()" class="btn-group mr-2" role="group" aria-label="View Profile">
@@ -42,20 +39,22 @@
 </nav>
 
 <div class="container">
-	<form action="#" th:action="@{/admin/addNew}" th:object="${newEmployee}" method="post" class="form-inline m-4">
-		<div class="form-group">
+	<form action="#" th:action="@{/admin/addNew}" th:object="${newEmployee}" method="post" >
+		<div class="form-row">
+		<div class="form-group col-md-4">
 			<label for="employeeFirstName">First Name</label>
-			<input type="text" class="form-control m-2" id="employeeFirstName" placeholder="Jane" th:field="*{firstName}" required>
+			<input type="text" class="form-control" id="employeeFirstName" placeholder="Jane" th:field="*{firstName}" required>
 		</div>
-		<div class="form-group">
+		<div class="form-group col-md-4">
 			<label for="employeeLastName">Last Name</label>
-			<input type="text" class="form-control m-2" id="employeeLastName" placeholder="Doe" th:field="*{lastName}" required>
+			<input type="text" class="form-control" id="employeeLastName" placeholder="Doe" th:field="*{lastName}" required>
 		</div>
-		<div class="form-group">
+		<div class="form-group col-md-4">
 			<label for="employeeEmail">Email</label>
-			<input type="email" class="form-control m-2" id="employeeEmail" placeholder="jane.doe@example.com" th:field="*{email}" required>
+			<input type="email" class="form-control" id="employeeEmail" placeholder="jane.doe@example.com" th:field="*{email}" required>
 		</div>
-		<button type="submit" class="btn btn-info m-2">Create New Employee</button>
+		</div>
+		<button type="submit" class="btn btn-info">Create New Employee</button>
 	</form>
 	<h3 class="text-center">
 		Current Employees
@@ -81,6 +80,5 @@
 		</table>
 	</div>
 </div>
-
 </body>
 </html>
