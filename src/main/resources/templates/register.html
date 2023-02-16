@@ -22,23 +22,15 @@
             <li class="nav-item active">
                 <a class="nav-link" th:href="@{/}">Home<span class="sr-only">(current)</span></a>
             </li>
-            <!--            <li class="nav-item">-->
-            <!--                <a class="nav-link" href="#">Link</a>-->
-            <!--            </li>-->
         </ul>
-        <span class="form-inline my-2 my-lg-0">
-            <div class="btn-group mr-2" role="group" aria-label="Basic example">
-                <a href="#" class="btn btn-light active" role="button" aria-disabled="true">Guest Login</a>
-            </div>
-            <div class="btn-group mr-2" role="group" aria-label="Basic example">
-                <a href="#" class="btn btn-light active" role="button" aria-disabled="true">Employee Login</a>
-            </div>
-        </span>
     </div>
 </nav>
 
 <div class="container">
     <h3 class="text-center">Please Sign Up</h3>
+    <div th:if="${param.error}">
+        <p class="text-danger">Unable to register new user. username/email might already exist!</p>
+    </div>
     <div>
         <form th:action="@{/register}" th:object="${hotelUser}" method="post">
             <div class="form-row">
@@ -48,7 +40,10 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label for="password">Password</label>
-                    <input type="password" th:field="*{password}" class="form-control" id="password" placeholder="Password" required>
+                    <input type="password" th:field="*{password}" class="form-control" id="password"
+                           pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
+                           title="minimum 6 chars long and requires at least 1 uppercase, 1 lowercase and 1 number"
+                           placeholder="Password" required>
                 </div>
             </div>
             <div class="form-row">

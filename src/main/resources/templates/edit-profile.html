@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<html lang="en" xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -23,13 +23,25 @@
 				<a class="nav-link" th:href="@{/}">Home</a>
 			</li>
 		</ul>
+
+		<span class="form-inline my-2 my-lg-0">
+	        <div sec:authorize="isAuthenticated()" class="btn-group mr-2" role="group" aria-label="View Profile">
+                <a th:href="@{/profile}" class="btn btn-light active" role="button" aria-pressed="true">View Profile</a>
+            </div>
+            <div sec:authorize="isAnonymous()" class="btn-group mr-2" role="group" aria-label="Login">
+                <a th:href="@{/login}" class="btn btn-light active" role="button" aria-pressed="true">Login</a>
+            </div>
+            <div sec:authorize="isAuthenticated()" class="btn-group mr-2" role="group" aria-label="Logout">
+                <a th:href="@{/logout}" class="btn btn-light active" role="button" aria-pressed="true">Logout</a>
+            </div>
+        </span>
 	</div>
 </nav>
 
 <div class="container">
     <h3 class="text-center">Edit your info</h3>
     <div>
-        <form th:action="@{/edit-profile}" th:object="${hotelUser}" method="post">
+        <form th:action="@{/profile/edit-profile}" th:object="${hotelUser}" method="post">
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="displayUsername">Username</label>
@@ -37,8 +49,12 @@
                 </div>
 	            <!--TODO: figure out button centering-->
 	            <!--TODO: stop change password button from doing form validation-->
-                <div class="form-group col-md-2 align-right">
-	                <button class="form-control btn btn-info" name="changePassword">Change Password</button>
+                <div class="form-group col-md-6">
+                    <label for="password">Password</label>
+                    <input type="password" th:field="*{Password}"class="form-control" id="password"
+                           pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
+                           title="minimum 6 chars long and requires at least 1 uppercase, 1 lowercase and 1 number"
+                           placeholder="Enter new password here to update (6 chars min)">
                 </div>
             </div>
             <div class="form-row">
@@ -63,16 +79,16 @@
 	        </div>
             <div class="form-group">
                 <label for="inputAddress">Street Address</label>
-                <input type="text" th:field="*{streetAddress}" class="form-control" id="inputAddress">
+                <input type="text" th:field="*{streetAddress}" class="form-control" id="inputAddress" required>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputCity">City</label>
-                    <input type="text" th:field="*{city}" class="form-control" id="inputCity">
+                    <input type="text" th:field="*{city}" class="form-control" id="inputCity" required>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="inputState">State</label>
-                    <input type="text" th:field="*{state}" class="form-control" id="inputState">
+                    <input type="text" th:field="*{state}" class="form-control" id="inputState" required>
                 </div>
                 <div class="form-group col-md-2">
                     <label for="inputZip">Zip</label>

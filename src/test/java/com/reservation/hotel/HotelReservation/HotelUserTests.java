@@ -17,16 +17,21 @@ public class HotelUserTests{
 
     @Test
     public void testAddNewAdmin(){
-
+        //TODO: implement testAddNewAdmin
     }
 
     @Test
     public void testAddNewClerk(){
-
+        //TODO: implement testAddNewClerk
     }
 
     @Test
     public void testAddNewGuest(){
+        //TODO: implement testAddNewGuest
+    }
 
+    @Test
+    public void testAddNewRoom(){
+        //TODO: implement testAddNewRoom
     }
 }

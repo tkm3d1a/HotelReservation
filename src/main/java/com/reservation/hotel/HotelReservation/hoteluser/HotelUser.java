@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @AllArgsConstructor
@@ -24,7 +25,7 @@ public class HotelUser{
     @Column(
             nullable = false
     )
-    private String password;
+    @ToString.Exclude private String password;
 
     @Column(
             unique = true,
