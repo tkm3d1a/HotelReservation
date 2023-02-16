@@ -43,30 +43,42 @@
     <div>
         <form th:action="@{/rooms/{roomNumber}/save-edits(roomNumber = ${room.roomNumber})}" th:object="${room}" method="post">
             <div class="form-row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-2">
                     <label for="roomNumber">Room Number</label>
-                    <input type="number" th:field="*{roomNumber}" class="form-control" id="roomNumber">
+                    <input type="number" th:field="*{roomNumber}" class="form-control" id="roomNumber" min="100"  required>
                 </div>
-                <div class="form-group col-md-6">
-	                <!--TODO: Turn into select field -->
-                    <label for="roomType">Room Quality level</label>
-                    <input type="text" th:field="*{quality}" class="form-control" id="roomType">
+                <div class="form-group col-md-2">
+                    <label for="roomType">Quality Level</label>
+                    <select id="roomType" class="form-control" th:field="*{quality}" required>
+                        <option value = "">None</option>
+                        <option value = "Executive">Executive</option>
+                        <option value = "Business">Business</option>
+                        <option value = "Comfort">Comfort</option>
+                        <option value = "Economy">Economy</option>
+                    </select>
                 </div>
-            </div>
-	        <div class="form-row">
-	            <div class="form-group col-md-6">
-	                <label for="bedType">Bed Type</label>
-	                <input type="text" th:field="*{bedType}" class="form-control" id="bedType">
-	            </div>
-		        <div class="form-group col-md-6">
-			        <label for="bedNumber">Number of Beds</label>
-			        <input type="number" th:field="*{bedNumber}" class="form-control" id="bedNumber">
-		        </div>
-	        </div>
-            <div class="form-group">
-	            <!--TODO: Turn into select field -->
-	            <label for="smokingStatus">Smoking Status</label>
-	            <input type="text" th:field="*{smokingStatus}" class="form-control" id="smokingStatus">
+                <div class="form-group col-md-2">
+                    <label for="smokingStatus">Smoking status</label>
+                    <select id="smokingStatus" class="form-control" th:field="*{smokingStatus}" required>
+                        <option value = "">None</option>
+                        <option value = "Smoking">Smoking</option>
+                        <option value = "Non Smoking">Non Smoking</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="bedType">Bed Type</label>
+                    <select id="bedType" class="form-control" th:field="*{bedType}" required>
+                        <option value = "">None</option>
+                        <option value = "Queen">Queen</option>
+                        <option value = "King">King</option>
+                        <option value = "Twin">Twin</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="bedNumber">Number of Beds</label>
+                    <input type="number" class="form-control" id="bedNumber" min="1" max="10"
+                           placeholder="Number of Beds" th:field="*{bedNumber}" required>
+                </div>
             </div>
             <button type="submit" class="btn btn-info">Update Room Information</button>
         </form>
