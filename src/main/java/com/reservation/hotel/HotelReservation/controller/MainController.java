@@ -64,9 +64,7 @@ public class MainController {
         //TODO: Right now, spring-security captures and redirects to login -> update to follow correct redirect path
         //      on new register
         redirectAttributes.addAttribute("username", hotelUser.getUsername());
-        StringBuilder redirectURL = new StringBuilder("redirect:/login?success=");
-        redirectURL.append(hotelUser.getUsername());
-        return redirectURL.toString();
+        return "redirect:/login?success=" + hotelUser.getUsername();
     }
 
     @GetMapping("/result")
@@ -100,8 +98,23 @@ public class MainController {
             log.error("Unable to add new Clerk, email for clerk might already exist");
             return "redirect:/admin?error=";
         }
-        StringBuilder redirectURL = new StringBuilder("redirect:/admin?success=");
-        redirectURL.append(hotelUser.getUsername());
-        return redirectURL.toString();
+        return "redirect:/admin?success=" + hotelUser.getUsername();
+    }
+
+    @GetMapping("/setup/addAdmin")
+    public String addAdmin(Model model){
+        HotelUser newAdmin = new HotelUser();
+        String defaultPassword = "Testpw99";
+        newAdmin.setEmail("testadmin@hotel.com");
+        newAdmin.setUsername("tadmin");
+        newAdmin.setPassword(bCryptPasswordEncoder.encode(defaultPassword));
+        newAdmin.setRole("ROLE_ADMIN");
+        newAdmin.setZipCode("00000");
+        model.addAttribute("newAdmin", newAdmin);
+        model.addAttribute("password", defaultPassword);
+
+        hotelUserService.registerNewHotelUser(newAdmin);
+
+        return "result";
     }
 }

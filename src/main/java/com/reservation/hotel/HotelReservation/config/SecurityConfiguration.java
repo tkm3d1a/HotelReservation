@@ -1,7 +1,5 @@
 package com.reservation.hotel.HotelReservation.config;
 
-import com.reservation.hotel.HotelReservation.hoteluser.HotelUserService;
-import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,9 +12,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfiguration{
 
-    @Resource
-    private HotelUserService hotelUserService;
-
     @Autowired
     private LoginSuccessHandler loginSuccessHandler;
 
@@ -27,7 +22,7 @@ public class SecurityConfiguration{
                 //TODO: update so that only admins can access admin page/guests guest pages/clerks clerk pages
 //                .requestMatchers("/guest-profile/**").hasAnyRole("ROLE_GUEST")
 //                .requestMatchers("/clerk-profile/**").hasAnyRole("ROLE_CLERK")
-                .requestMatchers("/", "/login", "/register/**", "/result", "/rooms/**").permitAll()
+                .requestMatchers("/", "/login", "/register/**", "/result", "/rooms/**", "/setup/addAdmin").permitAll()
                 .anyRequest()
                 .authenticated());
 

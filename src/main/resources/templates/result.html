@@ -1,4 +1,9 @@
 <!doctype html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
-<p>User Successfully Registered!</p>
+<p>Added xyz</p>
+<div th:if="${newAdmin != null and password != null}">
+	<p th:text="${newAdmin.username}" />
+	<p th:text="${password}" />
+	<p th:text="${newAdmin.role}" />
+</div>
 <a th:href="@{/}">Home</a>

@@ -54,25 +54,27 @@ public class HotelUserController {
     public String updateProfile(@ModelAttribute HotelUser modelHotelUser){
         //TODO: Migrate to HotelUserService
         HotelUser dbHotelUser = hotelUserRepository.findByUsername(modelHotelUser.getUsername());
+        log.info("Updating user: {}", dbHotelUser);
         if(dbHotelUser.getRole().equals("ROLE_GUEST")){
             dbHotelUser.setFirstName(modelHotelUser.getFirstName());
             dbHotelUser.setLastName(modelHotelUser.getLastName());
         }
         String newPassword = modelHotelUser.getPassword();
         if(!newPassword.isBlank()){
-            modelHotelUser.setPassword(bCryptPasswordEncoder.encode(newPassword));
+            log.info("Password updated");
+            dbHotelUser.setPassword(bCryptPasswordEncoder.encode(newPassword));
         } else {
+            log.info("Password not changed");
             modelHotelUser.setPassword(dbHotelUser.getPassword());
         }
         if(!validationUtil.checkIfHotelUsersAreSame(modelHotelUser,dbHotelUser)){
-            log.info("Updating user: {}", dbHotelUser);
             dbHotelUser.setPhoneNumber(modelHotelUser.getPhoneNumber());
             dbHotelUser.setStreetAddress(modelHotelUser.getStreetAddress());
             dbHotelUser.setCity(modelHotelUser.getCity());
             dbHotelUser.setState(modelHotelUser.getState());
             dbHotelUser.setZipCode(modelHotelUser.getZipCode());
             hotelUserRepository.save(dbHotelUser);
-            log.info("Updated user: {}", dbHotelUser);
+            log.info("Updated user information: {}", dbHotelUser);
         } else {
             log.info("User did not update profile information");
         }

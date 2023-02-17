@@ -51,7 +51,7 @@
 	            <!--TODO: stop change password button from doing form validation-->
                 <div class="form-group col-md-6">
                     <label for="password">Password</label>
-                    <input type="password" th:field="*{Password}"class="form-control" id="password"
+                    <input type="password" th:field="*{password}" class="form-control" id="password"
                            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
                            title="minimum 6 chars long and requires at least 1 uppercase, 1 lowercase and 1 number"
                            placeholder="Enter new password here to update (6 chars min)">
