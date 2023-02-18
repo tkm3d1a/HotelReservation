@@ -55,10 +55,6 @@ public class HotelUserController {
         //TODO: Migrate to HotelUserService
         HotelUser dbHotelUser = hotelUserRepository.findByUsername(modelHotelUser.getUsername());
         log.info("Updating user: {}", dbHotelUser);
-        if(dbHotelUser.getRole().equals("ROLE_GUEST")){
-            dbHotelUser.setFirstName(modelHotelUser.getFirstName());
-            dbHotelUser.setLastName(modelHotelUser.getLastName());
-        }
         String newPassword = modelHotelUser.getPassword();
         if(!newPassword.isBlank()){
             log.info("Password updated");
@@ -68,6 +64,8 @@ public class HotelUserController {
             modelHotelUser.setPassword(dbHotelUser.getPassword());
         }
         if(!validationUtil.checkIfHotelUsersAreSame(modelHotelUser,dbHotelUser)){
+            dbHotelUser.setFirstName(modelHotelUser.getFirstName());
+            dbHotelUser.setLastName(modelHotelUser.getLastName());
             dbHotelUser.setPhoneNumber(modelHotelUser.getPhoneNumber());
             dbHotelUser.setStreetAddress(modelHotelUser.getStreetAddress());
             dbHotelUser.setCity(modelHotelUser.getCity());
