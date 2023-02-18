@@ -34,9 +34,7 @@ public class RoomController {
             log.error("Unable to add this room, Room Number {} already exists!", newRoom.getRoomNumber());
             return "redirect:/rooms?error=";
         }
-        StringBuilder redirectURL = new StringBuilder("redirect:/rooms?success=");
-        redirectURL.append(newRoom.getRoomNumber());
-        return redirectURL.toString();
+        return "redirect:/rooms?success=" + newRoom.getRoomNumber();
     }
 
     @GetMapping("/{roomNumber}")
@@ -64,15 +62,21 @@ public class RoomController {
         Room roomToUpdate = roomRepository.findRoomByRoomNumber(roomNumberInt);
         log.info("Passed room info: {}",room);
         log.info("Retrieved room info: {}", roomToUpdate);
+        boolean isSameRoom = roomNumberInt == room.getRoomNumber();
+        log.info("Same Room check: {}", isSameRoom);
 
-        //TODO: add check on room number first before setting, return to user they cant use an already taken number
-        roomToUpdate.setRoomNumber(room.getRoomNumber());
-        roomToUpdate.setQuality(room.getQuality());
-        roomToUpdate.setBedType(room.getBedType());
-        roomToUpdate.setBedNumber(room.getBedNumber());
-        roomToUpdate.setSmokingStatus(room.getSmokingStatus());
+        if(roomRepository.findRoomByRoomNumber(room.getRoomNumber()) != null && !isSameRoom) {
+            log.error("Room number {} already exists", room.getRoomNumber());
+            return "redirect:/rooms/" + roomNumber + "/edit?error=";
+        } else {
+            roomToUpdate.setRoomNumber(room.getRoomNumber());
+            roomToUpdate.setQuality(room.getQuality());
+            roomToUpdate.setBedType(room.getBedType());
+            roomToUpdate.setBedNumber(room.getBedNumber());
+            roomToUpdate.setSmokingStatus(room.getSmokingStatus());
+            roomRepository.save(roomToUpdate);
+        }
 
-        roomRepository.save(roomToUpdate);
         log.info("Updated room info: {}", roomToUpdate);
         String newRoomNumber = Integer.toString(roomToUpdate.getRoomNumber());
         return "redirect:/rooms/" + newRoomNumber;

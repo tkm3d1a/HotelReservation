@@ -72,7 +72,14 @@ public class HotelUserController {
             dbHotelUser.setStreetAddress(modelHotelUser.getStreetAddress());
             dbHotelUser.setCity(modelHotelUser.getCity());
             dbHotelUser.setState(modelHotelUser.getState());
-            dbHotelUser.setZipCode(modelHotelUser.getZipCode());
+            String enteredZipCode = modelHotelUser.getZipCode();
+            if(enteredZipCode.length() == 5){
+                dbHotelUser.setZipCode(enteredZipCode);
+            } else {
+                //TODO: this can probably be removed after more testing
+                log.error("attempted to update zipcode with non zipcode number");
+                return "redirect:/profile/edit-profile?error=";
+            }
             hotelUserRepository.save(dbHotelUser);
             log.info("Updated user information: {}", dbHotelUser);
         } else {
