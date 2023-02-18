@@ -81,7 +81,7 @@
                 </div>
                 <div class="form-group col-md-2">
                     <label for="inputZip">Zip</label>
-                    <input type="text" th:field="*{zipCode}" class="form-control" id="inputZip" placeholder="12345" required>
+                    <input type="text" th:field="*{zipCode}" class="form-control" id="inputZip" placeholder="12345" maxlength="5" minlength="5" required>
                 </div>
             </div>
             <button type="submit" class="btn btn-info">Create Account</button>

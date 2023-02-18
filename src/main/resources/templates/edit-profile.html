@@ -40,6 +40,9 @@
 
 <div class="container">
     <h3 class="text-center">Edit your info</h3>
+	<div th:if="${param.error}">
+		<p class="text-danger">There was an error updating your profile, please try again</p>
+	</div>
     <div>
         <form th:action="@{/profile/edit-profile}" th:object="${hotelUser}" method="post">
             <div class="form-row">
@@ -92,7 +95,7 @@
                 </div>
                 <div class="form-group col-md-2">
                     <label for="inputZip">Zip</label>
-                    <input type="text" th:field="*{zipCode}" class="form-control" id="inputZip" required>
+                    <input type="text" th:field="*{zipCode}" class="form-control" id="inputZip" maxlength="5" minlength="5" required>
                 </div>
             </div>
 	        <input type="hidden" th:field="*{username}" id="username">
