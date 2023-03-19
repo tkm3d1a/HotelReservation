@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class ReservationController {
     //TODO: should this move to service or stay here?
     @GetMapping("/view")
     public String getAllReservations(Model model){
-        List<Reservation> allReservations = reservationRepository.findAll();
+        List<Reservation> allReservations = reservationService.findAllReservations();
         model.addAttribute("allReservations", allReservations);
         return "test-reservation";
     }
@@ -41,7 +42,7 @@ public class ReservationController {
 
     @GetMapping("/view/{guest_id}")
     public String getGuestReservations(Model model, @PathVariable int guest_id){
-        List<Reservation> guestReservations = reservationRepository.findAllByGuest_Id(guest_id);
+        List<Reservation> guestReservations = reservationService.findAllReservationsByGuestID(guest_id);
         model.addAttribute("allReservations", guestReservations);
         return "test-reservation";
     }
@@ -83,5 +84,26 @@ public class ReservationController {
         reservationService.saveReservation(newReservation);
 
         return "redirect:/reservation/view";
+    }
+
+    @GetMapping("/search")
+    public String baseSearch(Model model){
+        Reservation searchDates = new Reservation();
+        model.addAttribute("searchDates", searchDates);
+//        List<Reservation> searchedReservations = reservationService.findAllReservations();
+//        log.info("{}", searchedReservations);
+//        log.info("{}", model.asMap().get("reservationList"));
+//        model.addAttribute("searchedReservations", model.asMap().get("reservationList"));
+        return "search-reservation";
+    }
+
+    @PostMapping("/search/submit")
+    public String searchSubmit(@ModelAttribute Reservation searchDates, RedirectAttributes redirectAttributes){
+        List<Reservation> searchedReservations = reservationService.findAllReservations();
+        redirectAttributes.addFlashAttribute("reservationList", searchedReservations);
+
+        reservationService.findReservationsBetweenDates(searchDates);
+
+        return "redirect:/reservation/search";
     }
 }
