@@ -1,7 +1,5 @@
 package com.reservation.hotel.HotelReservation.hoteluser;
 
-import com.reservation.hotel.HotelReservation.hoteluser.HotelUser;
-import com.reservation.hotel.HotelReservation.hoteluser.HotelUserRepository;
 import com.reservation.hotel.HotelReservation.util.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -73,5 +71,14 @@ public class HotelUserService implements UserDetailsService {
         } else {
             return false;
         }
+    }
+
+    public HotelUser findUserByID(int searchID){
+        Optional<HotelUser> foundUserOpt = hotelUserRepository.findById(searchID);
+        HotelUser foundUser = new HotelUser();
+        if(foundUserOpt.isPresent()){
+            foundUser = foundUserOpt.get();
+        }
+        return foundUser;
     }
 }

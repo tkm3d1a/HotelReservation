@@ -23,4 +23,5 @@ public class Room {
     private int bedNumber;
     private String quality;
     private String smokingStatus;
+    private int baseRate;
 }

@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @Slf4j
 public class RoomService {
@@ -24,6 +26,15 @@ public class RoomService {
         } else {
             return false;
         }
+    }
+
+    public Room findRoomByID(int searchID){
+        Optional<Room> foundRoomOpt = roomRepository.findById(searchID);
+        Room foundRoom = new Room();
+        if(foundRoomOpt.isPresent()){
+            foundRoom = foundRoomOpt.get();
+        }
+        return foundRoom;
     }
 
 }

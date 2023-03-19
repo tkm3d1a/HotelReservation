@@ -22,7 +22,7 @@ public class SecurityConfiguration{
                 //TODO: update so that only admins can access admin page/guests guest pages/clerks clerk pages
 //                .requestMatchers("/guest-profile/**").hasAnyRole("ROLE_GUEST")
 //                .requestMatchers("/clerk-profile/**").hasAnyRole("ROLE_CLERK")
-                .requestMatchers("/", "/login", "/register/**", "/result", "/rooms/**", "/setup/addAdmin").permitAll()
+                .requestMatchers("/", "/login", "/register/**", "/result", "/rooms/**", "/setup/addAdmin", "/reservation/**").permitAll()
                 .anyRequest()
                 .authenticated());
 
