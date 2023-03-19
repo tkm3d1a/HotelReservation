@@ -55,8 +55,8 @@ public class HotelUserService implements UserDetailsService {
             userName.append(hotelClerk.getLastName().toLowerCase());
         }
         String email = hotelClerk.getEmail();
-        Boolean isUserNameDuplicate = validationUtil.checkIfUserNameAlreadyExistsInDB(userName.toString());
-        Boolean isEmailDuplicate = validationUtil.checkIfEmailAlreadyExistsInDB(email);
+        boolean isUserNameDuplicate = validationUtil.checkIfUserNameAlreadyExistsInDB(userName.toString());
+        boolean isEmailDuplicate = validationUtil.checkIfEmailAlreadyExistsInDB(email);
 
         if(isUserNameDuplicate){
             userName.append(hotelUserRepository.findMaxID() + 1);
@@ -75,6 +75,15 @@ public class HotelUserService implements UserDetailsService {
 
     public HotelUser findUserByID(int searchID){
         Optional<HotelUser> foundUserOpt = hotelUserRepository.findById(searchID);
+        HotelUser foundUser = new HotelUser();
+        if(foundUserOpt.isPresent()){
+            foundUser = foundUserOpt.get();
+        }
+        return foundUser;
+    }
+
+    public HotelUser findUserByUsername(String username){
+        Optional<HotelUser> foundUserOpt = hotelUserRepository.findHotelUserByUsername(username);
         HotelUser foundUser = new HotelUser();
         if(foundUserOpt.isPresent()){
             foundUser = foundUserOpt.get();

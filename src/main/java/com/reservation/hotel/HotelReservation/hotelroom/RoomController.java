@@ -1,7 +1,7 @@
 package com.reservation.hotel.HotelReservation.hotelroom;
 
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +12,10 @@ import java.util.List;
 @Controller
 @RequestMapping("/rooms")
 public class RoomController {
-    @Autowired
+    @Resource
     private RoomRepository roomRepository;
 
-    @Autowired
+    @Resource
     private RoomService roomService;
 
     @GetMapping("")

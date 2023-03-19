@@ -1,11 +1,9 @@
 package com.reservation.hotel.HotelReservation.reservation;
 
-import com.reservation.hotel.HotelReservation.hotelroom.Room;
-import com.reservation.hotel.HotelReservation.hotelroom.RoomService;
-import com.reservation.hotel.HotelReservation.hoteluser.HotelUser;
-import com.reservation.hotel.HotelReservation.hoteluser.HotelUserService;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,23 +15,27 @@ import java.util.List;
 @RequestMapping("/reservation")
 public class ReservationController {
 
-    @Autowired
+    @Resource
     ReservationRepository reservationRepository;
 
-    @Autowired
+    @Resource
     ReservationService reservationService;
-
-    @Autowired
-    HotelUserService hotelUserService;
-
-    @Autowired
-    RoomService roomService;
 
     //TODO: should this move to service or stay here?
     @GetMapping("/view")
     public String getAllReservations(Model model){
         List<Reservation> allReservations = reservationRepository.findAll();
         model.addAttribute("allReservations", allReservations);
+        return "test-reservation";
+    }
+
+    @GetMapping("/view/user")
+    public String getUserReservations(Model model){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = auth.getName();
+
+        List<Reservation> currentUserReservations = reservationService.findAllReservationsForUser(currentUser);
+        model.addAttribute("allReservations", currentUserReservations);
         return "test-reservation";
     }
 
@@ -44,14 +46,25 @@ public class ReservationController {
         return "test-reservation";
     }
 
+    @GetMapping("/view/confirmed")
+    public String getGuestReservations(Model model){
+        List<Reservation> confirmedReservations = reservationRepository.findAllByIsConfirmed(true);
+        model.addAttribute("allReservations", confirmedReservations);
+        return "test-reservation";
+    }
+
     @GetMapping("/make-reservation")
     //TODO: Get room loaded when making call
     //TODO: Get date range loaded when making call
     //TODO: Get guest loaded when making call
     public String makeNewReservation(Model model){
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = auth.getName();
         Reservation reservation = new Reservation();
-        reservation.setConfirmed(false);
-        reservation.setDailyRate(99);
+
+        reservationService.addCurrentUserToRes(reservation, currentUser);
+
         model.addAttribute("reservation", reservation);
         return "make-reservation";
     }
@@ -61,22 +74,13 @@ public class ReservationController {
     public String stageReservation(@ModelAttribute("newReservation") Reservation newReservation){
         log.info("As it comes in: {}", newReservation);
 
-        //TODO: break out to function?
-        int findGuest = newReservation.getGuest().getId();
-        HotelUser guest = hotelUserService.findUserByID(findGuest);
-        newReservation.setGuest(guest);
-        log.info("After finding guest: {}", newReservation);
-
-        //TODO: break out to function?
-        int findRoom = newReservation.getRoom().getId();
-        Room room = roomService.findRoomByID(findRoom);
-        newReservation.setRoom(room);
+        reservationService.findRoomForRes(newReservation);
         log.info("After finding room: {}", newReservation);
 
-        reservationService.updateDailyRate(newReservation, room.getBaseRate());
+        reservationService.updateDailyRate(newReservation, newReservation.getRoom().getBaseRate());
         log.info("After updating rate: {}", newReservation);
 
-        reservationRepository.save(newReservation);
+        reservationService.saveReservation(newReservation);
 
         return "redirect:/reservation/view";
     }

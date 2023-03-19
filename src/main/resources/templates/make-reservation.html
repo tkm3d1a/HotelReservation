@@ -46,8 +46,8 @@
 	<form action="#" th:action="@{/reservation/make-reservation/stage}" th:object="${reservation}" method="post" >
 		<div class="form-row">
 			<div class="form-group col-md-4">
-				<label for="guestID">Guest ID</label>
-				<input type="number" class="form-control" id="guestID" placeholder="1" th:field="*{guest.id}" required>
+				<label>Making a reservation for...</label>
+				<h4 th:text="*{guest.getFirstName() + ' ' + guest.getLastName()}" />
 			</div>
 			<div class="form-group col-md-4">
 				<label for="roomID">Room ID</label>
@@ -61,6 +61,7 @@
 				<label for="endDate">End Date</label>
 				<input type="date" class="form-control" id="endDate" th:field="*{endDate}" required>
 			</div>
+			<input type="hidden" th:field="*{guest}">
 		</div>
 		<button type="submit" class="btn btn-info">Make Reservation</button>
 	</form>

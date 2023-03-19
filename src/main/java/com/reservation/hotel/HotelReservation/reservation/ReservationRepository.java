@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
     List<Reservation> findAllByGuest_Id(int id);
+    List<Reservation> findAllByIsConfirmed(boolean isConfirmed);
 }
