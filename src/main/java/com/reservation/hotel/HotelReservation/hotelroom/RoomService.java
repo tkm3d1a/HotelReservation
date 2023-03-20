@@ -1,17 +1,25 @@
 package com.reservation.hotel.HotelReservation.hotelroom;
 
+import com.reservation.hotel.HotelReservation.reservation.Reservation;
+import com.reservation.hotel.HotelReservation.reservation.ReservationRepository;
 import com.reservation.hotel.HotelReservation.util.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class RoomService {
     @Autowired
     private RoomRepository roomRepository;
+
+    @Autowired
+    private ReservationRepository reservationRepository;
 
     @Autowired
     ValidationUtil validationUtil;
@@ -37,4 +45,58 @@ public class RoomService {
         return foundRoom;
     }
 
+    public List<Room> findRoomsMatchingSearchCriteria(SearchCriteria searchCriteria){
+        List<Room> filteredRooms = roomRepository.findAll();
+
+        Predicate<Room> isBusiness = room -> room.getQuality().equalsIgnoreCase("Business");
+        Predicate<Room> isExecutive = room -> room.getQuality().equalsIgnoreCase("Executive");
+        Predicate<Room> isComfort = room -> room.getQuality().equalsIgnoreCase("Comfort");
+        Predicate<Room> isEconomy = room -> room.getQuality().equalsIgnoreCase("Economy");
+
+        if(!searchCriteria.isBusiness() && !searchCriteria.isExecutive() && !searchCriteria.isEconomy() && !searchCriteria.isComfort()) {
+            log.info("Room Quality level not selected by user. Quality Filters will not be applied");
+        } else {
+            if(!searchCriteria.isBusiness()){
+                filteredRooms = filteredRooms.stream()
+                        .filter(isComfort.or(isEconomy).or(isExecutive))
+                        .collect(Collectors.toList());
+            }
+
+            if(!searchCriteria.isExecutive()) {
+                filteredRooms = filteredRooms.stream()
+                        .filter(isComfort.or(isBusiness).or(isEconomy))
+                        .collect(Collectors.toList());
+            }
+
+            if(!searchCriteria.isComfort()) {
+                filteredRooms = filteredRooms.stream()
+                        .filter(isExecutive.or(isBusiness).or(isEconomy))
+                        .collect(Collectors.toList());
+            }
+
+            if(!searchCriteria.isEconomy()) {
+                filteredRooms = filteredRooms.stream()
+                        .filter(isExecutive.or(isBusiness).or(isComfort))
+                        .collect(Collectors.toList());
+            }
+        }
+
+        //find all conflicting reservations within the dates in search criteria
+        List<Reservation> conflictingReservations = reservationRepository
+                .findAllByStartDateBetween(searchCriteria.getCheckInDate(), searchCriteria.getCheckOutDate());
+        conflictingReservations.addAll(reservationRepository.
+                findAllByEndDateBetween(searchCriteria.getCheckInDate(), searchCriteria.getCheckInDate()));
+
+        //get the room ids associated with conflicting reservations
+        List<Integer> conflictingRoomIds = conflictingReservations.stream()
+                .map(reservation -> reservation.getRoom().getId())
+                .collect(Collectors.toList());
+
+        // filter out rooms with existing reservations on those dates and return available rooms
+        filteredRooms = filteredRooms.stream()
+                .filter(room -> !conflictingRoomIds.contains(room.getId()))
+                .collect(Collectors.toList());
+
+        return filteredRooms;
+    }
 }

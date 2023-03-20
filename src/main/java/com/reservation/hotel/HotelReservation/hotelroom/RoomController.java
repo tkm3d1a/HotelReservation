@@ -82,4 +82,15 @@ public class RoomController {
         return "redirect:/rooms/" + newRoomNumber;
     }
 
+    @PostMapping("/searchAvailableRooms")
+    public String searchAvailableRooms(@ModelAttribute SearchCriteria searchCriteria, Model model) {
+
+        log.info("Business:{} , Executive:{}, Comfort:{}, Economy:{}", searchCriteria.isBusiness(),
+                searchCriteria.isExecutive(), searchCriteria.isComfort(), searchCriteria.isEconomy());
+
+        List<Room> filteredRooms = roomService.findRoomsMatchingSearchCriteria(searchCriteria);
+
+        model.addAttribute("filteredRooms", filteredRooms);
+        return "view-available-rooms";
+    }
 }
