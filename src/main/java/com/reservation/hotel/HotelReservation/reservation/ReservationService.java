@@ -29,6 +29,11 @@ public class ReservationService {
         resToUpdate.setDailyRate(updatedRate);
     }
 
+    public void confirmRoom(Reservation reservation){
+        reservation.setConfirmed(true);
+        //TODO: update availability table?
+    }
+
     //Do not remove, may need for setting up res by employee
     public void findGuestForRes(Reservation resToUpdate){
         int findGuest = resToUpdate.getGuest().getId();

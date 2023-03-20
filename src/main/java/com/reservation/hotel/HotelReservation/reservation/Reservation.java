@@ -16,12 +16,10 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    //TODO: Foreign key
     @ManyToOne
     @JoinColumn(name = "guest_id")
     private HotelUser guest;
 
-    //TODO: Foreign key
     @ManyToOne
     @JoinColumn(name = "room_id")
     private Room room;

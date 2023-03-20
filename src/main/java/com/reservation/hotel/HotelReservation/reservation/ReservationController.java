@@ -106,4 +106,10 @@ public class ReservationController {
 
         return "redirect:/reservation/search";
     }
+
+    @PostMapping("/confirm")
+    public String confirmReservation(@ModelAttribute Reservation reservation){
+        reservationService.confirmRoom(reservation);
+        return "redirect:/reservation/view";
+    }
 }
