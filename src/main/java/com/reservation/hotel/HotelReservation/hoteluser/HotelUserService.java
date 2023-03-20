@@ -39,8 +39,12 @@ public class HotelUserService implements UserDetailsService {
     public boolean registerNewHotelUser(HotelUser newHotelUser) {
         if (!validationUtil.checkIfUserNameAlreadyExistsInDB(newHotelUser.getUsername())
                 || !validationUtil.checkIfEmailAlreadyExistsInDB(newHotelUser.getEmail())) {
-            hotelUserRepository.save(newHotelUser);
-            return true;
+            try {
+                hotelUserRepository.save(newHotelUser);
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
         } else {
             return false;
         }
