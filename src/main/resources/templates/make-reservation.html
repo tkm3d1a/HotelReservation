@@ -45,25 +45,28 @@
 
 	<form action="#" th:action="@{/reservation/make-reservation/stage}" th:object="${reservation}" method="post" >
 		<div class="form-row">
-			<div class="form-group col-md-4">
+			<div class="form-group col-md-3">
 				<label>Making a reservation for...</label>
 				<h4 th:text="*{guest.getFirstName() + ' ' + guest.getLastName()}" />
 			</div>
-			<div class="form-group col-md-4">
+			<div class="form-group col-md-3">
 				<label for="roomID">Room ID</label>
 				<input type="number" class="form-control" id="roomID" placeholder="1" th:field="*{room.id}" required>
 			</div>
-			<div class="form-group col-md-4">
+			<div class="form-group col-md-3">
 				<label for="startDate">Start Date</label>
-				<input type="date" class="form-control" id="startDate" th:field="*{startDate}" required>
+				<input type="text" class="form-control" id="startDate" th:field="*{startDate}" required>
+				<!-- input type of date will not auto-populate due to parsing issues.... -->
 			</div>
-			<div class="form-group col-md-4">
+			<div class="form-group col-md-3">
 				<label for="endDate">End Date</label>
-				<input type="date" class="form-control" id="endDate" th:field="*{endDate}" required>
+				<input type="text" class="form-control" id="endDate" th:field="*{endDate}" required>
 			</div>
 			<input type="hidden" th:field="*{guest}">
 		</div>
-		<button type="submit" class="btn btn-info">Make Reservation</button>
+		<div class="text-center">
+			<button type="submit" class="btn btn-info float-end">Make Reservation</button>
+		</div>
 	</form>
 </div>
 </body>
