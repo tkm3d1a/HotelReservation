@@ -91,6 +91,7 @@ public class RoomController {
         List<Room> filteredRooms = roomService.findRoomsMatchingSearchCriteria(searchCriteria);
 
         model.addAttribute("filteredRooms", filteredRooms);
+        model.addAttribute("searchCriteria", searchCriteria);
         return "view-available-rooms";
     }
 }

@@ -62,8 +62,12 @@
 					<td th:text="*{room.bedType}">bedType</td>
 					<td th:text="*{room.bedNumber}">bedNum</td>
 					<td>
-						<!--TODO: add sec authorize so this only shows when logged in-->
-						<a class="nav-link" th:href="@{/reservation/make-reservation/{roomNumber}(roomNumber = *{room.roomNumber})}">Reserve Room</a>
+						<div sec:authorize="isAuthenticated()">
+							<a class="nav-link" th:href="@{/reservation/make-reservation/{roomNumber}/in/{checkInDate}/out/{checkOutDate}
+							(roomNumber = *{room.roomNumber}, checkInDate = ${searchCriteria.CheckInDate}, checkOutDate = ${searchCriteria.CheckOutDate})}">
+								Reserve Room
+							</a>
+						</div>
 					</td>
 				</tr>
 			</tbody>

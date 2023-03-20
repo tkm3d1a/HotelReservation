@@ -1,5 +1,6 @@
 package com.reservation.hotel.HotelReservation.reservation;
 
+import com.reservation.hotel.HotelReservation.hotelroom.RoomRepository;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -9,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
@@ -18,6 +21,9 @@ public class ReservationController {
 
     @Resource
     ReservationRepository reservationRepository;
+
+    @Resource
+    RoomRepository roomRepository;
 
     @Resource
     ReservationService reservationService;
@@ -66,6 +72,24 @@ public class ReservationController {
 
         reservationService.addCurrentUserToRes(reservation, currentUser);
 
+        model.addAttribute("reservation", reservation);
+        return "make-reservation";
+    }
+
+    @GetMapping("/make-reservation/{roomNumber}/in/{checkInDate}/out/{checkOutDate}")
+    public String reserveRoom(@PathVariable String roomNumber, @PathVariable String checkInDate,
+                              @PathVariable String checkOutDate, Model model){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = auth.getName();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        Reservation reservation = new Reservation();
+
+        int roomNumberInt = Integer.parseInt(roomNumber);
+        reservation.setRoom(roomRepository.findRoomByRoomNumber(roomNumberInt));
+        reservation.setStartDate(LocalDate.parse(checkInDate, dateTimeFormatter));
+        reservation.setEndDate(LocalDate.parse(checkOutDate, dateTimeFormatter));
+
+        reservationService.addCurrentUserToRes(reservation, currentUser);
         model.addAttribute("reservation", reservation);
         return "make-reservation";
     }
