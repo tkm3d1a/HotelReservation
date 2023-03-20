@@ -8,7 +8,7 @@
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-	<title>Reservations</title>
+	<title>Confirm Reservation</title>
 </head>
 <body>
 <nav class="navbar navbar-expand-sm navbar-light" style="background-color: #e3f2fd;">
@@ -40,43 +40,31 @@
 
 <div class="container" >
 	<h3 class="text-center">
-		Current Reservations
+		Confirm a Reservation
 	</h3>
-	<div class="table-responsive">
-		<table class="table table-striped table-bordered">
-			<thead>
-			<tr class="table-header text-center">
-				<!--TODO: update room view table-->
-				<!--TODO: add sorting by ?room number/room type?-->
-				<th>Total Rate</th>
-				<th>Guest ID</th>
-				<th>Room ID</th>
-				<th>Start Date</th>
-				<th>End Date</th>
-				<th>Confirmed?</th>
-				<th></th>
-			</tr>
-			</thead>
-			<tbody>
-			<tr th:each="reservation: ${allReservations}">
-				<td th:text="*{reservation.totalRate}">rate</td>
-				<td	th:text="*{reservation.guest.getFirstName() + ' ' + reservation.guest.getLastName()}">gID</td>
-				<td th:text="*{reservation.room.getRoomNumber()}">rID</td>
-				<td th:text="*{reservation.startDate}">startDate</td>
-				<td th:text="*{reservation.endDate}">endDate</td>
-				<td th:text="*{reservation.isConfirmed}">confirmed</td>
-				<td>
-					<form th:if="*{reservation.isConfirmed() == false}" th:action="@{/reservation/confirm/stage/{resID}(resID = *{reservation.id})}" method="post">
-						<button class="btn btn-dark">Confirm Reservation</button>
-					</form>
-					<form th:if="*{reservation.isConfirmed() == true}" th:action="@{/reservation/confirm/{resID}(resID = *{reservation.id})}" method="post">
-						<button class="btn btn-dark">Modify Reservation</button>
-					</form>
-				</td>
-			</tr>
-			</tbody>
-		</table>
+
+	<div class="form-row">
+		<div class="form-group col-md-3">
+			<label>Confirming a reservation for...</label>
+			<h4 th:text="*{guest.getFirstName() + ' ' + guest.getLastName()}" />
+		</div>
+		<div class="form-group col-md-3">
+			<label>Room Number</label>
+			<p th:text="*{room.roomNumber}" />
+		</div>
+		<div class="form-group col-md-3">
+			<label >Start Date</label>
+			<p th:text="*{startDate}" />
+		</div>
+		<div class="form-group col-md-3">
+			<label>End Date</label>
+			<p th:text="*{endDate}" />
+		</div>
 	</div>
+	<form th:action="@{/reservation/confirm/{resID}(resID = *{id})}" th:object="${reservation}" method="post" >
+		<button type="submit" class="btn btn-info">Confirm Reservation</button>
+	</form>
+
 </div>
 </body>
 </html>

@@ -25,9 +25,11 @@ public class Reservation {
     private Room room;
 
     private int dailyRate;
+    private int totalRate;
     private boolean isConfirmed;
 
     private java.time.LocalDate startDate;
     private java.time.LocalDate endDate;
+    private int numDays;
 
 }

@@ -8,8 +8,10 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -29,8 +31,30 @@ public class ReservationService {
         resToUpdate.setDailyRate(updatedRate);
     }
 
-    public void confirmRoom(Reservation reservation){
-        reservation.setConfirmed(true);
+    public void updateNumDays(Reservation reservation){
+        int numDays = (int) ChronoUnit.DAYS.between(reservation.getStartDate(), reservation.getEndDate());
+        reservation.setNumDays(numDays);
+    }
+
+    public void updateTotalRate(Reservation reservation){
+        int totalRate = reservation.getDailyRate() * reservation.getNumDays();
+        reservation.setTotalRate(totalRate);
+    }
+
+    public void confirmRoom(int resID, String currentUser){
+        Optional<Reservation> reservationOptional = reservationRepository.findById(resID);
+        Reservation reservation;
+        if(reservationOptional.isPresent()){
+            reservation = reservationOptional.get();
+            if(reservation.getGuest().getUsername().equals(currentUser)){
+                reservation.setConfirmed(true);
+                saveReservation(reservation);
+            } else {
+                log.warn("Reservation does not match logged in user");
+            }
+        } else {
+            log.warn("No reservation found with that ID");
+        }
         //TODO: update availability table?
     }
 
@@ -114,5 +138,21 @@ public class ReservationService {
         }
 
         return result1;
+    }
+
+    public Reservation findReservationByGuestIDAndReservationID(int resID, String currentUser){
+        Optional<Reservation> reservationOptional = reservationRepository.findById(resID);
+        Reservation reservation = new Reservation();
+        if(reservationOptional.isPresent()){
+            reservation = reservationOptional.get();
+            if(reservation.getGuest().getUsername().equals(currentUser)){
+                return reservation;
+            } else {
+                log.warn("Reservation does not match logged in user");
+            }
+        }
+
+        log.warn("No reservation found with that ID");
+        return reservation;
     }
 }

@@ -92,11 +92,11 @@ public class ReservationController {
         log.info("As it comes in: {}", newReservation);
 
         reservationService.findRoomForRes(newReservation);
-        log.info("After finding room: {}", newReservation);
-
         reservationService.updateDailyRate(newReservation, newReservation.getRoom().getBaseRate());
-        log.info("After updating rate: {}", newReservation);
+        reservationService.updateNumDays(newReservation);
+        reservationService.updateTotalRate(newReservation);
 
+        log.info("before saving: {}", newReservation);
         reservationService.saveReservation(newReservation);
 
         return "redirect:/reservation/view";
@@ -123,9 +123,30 @@ public class ReservationController {
         return "redirect:/reservation/search";
     }
 
-    @PostMapping("/confirm")
-    public String confirmReservation(@ModelAttribute Reservation reservation){
-        reservationService.confirmRoom(reservation);
+    @GetMapping("/confirm")
+    public String confirmReservationView(Model model){
+        log.info("{}", model.asMap().get("reservationStage").getClass());
+        model.addAttribute("reservation", model.asMap().get("reservationStage"));
+        return "confirm-reservation";
+    }
+
+    @PostMapping("/confirm/stage/{resID}")
+    public String stageConfirmReservation(@PathVariable int resID, RedirectAttributes redirectAttributes){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = auth.getName();
+
+        Reservation reservation = reservationService.findReservationByGuestIDAndReservationID(resID, currentUser);
+        redirectAttributes.addFlashAttribute("reservationStage", reservation);
+        return "redirect:/reservation/confirm";
+    }
+
+    @PostMapping("/confirm/{resID}")
+    public String confirmReservation(@PathVariable int resID){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = auth.getName();
+
+        reservationService.confirmRoom(resID, currentUser);
+
         return "redirect:/reservation/view";
     }
 }
