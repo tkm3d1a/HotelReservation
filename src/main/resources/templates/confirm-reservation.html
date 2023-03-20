@@ -43,7 +43,7 @@
 		Confirm a Reservation
 	</h3>
 
-	<div class="form-row">
+	<div class="form-row" th:object="${reservation}">
 		<div class="form-group col-md-3">
 			<label>Confirming a reservation for...</label>
 			<h4 th:text="*{guest.getFirstName() + ' ' + guest.getLastName()}" />
@@ -61,7 +61,7 @@
 			<p th:text="*{endDate}" />
 		</div>
 	</div>
-	<form th:action="@{/reservation/confirm/{resID}(resID = *{id})}" th:object="${reservation}" method="post" >
+	<form th:action="@{/reservation/confirm/{resID}(resID = ${reservation.id})}" method="post" >
 		<button type="submit" class="btn btn-info">Confirm Reservation</button>
 	</form>
 

@@ -94,6 +94,10 @@ public class ReservationService {
         reservationRepository.save(resToUpdate);
     }
 
+    public void cancelReservation(int resID){
+        reservationRepository.deleteById(resID);
+    }
+
     public List<Reservation> findAllReservationsForUser(String currentUser){
         HotelUser user = hotelUserService.findUserByUsername(currentUser);
         return reservationRepository.findAllByGuest_Id(user.getId());

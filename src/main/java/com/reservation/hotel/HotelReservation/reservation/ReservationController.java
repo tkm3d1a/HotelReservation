@@ -73,7 +73,6 @@ public class ReservationController {
     @GetMapping("/make-reservation")
     //TODO: Get room loaded when making call
     //TODO: Get date range loaded when making call
-    //TODO: Get guest loaded when making call
     public String makeNewReservation(Model model){
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -126,7 +125,8 @@ public class ReservationController {
     @GetMapping("/confirm")
     public String confirmReservationView(Model model){
         log.info("{}", model.asMap().get("reservationStage").getClass());
-        model.addAttribute("reservation", model.asMap().get("reservationStage"));
+        Reservation passedReservation = (Reservation) model.asMap().get("reservationStage");
+        model.addAttribute("reservation", passedReservation);
         return "confirm-reservation";
     }
 
@@ -147,6 +147,12 @@ public class ReservationController {
 
         reservationService.confirmRoom(resID, currentUser);
 
+        return "redirect:/reservation/view";
+    }
+
+    @DeleteMapping("/delete/{resID}")
+    public String cancelReservation(@PathVariable int resID){
+        reservationService.cancelReservation(resID);
         return "redirect:/reservation/view";
     }
 }
