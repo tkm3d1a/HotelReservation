@@ -62,6 +62,7 @@
 					<td th:text="*{room.bedType}">bedType</td>
 					<td th:text="*{room.bedNumber}">bedNum</td>
 					<td>
+						<!--TODO: add sec authorize so this only shows when logged in-->
 						<a class="nav-link" th:href="@{/reservation/make-reservation/{roomNumber}(roomNumber = *{room.roomNumber})}">Reserve Room</a>
 					</td>
 				</tr>
