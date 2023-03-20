@@ -66,7 +66,9 @@
 				<td th:text="*{reservation.endDate}">endDate</td>
 				<td th:text="*{reservation.isConfirmed}">confirmed</td>
 				<td>
-					<a class="nav-link" th:href="@{/reservation/view}">TBD - Refresh page</a>
+					<form th:action="@{/reservation/confirm}" th:object="*{reservation}" method="post">
+						<button class="btn btn-dark">Confirm Reservation</button>
+					</form>
 				</td>
 			</tr>
 			</tbody>

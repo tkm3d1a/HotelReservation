@@ -1,8 +1,8 @@
 package com.reservation.hotel.HotelReservation.hoteluser;
 
 import com.reservation.hotel.HotelReservation.util.ValidationUtil;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,10 +14,10 @@ import java.util.Optional;
 @Service
 public class HotelUserService implements UserDetailsService {
 
-    @Autowired
+    @Resource
     private HotelUserRepository hotelUserRepository;
 
-    @Autowired
+    @Resource
     ValidationUtil validationUtil;
 
     @Override

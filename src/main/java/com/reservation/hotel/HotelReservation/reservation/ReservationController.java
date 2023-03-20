@@ -3,12 +3,14 @@ package com.reservation.hotel.HotelReservation.reservation;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Collection;
 import java.util.List;
 
 @Slf4j
@@ -25,20 +27,34 @@ public class ReservationController {
     //TODO: should this move to service or stay here?
     @GetMapping("/view")
     public String getAllReservations(Model model){
-        List<Reservation> allReservations = reservationService.findAllReservations();
-        model.addAttribute("allReservations", allReservations);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        log.info(authorities.toArray()[0].toString());
+
+        String userRole = authorities.toArray()[0].toString();
+        List<Reservation> reservationsList;
+        if(userRole.equals("ROLE_GUEST")){
+            log.info("Guest is logged in. Viewing only guest reservations");
+            reservationsList = reservationService.findAllReservationsForUser(currentUser);
+        } else {
+            reservationsList = reservationService.findAllReservations();
+        }
+
+        model.addAttribute("allReservations", reservationsList);
         return "test-reservation";
     }
 
-    @GetMapping("/view/user")
-    public String getUserReservations(Model model){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String currentUser = auth.getName();
-
-        List<Reservation> currentUserReservations = reservationService.findAllReservationsForUser(currentUser);
-        model.addAttribute("allReservations", currentUserReservations);
-        return "test-reservation";
-    }
+    //TODO: Clean up/remove /view/user mapping
+//    @GetMapping("/view/user")
+//    public String getUserReservations(Model model){
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        String currentUser = auth.getName();
+//
+//        List<Reservation> currentUserReservations = reservationService.findAllReservationsForUser(currentUser);
+//        model.addAttribute("allReservations", currentUserReservations);
+//        return "test-reservation";
+//    }
 
     @GetMapping("/view/{guest_id}")
     public String getGuestReservations(Model model, @PathVariable int guest_id){
