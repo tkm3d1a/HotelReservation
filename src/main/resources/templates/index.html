@@ -44,33 +44,33 @@
     <h3 class="text-center">
         Search Rooms
     </h3>
-    <form>
+    <form th:action="@{/rooms/searchAvailableRooms}" th:object="${searchCriteria}" method="post">
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="checkin">&nbspCheck In</label>
-                <input type="date" class="form-control" id="checkin" placeholder="Check in date">
+                <input type="date" th:field="*{checkInDate}" class="form-control" id="checkin" placeholder="Check in date" required>
             </div>
             <div class="form-group col-md-6">
                 <label for="checkOut">&nbspCheck Out</label>
-                <input type="date" class="form-control" id="checkOut" placeholder="Check out date">
+                <input type="date" th:field="*{checkOutDate}" class="form-control" id="checkOut" placeholder="Check out date" required>
             </div>
         </div>
 
         <div class="form-group">
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="executiveCheck" value="allowExecutive">
+            <input class="form-check-input" type="checkbox" th:field="*{executive}" id="executiveCheck" value="allowExecutive">
             <label class="form-check-label" for="executiveCheck">Executive</label>
         </div>
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="businessCheck" value="allowBusiness">
+            <input class="form-check-input" type="checkbox" th:field="*{business}" id="businessCheck" value="allowBusiness">
             <label class="form-check-label" for="businessCheck">Business</label>
         </div>
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="comfortCheck" value="allowComfort">
+            <input class="form-check-input" type="checkbox" th:field="*{comfort}" id="comfortCheck" value="allowComfort">
             <label class="form-check-label" for="comfortCheck">Comfort</label>
         </div>
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="economyCheck" value="allowEconomy">
+            <input class="form-check-input" type="checkbox" th:field="*{economy}" id="economyCheck" value="allowEconomy">
             <label class="form-check-label" for="economyCheck">Economy</label>
         </div>
         </div>

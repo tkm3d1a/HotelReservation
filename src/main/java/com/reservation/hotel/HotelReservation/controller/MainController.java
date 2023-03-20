@@ -1,5 +1,6 @@
 package com.reservation.hotel.HotelReservation.controller;
 
+import com.reservation.hotel.HotelReservation.hotelroom.SearchCriteria;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUser;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUserRepository;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUserService;
@@ -33,11 +34,12 @@ public class MainController {
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @GetMapping("/")
-    public String getMessage(){
+    public String getMessage(Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         log.info("{}, Roles: {}", currentPrincipalName, authorities);
+        model.addAttribute("searchCriteria", new SearchCriteria());
         return "index";
     }
 

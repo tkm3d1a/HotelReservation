@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -131,9 +132,11 @@ public class ReservationService {
             roomHashSet.add(foundReservation.getRoom());
         }
 
+        List<Reservation> finalReservationsAvailable = new ArrayList<>(reservationHashSet.size());
         log.info("Final Reservation HashSet...");
         for( Reservation inHashSet : reservationHashSet){
             log.info("{}", inHashSet);
+            finalReservationsAvailable.add(inHashSet);
         }
 
         log.info("Final Room HashSet...");
@@ -141,7 +144,7 @@ public class ReservationService {
             log.info("{}", inHashSet);
         }
 
-        return result1;
+        return finalReservationsAvailable;
     }
 
     public Reservation findReservationByGuestIDAndReservationID(int resID, String currentUser){
