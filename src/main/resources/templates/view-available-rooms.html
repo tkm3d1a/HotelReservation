@@ -62,7 +62,7 @@
 					<td th:text="*{room.bedType}">bedType</td>
 					<td th:text="*{room.bedNumber}">bedNum</td>
 					<td>
-						<a class="nav-link" th:href="@{/rooms/{roomNumber}(roomNumber = *{room.roomNumber})}">View Room Details</a>
+						<a class="nav-link" th:href="@{/reservation/make-reservation/{roomNumber}(roomNumber = *{room.roomNumber})}">Reserve Room</a>
 					</td>
 				</tr>
 			</tbody>
