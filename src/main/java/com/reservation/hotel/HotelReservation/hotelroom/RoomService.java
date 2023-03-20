@@ -3,8 +3,8 @@ package com.reservation.hotel.HotelReservation.hotelroom;
 import com.reservation.hotel.HotelReservation.reservation.Reservation;
 import com.reservation.hotel.HotelReservation.reservation.ReservationRepository;
 import com.reservation.hotel.HotelReservation.util.ValidationUtil;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,19 +15,59 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class RoomService {
-    @Autowired
+    @Resource
     private RoomRepository roomRepository;
 
-    @Autowired
+    @Resource
     private ReservationRepository reservationRepository;
 
-    @Autowired
+    @Resource
     ValidationUtil validationUtil;
 
     public boolean addNewRoom(Room newRoom) {
         log.info("Clicked 'addNewRoom'");
         if (!validationUtil.checkIfRoomNumberAlreadyExistsInDB(newRoom.getRoomNumber())) {
             log.info("Room to be added: {}", newRoom);
+            int numBeds = newRoom.getBedNumber();
+
+            int qualityRate;
+            if(newRoom.getQuality().equalsIgnoreCase("Executive")){
+                qualityRate = 5;
+            } else if(newRoom.getQuality().equalsIgnoreCase("Business")) {
+                qualityRate = 4;
+            } else if(newRoom.getQuality().equalsIgnoreCase("Comfort")) {
+                qualityRate = 3;
+            } else if (newRoom.getQuality().equalsIgnoreCase("Economy")) {
+                qualityRate = 2;
+            } else {
+                qualityRate = 1;
+            }
+
+            int bedRate;
+            if(newRoom.getBedType().equalsIgnoreCase("King")){
+                bedRate = 4;
+            } else if(newRoom.getBedType().equalsIgnoreCase("Queen")){
+                bedRate = 3;
+            } else if (newRoom.getBedType().equalsIgnoreCase("Twin")) {
+                bedRate = 2;
+            } else {
+                bedRate = 1;
+            }
+
+            int smokingRate;
+            if(newRoom.getSmokingStatus().equalsIgnoreCase("Smoking")) {
+                smokingRate = 2;
+            } else {
+                smokingRate = 1;
+            }
+
+            int roomRate = 10;
+            roomRate *= bedRate;
+            roomRate *= numBeds;
+            roomRate *= qualityRate;
+            roomRate *= smokingRate;
+
+            newRoom.setBaseRate(roomRate);
             roomRepository.save(newRoom);
             log.info("Room {} added", newRoom.getRoomNumber());
             return true;
