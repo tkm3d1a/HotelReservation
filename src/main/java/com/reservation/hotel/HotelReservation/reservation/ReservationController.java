@@ -70,10 +70,10 @@ public class ReservationController {
         return "test-reservation";
     }
 
-    @GetMapping("/make-reservation")
+    @GetMapping("/make-reservation/{roomID}")
     //TODO: Get room loaded when making call
     //TODO: Get date range loaded when making call
-    public String makeNewReservation(Model model){
+    public String makeNewReservation(Model model, @PathVariable int roomID){
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = auth.getName();
