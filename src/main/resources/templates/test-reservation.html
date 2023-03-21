@@ -66,13 +66,13 @@
 				<td th:text="*{reservation.endDate}">endDate</td>
 				<td th:text="*{reservation.isConfirmed}">confirmed</td>
 				<td>
-					<form th:if="*{reservation.isConfirmed() == false}" th:action="@{/reservation/confirm/stage/{resID}(resID = *{reservation.id})}" method="post">
+					<form th:if="*{!reservation.isConfirmed() and reservation.isNotStarted()}" th:action="@{/reservation/confirm/stage/{resID}(resID = *{reservation.id})}" method="post">
 						<button class="btn btn-dark">Confirm Reservation</button>
 					</form>
-					<form th:if="*{reservation.isConfirmed() == true}" th:action="@{/reservation/edit/{resId}(resId = *{reservation.id})}" method="get">
+					<form th:if="*{reservation.isConfirmed() and reservation.isNotStarted()}" th:action="@{/reservation/edit/{resId}(resId = *{reservation.id})}" method="get">
 						<button class="btn btn-dark">Modify Reservation</button>
 					</form>
-					<form th:action="@{/reservation/delete/{resID}(resID = *{reservation.id})}" th:method="delete">
+					<form th:if="*{reservation.isNotStarted()}" th:action="@{/reservation/delete/{resID}(resID = *{reservation.id})}" th:method="delete">
 						<button class="btn btn-dark">Cancel Reservation</button>
 					</form>
 				</td>

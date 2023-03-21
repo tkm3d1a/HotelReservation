@@ -48,6 +48,8 @@ public class ReservationController {
             reservationsList = reservationService.findAllReservations();
         }
 
+        reservationService.updateModifiable(reservationsList);
+
         model.addAttribute("allReservations", reservationsList);
         SearchCriteria searchCriteria = new SearchCriteria();
         model.addAttribute("searchCriteria", searchCriteria);

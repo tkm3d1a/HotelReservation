@@ -8,7 +8,9 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -97,17 +99,40 @@ public class ReservationService {
         reservationRepository.deleteById(resID);
     }
 
+    public void updateModifiable(List<Reservation> reservationList){
+        LocalDate currentDate = LocalDate.now();
+        int compareTo;
+        for(Reservation reservation : reservationList){
+            compareTo = currentDate.compareTo(reservation.getStartDate());
+            if(compareTo > 0 && reservation.isNotStarted()){
+                reservation.setNotStarted(false);
+                saveReservation(reservation);
+                log.info("Updated Reservation {} to started", reservation.getId());
+            }
+        }
+    }
+
+    public void sortReservationsByDate(List<Reservation> reservationList){
+        reservationList.sort(Comparator.comparing(Reservation::getStartDate));
+    }
+
     public List<Reservation> findAllReservationsForUser(String currentUser){
         HotelUser user = hotelUserService.findUserByUsername(currentUser);
-        return reservationRepository.findAllByGuest_Id(user.getId());
+        List<Reservation> reservations = reservationRepository.findAllByGuest_Id(user.getId());
+        sortReservationsByDate(reservations);
+        return reservations;
     }
 
     public List<Reservation> findAllReservationsByGuestID(int guestID){
-       return reservationRepository.findAllByGuest_Id(guestID);
+        List<Reservation> reservations = reservationRepository.findAllByGuest_Id(guestID);
+        sortReservationsByDate(reservations);
+        return reservations;
     }
 
     public  List<Reservation> findAllReservations(){
-        return reservationRepository.findAll();
+        List<Reservation> reservations = reservationRepository.findAll();
+        sortReservationsByDate(reservations);
+        return reservations;
     }
 
 //    public List<Reservation> findReservationsBetweenDates(Reservation searchDates){

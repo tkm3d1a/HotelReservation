@@ -24,12 +24,16 @@ public class Reservation {
     @JoinColumn(name = "room_id")
     private Room room;
 
-    private int dailyRate;
-    private int totalRate;
-    private boolean isConfirmed;
+    private int dailyRate = 1;
+    private int totalRate = 1;
+    private boolean isConfirmed = false;
+    private boolean isNotStarted = true;
+    private boolean isPromoApplied = false;
 
+    @Column(nullable = false)
     private java.time.LocalDate startDate;
+    @Column(nullable = false)
     private java.time.LocalDate endDate;
-    private int numDays;
+    private int numDays = 1;
 
 }
