@@ -1,6 +1,7 @@
 package com.reservation.hotel.HotelReservation.reservation;
 
 import com.reservation.hotel.HotelReservation.hotelroom.RoomRepository;
+import com.reservation.hotel.HotelReservation.hotelroom.SearchCriteria;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -48,6 +49,8 @@ public class ReservationController {
         }
 
         model.addAttribute("allReservations", reservationsList);
+        SearchCriteria searchCriteria = new SearchCriteria();
+        model.addAttribute("searchCriteria", searchCriteria);
         return "test-reservation";
     }
 
