@@ -9,8 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -112,40 +110,40 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
-    public List<Reservation> findReservationsBetweenDates(Reservation searchDates){
-        HashSet<Reservation> reservationHashSet = new HashSet<>();
-        HashSet<Room> roomHashSet = new HashSet<>();
-
-        List<Reservation> result1 = reservationRepository.findAllByStartDateBetween(searchDates.getStartDate(), searchDates.getEndDate());
-        log.info("Result 1...");
-        for( Reservation foundReservation : result1){
-            log.info("{}", foundReservation);
-            reservationHashSet.add(foundReservation);
-            roomHashSet.add(foundReservation.getRoom());
-        }
-
-        List<Reservation> result2 = reservationRepository.findAllByEndDateBetween(searchDates.getStartDate(), searchDates.getEndDate());
-        log.info("Result 2...");
-        for( Reservation foundReservation : result2){
-            log.info("{}", foundReservation);
-            reservationHashSet.add(foundReservation);
-            roomHashSet.add(foundReservation.getRoom());
-        }
-
-        List<Reservation> finalReservationsAvailable = new ArrayList<>(reservationHashSet.size());
-        log.info("Final Reservation HashSet...");
-        for( Reservation inHashSet : reservationHashSet){
-            log.info("{}", inHashSet);
-            finalReservationsAvailable.add(inHashSet);
-        }
-
-        log.info("Final Room HashSet...");
-        for( Room inHashSet : roomHashSet){
-            log.info("{}", inHashSet);
-        }
-
-        return finalReservationsAvailable;
-    }
+//    public List<Reservation> findReservationsBetweenDates(Reservation searchDates){
+//        HashSet<Reservation> reservationHashSet = new HashSet<>();
+//        HashSet<Room> roomHashSet = new HashSet<>();
+//
+//        List<Reservation> result1 = reservationRepository.findAllByStartDateBetween(searchDates.getStartDate(), searchDates.getEndDate());
+//        log.info("Result 1...");
+//        for( Reservation foundReservation : result1){
+//            log.info("{}", foundReservation);
+//            reservationHashSet.add(foundReservation);
+//            roomHashSet.add(foundReservation.getRoom());
+//        }
+//
+//        List<Reservation> result2 = reservationRepository.findAllByEndDateBetween(searchDates.getStartDate(), searchDates.getEndDate());
+//        log.info("Result 2...");
+//        for( Reservation foundReservation : result2){
+//            log.info("{}", foundReservation);
+//            reservationHashSet.add(foundReservation);
+//            roomHashSet.add(foundReservation.getRoom());
+//        }
+//
+//        List<Reservation> finalReservationsAvailable = new ArrayList<>(reservationHashSet.size());
+//        log.info("Final Reservation HashSet...");
+//        for( Reservation inHashSet : reservationHashSet){
+//            log.info("{}", inHashSet);
+//            finalReservationsAvailable.add(inHashSet);
+//        }
+//
+//        log.info("Final Room HashSet...");
+//        for( Room inHashSet : roomHashSet){
+//            log.info("{}", inHashSet);
+//        }
+//
+//        return finalReservationsAvailable;
+//    }
 
     public Reservation findReservationByGuestIDAndReservationID(int resID, String currentUser){
         Optional<Reservation> reservationOptional = reservationRepository.findById(resID);
@@ -157,9 +155,14 @@ public class ReservationService {
             } else {
                 log.warn("Reservation does not match logged in user");
             }
+            log.warn("No reservation found with that ID");
         }
 
-        log.warn("No reservation found with that ID");
         return reservation;
+    }
+
+    public Reservation findreservationByID(int resID){
+        Optional<Reservation> reservationOptional = reservationRepository.findById(resID);
+        return reservationOptional.orElseGet(Reservation::new);
     }
 }

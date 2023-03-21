@@ -51,6 +51,27 @@ public class ReservationController {
         return "test-reservation";
     }
 
+    @GetMapping("/edit/{resId}")
+    public String editReservation(Model model, @PathVariable int resId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+
+        Reservation reservation = reservationService.findReservationByGuestIDAndReservationID(resId, currentUser);
+
+        model.addAttribute("reservation", reservation);
+        log.info("{}",model);
+        return "edit-reservation";
+    }
+
+    @PostMapping("/edit/{resId}")
+    public String postEditReservation(@ModelAttribute("reservation") Reservation reservation, Model model, @PathVariable int resId){
+        log.info("{}",model);
+        Reservation foundReservation = reservationService.findreservationByID(reservation.getId());
+        model.addAttribute("reservation", foundReservation);
+        log.info("{}",model);
+        return "redirect:/reservation/view";
+    }
+
     //TODO: Clean up/remove /view/user mapping
 //    @GetMapping("/view/user")
 //    public String getUserReservations(Model model){
@@ -76,20 +97,20 @@ public class ReservationController {
         return "test-reservation";
     }
 
-    @GetMapping("/make-reservation/{roomID}")
-    //TODO: Get room loaded when making call
-    //TODO: Get date range loaded when making call
-    public String makeNewReservation(Model model, @PathVariable int roomID){
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String currentUser = auth.getName();
-        Reservation reservation = new Reservation();
-
-        reservationService.addCurrentUserToRes(reservation, currentUser);
-
-        model.addAttribute("reservation", reservation);
-        return "make-reservation";
-    }
+//    @GetMapping("/make-reservation/{roomID}")
+//    //TODO: Get room loaded when making call
+//    //TODO: Get date range loaded when making call
+//    public String makeNewReservation(Model model, @PathVariable int roomID){
+//
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        String currentUser = auth.getName();
+//        Reservation reservation = new Reservation();
+//
+//        reservationService.addCurrentUserToRes(reservation, currentUser);
+//
+//        model.addAttribute("reservation", reservation);
+//        return "make-reservation";
+//    }
 
     @GetMapping("/make-reservation/{roomNumber}/in/{checkInDate}/out/{checkOutDate}")
     public String reserveRoom(@PathVariable String roomNumber, @PathVariable String checkInDate,
@@ -136,15 +157,15 @@ public class ReservationController {
         return "search-reservation";
     }
 
-    @PostMapping("/search/submit")
-    public String searchSubmit(@ModelAttribute Reservation searchDates, RedirectAttributes redirectAttributes){
-        List<Reservation> searchedReservations = reservationService.findAllReservations();
-        redirectAttributes.addFlashAttribute("reservationList", searchedReservations);
-
-        reservationService.findReservationsBetweenDates(searchDates);
-
-        return "redirect:/reservation/search";
-    }
+//    @PostMapping("/search/submit")
+//    public String searchSubmit(@ModelAttribute Reservation searchDates, RedirectAttributes redirectAttributes){
+//        List<Reservation> searchedReservations = reservationService.findAllReservations();
+//        redirectAttributes.addFlashAttribute("reservationList", searchedReservations);
+//
+//        reservationService.findReservationsBetweenDates(searchDates);
+//
+//        return "redirect:/reservation/search";
+//    }
 
     @GetMapping("/confirm")
     public String confirmReservationView(Model model){

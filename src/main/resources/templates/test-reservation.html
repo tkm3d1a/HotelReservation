@@ -69,7 +69,7 @@
 					<form th:if="*{reservation.isConfirmed() == false}" th:action="@{/reservation/confirm/stage/{resID}(resID = *{reservation.id})}" method="post">
 						<button class="btn btn-dark">Confirm Reservation</button>
 					</form>
-					<form th:if="*{reservation.isConfirmed() == true}" th:action="@{/reservation/confirm/{resID}(resID = *{reservation.id})}" method="post">
+					<form th:if="*{reservation.isConfirmed() == true}" th:action="@{/reservation/edit/{resId}(resId = *{reservation.id})}" method="get">
 						<button class="btn btn-dark">Modify Reservation</button>
 					</form>
 					<form th:action="@{/reservation/delete/{resID}(resID = *{reservation.id})}" th:method="delete">

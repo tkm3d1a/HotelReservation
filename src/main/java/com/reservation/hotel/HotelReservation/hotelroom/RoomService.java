@@ -127,6 +127,14 @@ public class RoomService {
         conflictingReservations.addAll(reservationRepository.
                 findAllByEndDateBetween(searchCriteria.getCheckInDate(), searchCriteria.getCheckInDate()));
 
+        //TODO: psuedo code for searching
+        //Find all reservations
+        //for each researcation:
+        //  if search.start is between r.start and r.end
+        //      add r to exclusion list
+        //  if search.end is between r.start and r.end
+        //      add r to exclusion list
+
         //get the room ids associated with conflicting reservations
         List<Integer> conflictingRoomIds = conflictingReservations.stream()
                 .map(reservation -> reservation.getRoom().getId())
