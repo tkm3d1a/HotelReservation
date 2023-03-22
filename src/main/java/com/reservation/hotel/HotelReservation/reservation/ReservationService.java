@@ -35,7 +35,9 @@ public class ReservationService {
             reservation = reservationOptional.get();
             if(promoCode.equals("1234")){
                 updateDailyRate(reservation, 1);
+                //TODO change setPromoApplied to service function
                 reservation.setPromoApplied(true);
+                updateTotalRate(reservation);
                 saveReservation(reservation);
             } else {
                 log.warn("Entered promo code is not valid");
