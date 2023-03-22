@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+	<title>Hotel</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-sm navbar-light" style="background-color: #e3f2fd;">
+	<a class="navbar-brand">Welcome to The White Lotus</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+
+	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item active">
+				<a class="nav-link" th:href="@{/}">Home</a>
+			</li>
+		</ul>
+
+		<span class="form-inline my-2 my-lg-0">
+	        <div sec:authorize="isAuthenticated()" class="btn-group mr-2" role="group" aria-label="View Profile">
+                <a th:href="@{/profile}" class="btn btn-light active" role="button" aria-pressed="true">View Profile</a>
+            </div>
+            <div sec:authorize="isAnonymous()" class="btn-group mr-2" role="group" aria-label="Login">
+                <a th:href="@{/login}" class="btn btn-light active" role="button" aria-pressed="true">Login</a>
+            </div>
+            <div sec:authorize="isAuthenticated()" class="btn-group mr-2" role="group" aria-label="Logout">
+                <a th:href="@{/logout}" class="btn btn-light active" role="button" aria-pressed="true">Logout</a>
+            </div>
+        </span>
+	</div>
+</nav>
+
+<div class="container">
+	<h3 class="text-center">Edit your Reservation</h3>
+	<div th:if="${param.error}">
+		<p class="text-danger">There was an error updating your reservation, please try again</p>
+	</div>
+	<div>
+		<form action="#" th:action="@{/reservation/edit/{resId}(resId = ${reservation.id})}" method="post" th:object="${reservation}">
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label>Room Number</label>
+					<p th:text="*{room.roomNumber}" />
+				</div>
+				<div class="form-group col-md-6">
+					<label>Total Rate</label>
+					<p th:text="*{totalRate}" />
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-4">
+					<label >Check-in Date</label>
+					<input type="date" th:field="*{startDate}"  th:min="${minCheckInDate}" th:max="${maxCheckInDate}"
+						   class="form-control" id="checkIndate" placeholder="Check in date" required>
+				</div>
+				<div class="form-group col-md-4">
+					<label >Check-out Date</label>
+					<input type="date" th:field="*{endDate}"  th:min="${minCheckOutDate}" th:max="${maxCheckOutDate}"
+						   class="form-control" id="checkOutDate" placeholder="Check in date" required>
+				</div>
+				<div class="form-group col-md-4">
+					<label >Total nights</label>
+					<p th:text="*{numDays}"> 5 </p>
+				</div>
+			</div>
+			<input type="hidden" th:field="*{id}"/>
+			<button type="submit" class="btn btn-info">Update reservation</button>
+		</form>
+		<div>
+			<p>&nbsp</p>
+		</div>
+		<div th:if="${!reservation.isPromoApplied()}">
+			<form action="#" th:action="@{/reservation/apply-promo}" th:object="${promoCode}" method="post" >
+				<div class="form-row">
+					<div class="form-group col-md-4">
+						<label for="promoCode">Promotional Code</label>
+						<input type="text" th:field="*{formString}" class="form-control" id="promoCode" placeholder="enter promotional Code here" required>
+					</div>
+				</div>
+				<input type="hidden" th:field="${reservation.id}">
+				<button type="submit" class="btn btn-info">Apply Promotional code</button>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>

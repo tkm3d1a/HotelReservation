@@ -1,25 +1,23 @@
 package com.reservation.hotel.HotelReservation.hoteluser;
 
-import com.reservation.hotel.HotelReservation.hoteluser.HotelUser;
-import com.reservation.hotel.HotelReservation.hoteluser.HotelUserRepository;
 import com.reservation.hotel.HotelReservation.util.ValidationUtil;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
 public class HotelUserService implements UserDetailsService {
 
-    @Autowired
+    @Resource
     private HotelUserRepository hotelUserRepository;
 
-    @Autowired
+    @Resource
     ValidationUtil validationUtil;
 
     @Override
@@ -41,8 +39,12 @@ public class HotelUserService implements UserDetailsService {
     public boolean registerNewHotelUser(HotelUser newHotelUser) {
         if (!validationUtil.checkIfUserNameAlreadyExistsInDB(newHotelUser.getUsername())
                 || !validationUtil.checkIfEmailAlreadyExistsInDB(newHotelUser.getEmail())) {
-            hotelUserRepository.save(newHotelUser);
-            return true;
+            try {
+                hotelUserRepository.save(newHotelUser);
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
         } else {
             return false;
         }
@@ -57,8 +59,8 @@ public class HotelUserService implements UserDetailsService {
             userName.append(hotelClerk.getLastName().toLowerCase());
         }
         String email = hotelClerk.getEmail();
-        Boolean isUserNameDuplicate = validationUtil.checkIfUserNameAlreadyExistsInDB(userName.toString());
-        Boolean isEmailDuplicate = validationUtil.checkIfEmailAlreadyExistsInDB(email);
+        boolean isUserNameDuplicate = validationUtil.checkIfUserNameAlreadyExistsInDB(userName.toString());
+        boolean isEmailDuplicate = validationUtil.checkIfEmailAlreadyExistsInDB(email);
 
         if(isUserNameDuplicate){
             userName.append(hotelUserRepository.findMaxID() + 1);
@@ -73,5 +75,23 @@ public class HotelUserService implements UserDetailsService {
         } else {
             return false;
         }
+    }
+
+    public HotelUser findUserByID(int searchID){
+        Optional<HotelUser> foundUserOpt = hotelUserRepository.findById(searchID);
+        HotelUser foundUser = new HotelUser();
+        if(foundUserOpt.isPresent()){
+            foundUser = foundUserOpt.get();
+        }
+        return foundUser;
+    }
+
+    public HotelUser findUserByUsername(String username){
+        Optional<HotelUser> foundUserOpt = hotelUserRepository.findHotelUserByUsername(username);
+        HotelUser foundUser = new HotelUser();
+        if(foundUserOpt.isPresent()){
+            foundUser = foundUserOpt.get();
+        }
+        return foundUser;
     }
 }

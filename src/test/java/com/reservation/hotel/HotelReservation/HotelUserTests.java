@@ -49,4 +49,9 @@ public class HotelUserTests{
     public void testAddNewRoom(){
         //TODO: implement testAddNewRoom
     }
+
+    @Test
+    public void testAddNewReservation(){
+
+    }
 }

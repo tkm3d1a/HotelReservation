@@ -1,5 +1,6 @@
 package com.reservation.hotel.HotelReservation.controller;
 
+import com.reservation.hotel.HotelReservation.hotelroom.SearchCriteria;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUser;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUserRepository;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUserService;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
 
@@ -33,11 +36,18 @@ public class MainController {
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @GetMapping("/")
-    public String getMessage(){
+    public String getMessage(Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         log.info("{}, Roles: {}", currentPrincipalName, authorities);
+        SearchCriteria searchCriteria = new SearchCriteria();
+        searchCriteria.setSourceForm("indexPage");
+        searchCriteria.setCheckInDate(LocalDate.now());
+        searchCriteria.setCheckOutDate(LocalDate.now().plusDays(3));
+        model.addAttribute("searchCriteria", searchCriteria);
+        model.addAttribute("currentDate", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        model.addAttribute("minCheckOutDate", LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         return "index";
     }
 

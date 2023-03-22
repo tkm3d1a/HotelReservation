@@ -1,21 +1,22 @@
 package com.reservation.hotel.HotelReservation.hotelroom;
 
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Controller
 @RequestMapping("/rooms")
 public class RoomController {
-    @Autowired
+    @Resource
     private RoomRepository roomRepository;
 
-    @Autowired
+    @Resource
     private RoomService roomService;
 
     @GetMapping("")
@@ -39,13 +40,15 @@ public class RoomController {
 
     @GetMapping("/{roomNumber}")
     public String viewRoomDetails(@PathVariable String roomNumber, Model model){
-        //TODO: need to add check to make sure room exists? getting the following stacktrace error when manually entering
-        //      room numbers that do not exist --
-        //          EL1007E: Property or field 'roomNumber' cannot be found on null
         int roomNumberInt = Integer.parseInt(roomNumber);
-        Room showRoom = roomRepository.findRoomByRoomNumber(roomNumberInt);
-        model.addAttribute("room", showRoom);
-        return "view-room-details";
+        Optional<Room> showRoom = Optional.ofNullable(roomRepository.findRoomByRoomNumber(roomNumberInt));
+
+        if (showRoom.isPresent()) {
+            model.addAttribute("room", showRoom.get());
+            return "view-room-details";
+        } else {
+            return "redirect:/rooms?notFound";
+        }
     }
 
     @GetMapping("/{roomNumber}/edit")
@@ -82,4 +85,25 @@ public class RoomController {
         return "redirect:/rooms/" + newRoomNumber;
     }
 
+    @PostMapping("/searchAvailableRooms")
+    public String searchAvailableRooms(@ModelAttribute SearchCriteria searchCriteria, Model model) {
+
+        if((searchCriteria.getCheckOutDate().isEqual(searchCriteria.getCheckInDate()) ||
+                searchCriteria.getCheckOutDate().isBefore(searchCriteria.getCheckInDate()))
+                && searchCriteria.getSourceForm().equalsIgnoreCase("indexPage")) {
+            return "redirect:/?error=";
+        }
+
+        if((searchCriteria.getCheckOutDate().isEqual(searchCriteria.getCheckInDate()) ||
+                searchCriteria.getCheckOutDate().isBefore(searchCriteria.getCheckInDate()))
+                && searchCriteria.getSourceForm().equalsIgnoreCase("reservationsPage")) {
+            return "redirect:/reservation/view?error=";
+        }
+
+        List<Room> filteredRooms = roomService.findRoomsMatchingSearchCriteria(searchCriteria);
+
+        model.addAttribute("filteredRooms", filteredRooms);
+        model.addAttribute("searchCriteria", searchCriteria);
+        return "view-available-rooms";
+    }
 }
