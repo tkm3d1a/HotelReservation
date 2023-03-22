@@ -51,7 +51,10 @@ public class ReservationController {
 
         model.addAttribute("allReservations", reservationsList);
         SearchCriteria searchCriteria = new SearchCriteria();
+        searchCriteria.setSourceForm("reservationsPage");
         model.addAttribute("searchCriteria", searchCriteria);
+        model.addAttribute("currentDate", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        model.addAttribute("minCheckOutDate", LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         return "test-reservation";
     }
 

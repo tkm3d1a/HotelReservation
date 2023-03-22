@@ -85,8 +85,17 @@ public class RoomController {
     @PostMapping("/searchAvailableRooms")
     public String searchAvailableRooms(@ModelAttribute SearchCriteria searchCriteria, Model model) {
 
-        log.info("Business:{} , Executive:{}, Comfort:{}, Economy:{}", searchCriteria.isBusiness(),
-                searchCriteria.isExecutive(), searchCriteria.isComfort(), searchCriteria.isEconomy());
+        if((searchCriteria.getCheckOutDate().isEqual(searchCriteria.getCheckInDate()) ||
+                searchCriteria.getCheckOutDate().isBefore(searchCriteria.getCheckInDate()))
+                && searchCriteria.getSourceForm().equalsIgnoreCase("indexPage")) {
+            return "redirect:/?error=";
+        }
+
+        if((searchCriteria.getCheckOutDate().isEqual(searchCriteria.getCheckInDate()) ||
+                searchCriteria.getCheckOutDate().isBefore(searchCriteria.getCheckInDate()))
+                && searchCriteria.getSourceForm().equalsIgnoreCase("reservationsPage")) {
+            return "redirect:/reservation/view?error=";
+        }
 
         List<Room> filteredRooms = roomService.findRoomsMatchingSearchCriteria(searchCriteria);
 

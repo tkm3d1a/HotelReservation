@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
 
@@ -39,7 +41,11 @@ public class MainController {
         String currentPrincipalName = authentication.getName();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         log.info("{}, Roles: {}", currentPrincipalName, authorities);
-        model.addAttribute("searchCriteria", new SearchCriteria());
+        SearchCriteria searchCriteria = new SearchCriteria();
+        searchCriteria.setSourceForm("indexPage");
+        model.addAttribute("searchCriteria", searchCriteria);
+        model.addAttribute("currentDate", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        model.addAttribute("minCheckOutDate", LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         return "index";
     }
 

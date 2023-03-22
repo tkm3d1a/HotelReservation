@@ -15,4 +15,5 @@ public class SearchCriteria {
     private boolean business;
     private boolean comfort;
     private boolean economy;
+    private String sourceForm;
 }

@@ -119,14 +119,16 @@ public class RoomService {
         // for each reservation:
         // if search.start is between r.start and r.end, add r to exclusion list
         // if search.end is between r.start and r.end, add r to exclusion list
-        // if r.start is after search.start and r.end is before search.end, add r to exclusion list
+        // if r.start is equal to or after search.start and r.end is equal to or before search.end, add r to exclusion list
         List<Reservation> conflictingReservations = reservationRepository.findAll().stream()
                 .filter(reservation -> (searchCriteria.getCheckInDate().isAfter(reservation.getStartDate()) &&
                                 searchCriteria.getCheckInDate().isBefore(reservation.getEndDate()))
                                 || (searchCriteria.getCheckOutDate().isAfter(reservation.getStartDate()) &&
                         searchCriteria.getCheckOutDate().isBefore(reservation.getEndDate()))
-                        || (reservation.getStartDate().isAfter(searchCriteria.getCheckInDate())) &&
-                        reservation.getEndDate().isBefore(searchCriteria.getCheckOutDate()))
+                        || ((reservation.getStartDate().isAfter(searchCriteria.getCheckInDate()) ||
+                        reservation.getStartDate().isEqual(searchCriteria.getCheckInDate())) &&
+                        (reservation.getEndDate().isBefore(searchCriteria.getCheckOutDate()) ||
+                                reservation.getEndDate().isEqual(searchCriteria.getCheckOutDate()))))
                 .collect(Collectors.toList());
 
 
