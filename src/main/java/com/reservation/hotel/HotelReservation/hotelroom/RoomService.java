@@ -88,52 +88,47 @@ public class RoomService {
     public List<Room> findRoomsMatchingSearchCriteria(SearchCriteria searchCriteria){
         List<Room> filteredRooms = roomRepository.findAll();
 
-        Predicate<Room> isBusiness = room -> room.getQuality().equalsIgnoreCase("Business");
-        Predicate<Room> isExecutive = room -> room.getQuality().equalsIgnoreCase("Executive");
-        Predicate<Room> isComfort = room -> room.getQuality().equalsIgnoreCase("Comfort");
-        Predicate<Room> isEconomy = room -> room.getQuality().equalsIgnoreCase("Economy");
-
         if(!searchCriteria.isBusiness() && !searchCriteria.isExecutive() && !searchCriteria.isEconomy() && !searchCriteria.isComfort()) {
             log.info("Room Quality level not selected by user. Quality Filters will not be applied");
         } else {
             if(!searchCriteria.isBusiness()){
                 filteredRooms = filteredRooms.stream()
-                        .filter(isComfort.or(isEconomy).or(isExecutive))
+                        .filter(room -> !room.getQuality().equalsIgnoreCase("Business"))
                         .collect(Collectors.toList());
             }
 
             if(!searchCriteria.isExecutive()) {
                 filteredRooms = filteredRooms.stream()
-                        .filter(isComfort.or(isBusiness).or(isEconomy))
+                        .filter(room -> !room.getQuality().equalsIgnoreCase("Executive"))
                         .collect(Collectors.toList());
             }
 
             if(!searchCriteria.isComfort()) {
                 filteredRooms = filteredRooms.stream()
-                        .filter(isExecutive.or(isBusiness).or(isEconomy))
+                        .filter(room -> !room.getQuality().equalsIgnoreCase("Comfort"))
                         .collect(Collectors.toList());
             }
 
             if(!searchCriteria.isEconomy()) {
                 filteredRooms = filteredRooms.stream()
-                        .filter(isExecutive.or(isBusiness).or(isComfort))
+                        .filter(room -> !room.getQuality().equalsIgnoreCase("Economy"))
                         .collect(Collectors.toList());
             }
         }
+        //pseudocode for finding all conflicting reservations within the dates in search criteria
+        // for each reservation:
+        // if search.start is between r.start and r.end, add r to exclusion list
+        // if search.end is between r.start and r.end, add r to exclusion list
+        // if r.start is after search.start and r.end is before search.end, add r to exclusion list
+        List<Reservation> conflictingReservations = reservationRepository.findAll().stream()
+                .filter(reservation -> (searchCriteria.getCheckInDate().isAfter(reservation.getStartDate()) &&
+                                searchCriteria.getCheckInDate().isBefore(reservation.getEndDate()))
+                                || (searchCriteria.getCheckOutDate().isAfter(reservation.getStartDate()) &&
+                        searchCriteria.getCheckOutDate().isBefore(reservation.getEndDate()))
+                        || (reservation.getStartDate().isAfter(searchCriteria.getCheckInDate())) &&
+                        reservation.getEndDate().isBefore(searchCriteria.getCheckOutDate()))
+                .collect(Collectors.toList());
 
-        //find all conflicting reservations within the dates in search criteria
-        List<Reservation> conflictingReservations = reservationRepository
-                .findAllByStartDateBetween(searchCriteria.getCheckInDate(), searchCriteria.getCheckOutDate());
-        conflictingReservations.addAll(reservationRepository.
-                findAllByEndDateBetween(searchCriteria.getCheckInDate(), searchCriteria.getCheckInDate()));
-
-        //TODO: psuedo code for searching
-        //Find all reservations
-        //for each researcation:
-        //  if search.start is between r.start and r.end
-        //      add r to exclusion list
-        //  if search.end is between r.start and r.end
-        //      add r to exclusion list
 
         //get the room ids associated with conflicting reservations
         List<Integer> conflictingRoomIds = conflictingReservations.stream()
