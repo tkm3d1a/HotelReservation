@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Controller
@@ -39,13 +40,15 @@ public class RoomController {
 
     @GetMapping("/{roomNumber}")
     public String viewRoomDetails(@PathVariable String roomNumber, Model model){
-        //TODO: need to add check to make sure room exists? getting the following stacktrace error when manually entering
-        //      room numbers that do not exist --
-        //          EL1007E: Property or field 'roomNumber' cannot be found on null
         int roomNumberInt = Integer.parseInt(roomNumber);
-        Room showRoom = roomRepository.findRoomByRoomNumber(roomNumberInt);
-        model.addAttribute("room", showRoom);
-        return "view-room-details";
+        Optional<Room> showRoom = Optional.ofNullable(roomRepository.findRoomByRoomNumber(roomNumberInt));
+
+        if (showRoom.isPresent()) {
+            model.addAttribute("room", showRoom.get());
+            return "view-room-details";
+        } else {
+            return "redirect:/rooms?notFound";
+        }
     }
 
     @GetMapping("/{roomNumber}/edit")

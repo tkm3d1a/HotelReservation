@@ -42,6 +42,9 @@
 	<div th:if="${param.error}">
 		<p class="text-danger">Room already exists. Please update existing room!</p>
 	</div>
+	<div th:if="${param.notFound}">
+		<p class="text-info">Room not found. Below are rooms that currently exist.</p>
+	</div>
 	<div th:if="${param.success}">
 		<p class="text-success" th:text="'Room ' + ${param.success[0]} + ' was added to the system.'"></p>
 	</div>
