@@ -64,6 +64,17 @@
 	<form th:action="@{/reservation/confirm/{resID}(resID = ${reservation.id})}" method="post" >
 		<button type="submit" class="btn btn-info">Confirm Reservation</button>
 	</form>
+	<br>
+	<div class="form-group" th:if="${!reservation.isPromoApplied()}">
+		<form action="#" th:action="@{/reservation/apply-promo}" th:object="${promoCode}" method="post" >
+			<div class="form-group col-md-6">
+				<label for="promoCode">Promotional Code</label>
+				<input type="text" th:field="*{formString}" class="form-control" id="promoCode" placeholder="enter promotional Code here" required>
+			</div>
+			<input type="hidden" th:field="${reservation.id}">
+			<button type="submit" class="btn btn-info">Apply Promotional code</button>
+		</form>
+	</div>
 
 </div>
 </body>

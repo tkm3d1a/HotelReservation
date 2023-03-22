@@ -27,10 +27,30 @@ public class ReservationService {
     @Resource
     private RoomService roomService;
 
+    public void applyPromo(String promoCode, int resID){
+        Optional<Reservation> reservationOptional = reservationRepository.findById(resID);
+        Reservation reservation;
+
+        if(reservationOptional.isPresent()){
+            reservation = reservationOptional.get();
+            if(promoCode.equals("1234")){
+                updateDailyRate(reservation, 1);
+                reservation.setPromoApplied(true);
+                saveReservation(reservation);
+            } else {
+                log.warn("Entered promo code is not valid");
+            }
+        } else {
+            log.warn("No reservation found matching ResID {}", resID);
+        }
+
+    }
+
     public void updateDailyRate(Reservation resToUpdate, int updatedRate){
         //TODO: update with logic to clamp rate to a base value
         resToUpdate.setDailyRate(updatedRate);
     }
+
 
     public void updateNumDays(Reservation reservation){
         int numDays = (int) ChronoUnit.DAYS.between(reservation.getStartDate(), reservation.getEndDate());

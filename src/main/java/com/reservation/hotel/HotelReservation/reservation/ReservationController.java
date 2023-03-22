@@ -2,6 +2,7 @@ package com.reservation.hotel.HotelReservation.reservation;
 
 import com.reservation.hotel.HotelReservation.hotelroom.RoomRepository;
 import com.reservation.hotel.HotelReservation.hotelroom.SearchCriteria;
+import com.reservation.hotel.HotelReservation.util.FormEncapsulate;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -37,12 +38,10 @@ public class ReservationController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = authentication.getName();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        log.info(authorities.toArray()[0].toString());
 
         String userRole = authorities.toArray()[0].toString();
         List<Reservation> reservationsList;
         if(userRole.equals("ROLE_GUEST")){
-            log.info("Guest is logged in. Viewing only guest reservations");
             reservationsList = reservationService.findAllReservationsForUser(currentUser);
         } else {
             reservationsList = reservationService.findAllReservations();
@@ -55,38 +54,6 @@ public class ReservationController {
         model.addAttribute("searchCriteria", searchCriteria);
         return "test-reservation";
     }
-
-    @GetMapping("/edit/{resId}")
-    public String editReservation(Model model, @PathVariable int resId){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUser = authentication.getName();
-
-        Reservation reservation = reservationService.findReservationByGuestIDAndReservationID(resId, currentUser);
-
-        model.addAttribute("reservation", reservation);
-        log.info("{}",model);
-        return "edit-reservation";
-    }
-
-    @PostMapping("/edit/{resId}")
-    public String postEditReservation(@ModelAttribute("reservation") Reservation reservation, Model model, @PathVariable int resId){
-        log.info("{}",model);
-        Reservation foundReservation = reservationService.findreservationByID(reservation.getId());
-        model.addAttribute("reservation", foundReservation);
-        log.info("{}",model);
-        return "redirect:/reservation/view";
-    }
-
-    //TODO: Clean up/remove /view/user mapping
-//    @GetMapping("/view/user")
-//    public String getUserReservations(Model model){
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        String currentUser = auth.getName();
-//
-//        List<Reservation> currentUserReservations = reservationService.findAllReservationsForUser(currentUser);
-//        model.addAttribute("allReservations", currentUserReservations);
-//        return "test-reservation";
-//    }
 
     @GetMapping("/view/{guest_id}")
     public String getGuestReservations(Model model, @PathVariable int guest_id){
@@ -101,6 +68,39 @@ public class ReservationController {
         model.addAttribute("allReservations", confirmedReservations);
         return "test-reservation";
     }
+
+    @GetMapping("/edit/{resId}")
+    public String editReservation(Model model, @PathVariable int resId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+        FormEncapsulate formFields = new FormEncapsulate();
+
+        Reservation reservation = reservationService.findReservationByGuestIDAndReservationID(resId, currentUser);
+
+        model.addAttribute("reservation", reservation);
+        model.addAttribute("promoCode", formFields);
+        return "edit-reservation";
+    }
+
+    @PostMapping("/edit/{resId}")
+    public String postEditReservation(@ModelAttribute("reservation") Reservation reservation, Model model, @PathVariable int resId){
+        Reservation foundReservation = reservationService.findreservationByID(reservation.getId());
+        model.addAttribute("reservation", foundReservation);
+        return "redirect:/reservation/view";
+    }
+
+    //TODO: Clean up/remove /view/user mapping
+
+//    @GetMapping("/view/user")
+//    public String getUserReservations(Model model){
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        String currentUser = auth.getName();
+//
+//        List<Reservation> currentUserReservations = reservationService.findAllReservationsForUser(currentUser);
+//        model.addAttribute("allReservations", currentUserReservations);
+//        return "test-reservation";
+//    }
+
 
 //    @GetMapping("/make-reservation/{roomID}")
 //    //TODO: Get room loaded when making call
@@ -151,16 +151,16 @@ public class ReservationController {
         return "redirect:/reservation/view";
     }
 
-    @GetMapping("/search")
-    public String baseSearch(Model model){
-        Reservation searchDates = new Reservation();
-        model.addAttribute("searchDates", searchDates);
-//        List<Reservation> searchedReservations = reservationService.findAllReservations();
-//        log.info("{}", searchedReservations);
-//        log.info("{}", model.asMap().get("reservationList"));
-//        model.addAttribute("searchedReservations", model.asMap().get("reservationList"));
-        return "search-reservation";
-    }
+//    @GetMapping("/search")
+//    public String baseSearch(Model model){
+//        Reservation searchDates = new Reservation();
+//        model.addAttribute("searchDates", searchDates);
+////        List<Reservation> searchedReservations = reservationService.findAllReservations();
+////        log.info("{}", searchedReservations);
+////        log.info("{}", model.asMap().get("reservationList"));
+////        model.addAttribute("searchedReservations", model.asMap().get("reservationList"));
+//        return "search-reservation";
+//    }
 
 //    @PostMapping("/search/submit")
 //    public String searchSubmit(@ModelAttribute Reservation searchDates, RedirectAttributes redirectAttributes){
@@ -174,9 +174,11 @@ public class ReservationController {
 
     @GetMapping("/confirm")
     public String confirmReservationView(Model model){
-        log.info("{}", model.asMap().get("reservationStage").getClass());
+        log.info("{}", model);
         Reservation passedReservation = (Reservation) model.asMap().get("reservationStage");
+        FormEncapsulate formFields = new FormEncapsulate();
         model.addAttribute("reservation", passedReservation);
+        model.addAttribute("promoCode", formFields);
         return "confirm-reservation";
     }
 
@@ -198,6 +200,23 @@ public class ReservationController {
         reservationService.confirmRoom(resID, currentUser);
 
         return "redirect:/reservation/view";
+    }
+
+    @PostMapping("/apply-promo")
+    public String applyPromo(@ModelAttribute("promoCode" ) FormEncapsulate promoCode,
+                             @ModelAttribute("reservation") Reservation passedReservation,
+                             RedirectAttributes redirectAttributes)
+    {
+        Reservation reservation = reservationService.findreservationByID(passedReservation.getId());
+
+        if(reservation.isConfirmed()){
+            reservationService.applyPromo(promoCode.getFormString(), reservation.getId());
+            return "redirect:/reservation/edit/" + reservation.getId();
+        }
+
+        reservationService.applyPromo(promoCode.getFormString(), reservation.getId());
+        redirectAttributes.addFlashAttribute("reservationStage", reservation);
+        return "redirect:/reservation/confirm";
     }
 
     @DeleteMapping("/delete/{resID}")
