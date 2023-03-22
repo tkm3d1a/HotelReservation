@@ -43,6 +43,8 @@ public class MainController {
         log.info("{}, Roles: {}", currentPrincipalName, authorities);
         SearchCriteria searchCriteria = new SearchCriteria();
         searchCriteria.setSourceForm("indexPage");
+        searchCriteria.setCheckInDate(LocalDate.now());
+        searchCriteria.setCheckOutDate(LocalDate.now().plusDays(3));
         model.addAttribute("searchCriteria", searchCriteria);
         model.addAttribute("currentDate", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         model.addAttribute("minCheckOutDate", LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));

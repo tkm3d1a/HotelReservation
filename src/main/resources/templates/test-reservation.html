@@ -54,7 +54,7 @@
 				<th>Start Date</th>
 				<th>End Date</th>
 				<th>Confirmed?</th>
-				<th></th>
+				<th>Actions</th>
 			</tr>
 			</thead>
 			<tbody>
@@ -66,15 +66,26 @@
 				<td th:text="*{reservation.endDate}">endDate</td>
 				<td th:text="*{reservation.isConfirmed}">confirmed</td>
 				<td>
-					<form th:if="*{!reservation.isConfirmed() and reservation.isNotStarted()}" th:action="@{/reservation/confirm/stage/{resID}(resID = *{reservation.id})}" method="post">
-						<button class="btn btn-dark">Confirm Reservation</button>
-					</form>
-					<form th:if="*{reservation.isConfirmed() and reservation.isNotStarted()}" th:action="@{/reservation/edit/{resId}(resId = *{reservation.id})}" method="get">
-						<button class="btn btn-dark">Modify Reservation</button>
-					</form>
-					<form th:if="*{reservation.isNotStarted()}" th:action="@{/reservation/delete/{resID}(resID = *{reservation.id})}" th:method="delete">
-						<button class="btn btn-dark">Cancel Reservation</button>
-					</form>
+					<table class="d-flex justify-content-center mb-2">
+						<tr>
+							<td th:if="*{!reservation.isConfirmed() and reservation.isNotStarted()}">
+								<form th:action="@{/reservation/confirm/stage/{resID}(resID = *{reservation.id})}" method="post">
+									<button class="btn btn-success">Confirm</button>
+								</form>
+							</td>
+							<td th:if="*{reservation.isConfirmed() and reservation.isNotStarted()}">
+								<form th:action="@{/reservation/edit/{resId}(resId = *{reservation.id})}" method="get">
+									<button class="btn btn-info">Modify</button>
+								</form>
+							</td>
+							<td th:if="*{reservation.isNotStarted()}">
+								<form th:action="@{/reservation/delete/{resID}(resID = *{reservation.id})}" th:method="delete">
+									<button class="btn btn-warning">Cancel</button>
+								</form>
+							</td>
+						</tr>
+					</table>
+
 				</td>
 			</tr>
 			</tbody>

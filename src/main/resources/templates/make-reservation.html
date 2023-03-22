@@ -44,30 +44,34 @@
 	</h3>
 
 	<form action="#" th:action="@{/reservation/make-reservation/stage}" th:object="${reservation}" method="post" >
-		<div class="form-row">
+		<div class="form-row d-flex justify-content-center mb-2">
 			<div class="form-group col-md-3">
 				<label>Making a reservation for...</label>
 				<h4 th:text="*{guest.getFirstName() + ' ' + guest.getLastName()}" />
 			</div>
 			<div class="form-group col-md-3">
 				<label for="roomID">Room ID</label>
-				<input type="number" class="form-control" id="roomID" placeholder="1" th:field="*{room.id}" required>
+				<input type="number" class="form-control" id="roomID" placeholder="1" th:field="*{room.id}" readonly>
 			</div>
 			<div class="form-group col-md-3">
 				<label for="startDate">Start Date</label>
-				<input type="text" class="form-control" id="startDate" th:field="*{startDate}" required>
-				<!-- input type of date will not auto-populate due to parsing issues.... -->
+				<input type="date" class="form-control" id="startDate" th:field="*{startDate}" readonly>
 			</div>
 			<div class="form-group col-md-3">
 				<label for="endDate">End Date</label>
-				<input type="text" class="form-control" id="endDate" th:field="*{endDate}" required>
+				<input type="date" class="form-control" id="endDate" th:field="*{endDate}" readonly>
 			</div>
 			<input type="hidden" th:field="*{guest}">
 		</div>
-		<div class="text-center">
+		<div class="d-flex justify-content-center mb-2">
 			<button type="submit" class="btn btn-info float-end">Make Reservation</button>
 		</div>
 	</form>
+	<div class="d-flex justify-content-center mb-2">
+		<form th:action="@{/}" method="get">
+			<button type="submit" class="btn btn-info">Go Back to Room Search</button>
+		</form>
+	</div>
 </div>
 </body>
 </html>

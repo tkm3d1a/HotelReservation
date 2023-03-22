@@ -43,7 +43,15 @@ public class ReservationService {
         } else {
             log.warn("No reservation found matching ResID {}", resID);
         }
+    }
 
+    public void updateReservation(Reservation reservation){
+        Reservation updatedReservation = findreservationByID(reservation.getId());
+        updatedReservation.setStartDate(reservation.getStartDate());
+        updatedReservation.setEndDate(reservation.getEndDate());
+        updateNumDays(updatedReservation);
+        updateTotalRate(updatedReservation);
+        saveReservation(updatedReservation);
     }
 
     public void updateDailyRate(Reservation resToUpdate, int updatedRate){

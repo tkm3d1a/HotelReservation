@@ -82,13 +82,17 @@ public class ReservationController {
 
         model.addAttribute("reservation", reservation);
         model.addAttribute("promoCode", formFields);
+        model.addAttribute("minCheckInDate", reservation.getStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        model.addAttribute("minCheckOutDate", reservation.getStartDate().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        model.addAttribute("maxCheckInDate", reservation.getEndDate().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        model.addAttribute("maxCheckOutDate", reservation.getEndDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+
         return "edit-reservation";
     }
 
     @PostMapping("/edit/{resId}")
-    public String postEditReservation(@ModelAttribute("reservation") Reservation reservation, Model model, @PathVariable int resId){
-        Reservation foundReservation = reservationService.findreservationByID(reservation.getId());
-        model.addAttribute("reservation", foundReservation);
+    public String postEditReservation(@ModelAttribute("reservation") Reservation reservation){
+        reservationService.updateReservation(reservation);
         return "redirect:/reservation/view";
     }
 
@@ -211,15 +215,15 @@ public class ReservationController {
                              RedirectAttributes redirectAttributes)
     {
         Reservation reservation = reservationService.findreservationByID(passedReservation.getId());
+        reservationService.applyPromo(promoCode.getFormString(), reservation.getId());
+
+        redirectAttributes.addFlashAttribute("reservationStage", reservation);
 
         if(reservation.isConfirmed()){
-            reservationService.applyPromo(promoCode.getFormString(), reservation.getId());
             return "redirect:/reservation/edit/" + reservation.getId();
+        } else {
+            return "redirect:/reservation/confirm";
         }
-
-        reservationService.applyPromo(promoCode.getFormString(), reservation.getId());
-        redirectAttributes.addFlashAttribute("reservationStage", reservation);
-        return "redirect:/reservation/confirm";
     }
 
     @DeleteMapping("/delete/{resID}")
