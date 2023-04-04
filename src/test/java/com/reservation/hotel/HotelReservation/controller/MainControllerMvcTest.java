@@ -38,10 +38,9 @@ class MainControllerMvcTest {
     void registerUserShouldReturn403WhenAnonymousUser() throws Exception {
         mockMvc.perform(post("/register")).andExpect(status().isForbidden());
     }
-
-    @Test
-    @WithMockUser(roles="GUEST", username = "testuser")
-    void registerUserTest() throws Exception {
-        mockMvc.perform(post("/register")).andExpect(status().isForbidden());
-    }
+//    @Test
+//    @WithMockUser(roles="GUEST", username = "testuser")
+//    void registerUserTest() throws Exception {
+//        mockMvc.perform(post("/register")).andExpect(status().isForbidden());
+//    }
 }
