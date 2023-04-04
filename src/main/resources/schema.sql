@@ -4,4 +4,4 @@
 -- FLUSH PRIVILEGES;
 
 -- initialization sql
--- DROP TABLE teamsfranchises;
+DROP TABLE teamsfranchises;

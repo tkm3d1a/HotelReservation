@@ -10,6 +10,7 @@ import com.reservation.hotel.HotelReservation.reservation.ReservationService;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -23,13 +24,13 @@ public class TestReservationService {
 
 //    private static Reservation reservation;
 
-    @Resource
+    @Autowired
     ReservationService reservationService;
 
-    @Resource
+    @Autowired
     HotelUserRepository hotelUserRepository;
 
-    @Resource
+    @Autowired
     RoomRepository roomRepository;
 
 //    @BeforeAll
