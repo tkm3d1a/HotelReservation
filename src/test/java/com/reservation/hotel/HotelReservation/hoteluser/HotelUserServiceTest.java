@@ -51,6 +51,7 @@ class HotelUserServiceTest {
         hotelUserRepository.save(getTestUser());
 
         Assertions.assertFalse(hotelUserService.registerNewHotelUser(getTestUser()));
+        Assertions.assertTrue(hotelUserService.registerNewHotelUser(getTestUser2()));
     }
 
     private HotelUser getTestUser() {
@@ -64,6 +65,22 @@ class HotelUserServiceTest {
         testHotelUser.setZipCode("88776");
         testHotelUser.setState("TX");
         testHotelUser.setPhoneNumber("1233031223");
+        testHotelUser.setPassword(bCryptPasswordEncoder.encode("Test123"));
+
+        return testHotelUser;
+    }
+
+    private HotelUser getTestUser2() {
+        HotelUser testHotelUser = new HotelUser();
+        testHotelUser.setUsername("testUser2");
+        testHotelUser.setEmail("testUser2@Hhotel.com");
+        testHotelUser.setRole("ROLE_GUEST");
+        testHotelUser.setFirstName("Test2");
+        testHotelUser.setLastName("User2");
+        testHotelUser.setStreetAddress("Street Address");
+        testHotelUser.setZipCode("88774");
+        testHotelUser.setState("TX");
+        testHotelUser.setPhoneNumber("1233031224");
         testHotelUser.setPassword(bCryptPasswordEncoder.encode("Test123"));
 
         return testHotelUser;
