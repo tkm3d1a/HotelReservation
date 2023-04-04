@@ -5,9 +5,6 @@ import com.reservation.hotel.HotelReservation.hotelroom.Room;
 import com.reservation.hotel.HotelReservation.hotelroom.RoomRepository;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUser;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUserRepository;
-import com.reservation.hotel.HotelReservation.reservation.Reservation;
-import com.reservation.hotel.HotelReservation.reservation.ReservationService;
-import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,17 +55,36 @@ public class TestReservationService {
         Assertions.assertEquals(2, reservation.getNumDays());
     }
 
+    @Test
+    @SqlGroup({
+            @Sql(value = "classpath:reservationServiceTest.sql", executionPhase = BEFORE_TEST_METHOD)
+    })
+    public void saveReservationTest() {
+        saveTestRoom_1();
+        saveTestUser_1();
+        Reservation reservation = reservationService.createNewReservation(
+                "100",
+                "Tester",
+                "2023-04-13",
+                "2023-04-15"
+        );
+
+        reservationService.saveReservation(reservation);
+
+        Assertions.assertEquals(1, reservation.getId());
+    }
+
     // add promo code before confirming
-//    @Test
-//    public void applyPromoBeforeConfirmTest() {
-//
-//    }
-//
-//    //add promo code after confirming
-//    @Test
-//    public void applyPromoAfterConfirmingTest() {
-//
-//    }
+    @Test
+    public void applyPromoBeforeConfirmTest() {
+
+    }
+
+    //add promo code after confirming
+    @Test
+    public void applyPromoAfterConfirmingTest() {
+
+    }
 
     //cant do save reservation to db
 

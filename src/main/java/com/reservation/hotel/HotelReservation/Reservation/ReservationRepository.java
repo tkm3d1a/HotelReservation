@@ -1,4 +1,4 @@
-package com.reservation.hotel.HotelReservation.reservation;
+package com.reservation.hotel.HotelReservation.Reservation;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
