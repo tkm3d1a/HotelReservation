@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -129,13 +128,13 @@ public class RoomService {
                         reservation.getStartDate().isEqual(searchCriteria.getCheckInDate())) &&
                         (reservation.getEndDate().isBefore(searchCriteria.getCheckOutDate()) ||
                                 reservation.getEndDate().isEqual(searchCriteria.getCheckOutDate()))))
-                .collect(Collectors.toList());
+                .toList();
 
 
         //get the room ids associated with conflicting reservations
         List<Integer> conflictingRoomIds = conflictingReservations.stream()
                 .map(reservation -> reservation.getRoom().getId())
-                .collect(Collectors.toList());
+                .toList();
 
         // filter out rooms with existing reservations on those dates and return available rooms
         filteredRooms = filteredRooms.stream()
@@ -143,5 +142,10 @@ public class RoomService {
                 .collect(Collectors.toList());
 
         return filteredRooms;
+    }
+
+    public Room findRoomByRoomNumber(String roomNumber) {
+        int roomNumberInt = Integer.parseInt(roomNumber);
+        return roomRepository.findRoomByRoomNumber(roomNumberInt);
     }
 }

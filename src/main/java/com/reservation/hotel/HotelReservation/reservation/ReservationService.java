@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
@@ -48,7 +49,7 @@ public class ReservationService {
     }
 
     public void updateReservation(Reservation reservation){
-        Reservation updatedReservation = findreservationByID(reservation.getId());
+        Reservation updatedReservation = findReservationByID(reservation.getId());
         updatedReservation.setStartDate(reservation.getStartDate());
         updatedReservation.setEndDate(reservation.getEndDate());
         updateNumDays(updatedReservation);
@@ -60,7 +61,6 @@ public class ReservationService {
         //TODO: update with logic to clamp rate to a base value
         resToUpdate.setDailyRate(updatedRate);
     }
-
 
     public void updateNumDays(Reservation reservation){
         int numDays = (int) ChronoUnit.DAYS.between(reservation.getStartDate(), reservation.getEndDate());
@@ -200,7 +200,8 @@ public class ReservationService {
 //        return finalReservationsAvailable;
 //    }
 
-    public Reservation findReservationByGuestIDAndReservationID(int resID, String currentUser){
+    public Reservation findReservationByGuestIDAndReservationID(int resID,
+                                                                String currentUser){
         Optional<Reservation> reservationOptional = reservationRepository.findById(resID);
         Reservation reservation = new Reservation();
         if(reservationOptional.isPresent()){
@@ -216,8 +217,34 @@ public class ReservationService {
         return reservation;
     }
 
-    public Reservation findreservationByID(int resID){
+    public Reservation findReservationByID(int resID){
         Optional<Reservation> reservationOptional = reservationRepository.findById(resID);
         return reservationOptional.orElseGet(Reservation::new);
+    }
+
+    public Reservation createNewReservation(String roomNumber,
+                                            String currentUser,
+                                            String checkInDate,
+                                            String checkOutDate) {
+        Room room = roomService.findRoomByRoomNumber(roomNumber);
+        HotelUser hotelUser = hotelUserService.findUserByUsername(currentUser);
+        if(!hotelUser.getRole().equals("ROLE_GUEST")) {
+            throw new RuntimeException("Reservation can only be assigned to a guest");
+        }
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate checkIn = LocalDate.parse(checkInDate, dateTimeFormatter);
+        LocalDate checkOut = LocalDate.parse(checkOutDate, dateTimeFormatter);
+
+        Reservation reservation = new Reservation();
+        reservation.setRoom(room);
+        reservation.setGuest(hotelUser);
+        reservation.setStartDate(checkIn);
+        reservation.setEndDate(checkOut);
+        updateDailyRate(reservation, room.getBaseRate());
+        updateNumDays(reservation);
+        updateTotalRate(reservation);
+
+        return reservation;
     }
 }
