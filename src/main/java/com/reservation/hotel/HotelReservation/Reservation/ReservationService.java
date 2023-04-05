@@ -118,6 +118,7 @@ public class ReservationService {
     public void findRoomForRes(Reservation resToUpdate){
         int findRoom = resToUpdate.getRoom().getId();
         Room room = roomService.findRoomByID(findRoom);
+        log.info("{}", room);
         resToUpdate.setRoom(room);
     }
 
@@ -164,41 +165,6 @@ public class ReservationService {
         sortReservationsByDate(reservations);
         return reservations;
     }
-
-//    public List<Reservation> findReservationsBetweenDates(Reservation searchDates){
-//        HashSet<Reservation> reservationHashSet = new HashSet<>();
-//        HashSet<Room> roomHashSet = new HashSet<>();
-//
-//        List<Reservation> result1 = reservationRepository.findAllByStartDateBetween(searchDates.getStartDate(), searchDates.getEndDate());
-//        log.info("Result 1...");
-//        for( Reservation foundReservation : result1){
-//            log.info("{}", foundReservation);
-//            reservationHashSet.add(foundReservation);
-//            roomHashSet.add(foundReservation.getRoom());
-//        }
-//
-//        List<Reservation> result2 = reservationRepository.findAllByEndDateBetween(searchDates.getStartDate(), searchDates.getEndDate());
-//        log.info("Result 2...");
-//        for( Reservation foundReservation : result2){
-//            log.info("{}", foundReservation);
-//            reservationHashSet.add(foundReservation);
-//            roomHashSet.add(foundReservation.getRoom());
-//        }
-//
-//        List<Reservation> finalReservationsAvailable = new ArrayList<>(reservationHashSet.size());
-//        log.info("Final Reservation HashSet...");
-//        for( Reservation inHashSet : reservationHashSet){
-//            log.info("{}", inHashSet);
-//            finalReservationsAvailable.add(inHashSet);
-//        }
-//
-//        log.info("Final Room HashSet...");
-//        for( Room inHashSet : roomHashSet){
-//            log.info("{}", inHashSet);
-//        }
-//
-//        return finalReservationsAvailable;
-//    }
 
     public Reservation findReservationByGuestIDAndReservationID(int resID,
                                                                 String currentUser){

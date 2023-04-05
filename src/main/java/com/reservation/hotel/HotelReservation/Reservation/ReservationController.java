@@ -94,34 +94,6 @@ public class ReservationController {
         return "redirect:/reservation/view";
     }
 
-    //TODO: Clean up/remove /view/user mapping
-
-//    @GetMapping("/view/user")
-//    public String getUserReservations(Model model){
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        String currentUser = auth.getName();
-//
-//        List<Reservation> currentUserReservations = reservationService.findAllReservationsForUser(currentUser);
-//        model.addAttribute("allReservations", currentUserReservations);
-//        return "test-reservation";
-//    }
-
-
-//    @GetMapping("/make-reservation/{roomID}")
-//    //TODO: Get room loaded when making call
-//    //TODO: Get date range loaded when making call
-//    public String makeNewReservation(Model model, @PathVariable int roomID){
-//
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        String currentUser = auth.getName();
-//        Reservation reservation = new Reservation();
-//
-//        reservationService.addCurrentUserToRes(reservation, currentUser);
-//
-//        model.addAttribute("reservation", reservation);
-//        return "make-reservation";
-//    }
-
     @GetMapping("/make-reservation/{roomNumber}/in/{checkInDate}/out/{checkOutDate}")
     public String reserveRoom(@PathVariable String roomNumber, @PathVariable String checkInDate,
                               @PathVariable String checkOutDate, Model model){
@@ -153,27 +125,6 @@ public class ReservationController {
 
         return "redirect:/reservation/view";
     }
-
-//    @GetMapping("/search")
-//    public String baseSearch(Model model){
-//        Reservation searchDates = new Reservation();
-//        model.addAttribute("searchDates", searchDates);
-////        List<Reservation> searchedReservations = reservationService.findAllReservations();
-////        log.info("{}", searchedReservations);
-////        log.info("{}", model.asMap().get("reservationList"));
-////        model.addAttribute("searchedReservations", model.asMap().get("reservationList"));
-//        return "search-reservation";
-//    }
-
-//    @PostMapping("/search/submit")
-//    public String searchSubmit(@ModelAttribute Reservation searchDates, RedirectAttributes redirectAttributes){
-//        List<Reservation> searchedReservations = reservationService.findAllReservations();
-//        redirectAttributes.addFlashAttribute("reservationList", searchedReservations);
-//
-//        reservationService.findReservationsBetweenDates(searchDates);
-//
-//        return "redirect:/reservation/search";
-//    }
 
     @GetMapping("/confirm")
     public String confirmReservationView(Model model){

@@ -6,7 +6,6 @@ import com.reservation.hotel.HotelReservation.hotelroom.RoomRepository;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUser;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +15,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 
+import java.util.List;
+
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
 @Slf4j
@@ -24,7 +25,7 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
 @SqlGroup({
         @Sql(value = "classpath:reservationServiceTest.sql", executionPhase = BEFORE_TEST_METHOD)
 })
-public class TestReservationService {
+public class ReservationServiceTest {
 
     Reservation reservationStatic;
 
@@ -42,6 +43,8 @@ public class TestReservationService {
         reservationStatic = new Reservation();
         saveTestUser_1();
         saveTestRoom_1();
+        saveTestRoom_2();
+        saveTestRoom_3();
     }
 //
 //    @AfterEach
@@ -120,8 +123,65 @@ public class TestReservationService {
         reservationService.confirmRoom(savedID, "tester");
         Reservation reservationFoundAfter = reservationService.findReservationByID(savedID);
         Assertions.assertEquals(100, reservationFoundAfter.getRoom().getRoomNumber());
-        Assertions.assertFalse(reservationFoundAfter.isConfirmed());
-        Assertions.assertTrue(reservationFoundAfter.isPromoApplied());
+        Assertions.assertTrue(reservationFoundAfter.isConfirmed());
+        Assertions.assertFalse(reservationFoundAfter.isPromoApplied());
+
+        reservationService.applyPromo("1234", savedID);
+        Reservation reservationFoundAfterPromo = reservationService.findReservationByID(savedID);
+        Assertions.assertEquals(100, reservationFoundAfterPromo.getRoom().getRoomNumber());
+        Assertions.assertTrue(reservationFoundAfterPromo.isConfirmed());
+        Assertions.assertTrue(reservationFoundAfterPromo.isPromoApplied());
+    }
+
+    @Test
+    public void findRoomForResWithOnlyRoomIDPopulated() {
+        Reservation reservation = reservationService.createNewReservation(
+                "100",
+                "tester",
+                "2023-04-13",
+                "2023-04-15"
+        );
+        log.info("{}", reservation.getRoom());
+        // Need to force room after creation to be an empty room object with just a room ID for searching in DB
+        Room room = new Room();
+        room.setId(reservation.getRoom().getId());
+        reservation.setRoom(room);
+
+        Assertions.assertEquals(0, reservation.getRoom().getRoomNumber());
+
+        reservationService.findRoomForRes(reservation);
+
+        Assertions.assertEquals(100, reservation.getRoom().getRoomNumber());
+    }
+
+    @Test
+    public void findAllReservationsShouldReturnList() {
+        List<Reservation> reservations = reservationService.findAllReservations();
+        int reservationsSize = reservations.size();
+        log.info("{}", reservations);
+
+        Assertions.assertEquals(0, reservationsSize);
+
+        createThreeReservations();
+        reservations = reservationService.findAllReservations();
+        log.info("{}", reservations);
+        reservationsSize = reservations.size();
+        Assertions.assertEquals(3, reservationsSize);
+    }
+
+    @Test
+    public void findAllGuestReservationsShouldReturnList() {
+        List<Reservation> reservations = reservationService.findAllReservationsForUser("tester");
+        int reservationsSize = reservations.size();
+        log.info("{}", reservations);
+
+        Assertions.assertEquals(0, reservationsSize);
+
+        createThreeReservations();
+        reservations = reservationService.findAllReservationsForUser("tester");
+        log.info("{}", reservations);
+        reservationsSize = reservations.size();
+        Assertions.assertEquals(3, reservationsSize);
     }
 
     //cant do save reservation to db
@@ -156,5 +216,55 @@ public class TestReservationService {
                 100);
 
         roomRepository.save(room);
+    }
+
+    private void saveTestRoom_2() {
+        Room room = new Room(
+                2,
+                101,
+                "King",
+                1,
+                "comfort",
+                "smoking",
+                200);
+
+        roomRepository.save(room);
+    }
+
+    private void saveTestRoom_3() {
+        Room room = new Room(
+                3,
+                102,
+                "Queen",
+                1,
+                "comfort",
+                "smoking",
+                150);
+
+        roomRepository.save(room);
+    }
+
+    private void createThreeReservations() {
+        Reservation reservation1 = reservationService.createNewReservation(
+                "100",
+                "tester",
+                "2023-04-13",
+                "2023-04-15"
+        );
+        Reservation reservation2 = reservationService.createNewReservation(
+                "101",
+                "tester",
+                "2023-04-16",
+                "2023-04-17"
+        );
+        Reservation reservation3 = reservationService.createNewReservation(
+                "102",
+                "tester",
+                "2023-04-18",
+                "2023-04-20"
+        );
+        reservationService.saveReservation(reservation1);
+        reservationService.saveReservation(reservation2);
+        reservationService.saveReservation(reservation3);
     }
 }
