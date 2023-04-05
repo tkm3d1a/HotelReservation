@@ -3,6 +3,7 @@ package com.reservation.hotel.HotelReservation.Reservation;
 import com.reservation.hotel.HotelReservation.hotelroom.SearchCriteria;
 import com.reservation.hotel.HotelReservation.util.FormEncapsulate;
 import jakarta.annotation.Resource;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @Slf4j
 @Controller
+@AllArgsConstructor
 @RequestMapping("/reservation")
 public class ReservationController {
 

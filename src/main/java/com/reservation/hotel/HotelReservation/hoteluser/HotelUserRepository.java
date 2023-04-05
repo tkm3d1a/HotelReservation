@@ -10,6 +10,7 @@ import java.util.Optional;
 public interface HotelUserRepository extends JpaRepository<HotelUser, Integer> {
     HotelUser findByUsername(String username);
     Optional<HotelUser> findHotelUserByUsername(String username);
+    Optional<HotelUser> findHotelUserByEmail(String email);
 
     @Query(value = "SELECT MAX(id) FROM hoteluser", nativeQuery = true)
     int findMaxID();
