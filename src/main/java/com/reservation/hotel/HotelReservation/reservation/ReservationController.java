@@ -1,4 +1,4 @@
-package com.reservation.hotel.HotelReservation.Reservation;
+package com.reservation.hotel.HotelReservation.reservation;
 
 import com.reservation.hotel.HotelReservation.hotelroom.SearchCriteria;
 import com.reservation.hotel.HotelReservation.util.FormEncapsulate;
@@ -99,6 +99,8 @@ public class ReservationController {
                               @PathVariable String checkOutDate, Model model){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = auth.getName();
+//        model("formFields", formFields)
+//        formFields.username = currentUser;
 
         Reservation reservation = reservationService.createNewReservation(
                 roomNumber,

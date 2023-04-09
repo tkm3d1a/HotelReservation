@@ -1,4 +1,4 @@
-package com.reservation.hotel.HotelReservation.Reservation;
+package com.reservation.hotel.HotelReservation.reservation;
 
 import com.reservation.hotel.HotelReservation.hotelroom.Room;
 import com.reservation.hotel.HotelReservation.hotelroom.RoomService;
