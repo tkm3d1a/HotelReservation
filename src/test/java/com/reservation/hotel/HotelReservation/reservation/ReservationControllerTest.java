@@ -52,7 +52,7 @@ class ReservationControllerTest {
 
     @BeforeEach
     public void setUp(){
-        reservationController = new ReservationController(reservationRepository, roomRepository, reservationService);
+        reservationController = new ReservationController(reservationRepository, reservationService);
         saveTestRoom();
         saveTestUser();
         saveTestReservation();
@@ -119,7 +119,7 @@ class ReservationControllerTest {
     @Test
     void applyPromoShouldUpdateRatesAndRedirectToReservationConfirmation() {
         when(formEncapsulate.getFormString()).thenReturn("1234");
-        when(reservationService.findreservationByID(anyInt())).thenReturn(getTestReservation());
+        when(reservationService.findReservationByID(anyInt())).thenReturn(getTestReservation());
 
         String template = reservationController.applyPromo(formEncapsulate, getTestReservation(), redirectAttributes);
 
