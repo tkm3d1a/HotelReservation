@@ -26,4 +26,9 @@ public class Payment {
     //TODO: remove these? they are contained in reservation class
 //    private int totalDaysReserved;
 //    private int dailyRate;
+
+    public void setReservation(Reservation pReservation){
+        this.reservation = pReservation;
+        this.totalBilled = reservation.getTotalRate();
+    }
 }

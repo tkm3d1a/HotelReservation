@@ -1,12 +1,11 @@
 package com.reservation.hotel.HotelReservation.payment;
 
 import com.reservation.hotel.HotelReservation.reservation.Reservation;
-import com.reservation.hotel.HotelReservation.reservation.ReservationRepository;
+import com.reservation.hotel.HotelReservation.reservation.ReservationService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -16,19 +15,19 @@ public class PaymentService{
     PaymentRepository paymentRepository;
 
     @Resource
-    ReservationRepository reservationRepository;
+    ReservationService reservationService;
 
     public void createReceipt(Payment payment, int reservationID){
-        Optional<Reservation> reservationOptional = reservationRepository.findById(reservationID);
-        Reservation reservation;
+        Reservation reservation = reservationService.findReservationByID(reservationID);
+        log.info("Reservation info: {}", reservation);
 
-        if(reservationOptional.isPresent()) {
+        if(reservation.getGuest() != null) {
             log.info("Reservation with ResID {} found!", reservationID);
-            reservation = reservationOptional.get();
             payment.setReservation(reservation);
         } else {
             String msg = "Reservation with ResID " + reservationID + " was not found";
             log.warn(msg);
+            log.warn("Guest was null: {}", reservation.getGuest());
             throw new RuntimeException(msg);
         }
 
