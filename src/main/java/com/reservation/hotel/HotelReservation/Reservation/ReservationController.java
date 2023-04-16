@@ -83,6 +83,10 @@ public class ReservationController {
 
         Reservation reservation = reservationService.findReservationByGuestIDAndReservationID(resId, currentUser);
 
+        if(null == reservation.getRoom() || null == reservation.getGuest()) {
+            return "redirect:/reservation/view?notfound=";
+        }
+
         model.addAttribute("reservation", reservation);
         model.addAttribute("promoCode", formFields);
         model.addAttribute("minCheckInDate", reservation.getStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));

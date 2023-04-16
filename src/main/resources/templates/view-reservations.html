@@ -39,6 +39,9 @@
 </nav>
 
 <div class="container" >
+	<div th:if="${param.notfound}">
+		<p class="text-danger">Reservation does not exist!</p>
+	</div>
 	<h3 class="text-center">
 		Current Reservations
 	</h3>
