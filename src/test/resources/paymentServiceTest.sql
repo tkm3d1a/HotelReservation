@@ -1,3 +1,4 @@
+DELETE FROM payment;
 DELETE FROM reservation;
 DELETE FROM hoteluser;
 DELETE FROM room;
@@ -72,4 +73,58 @@ values (
         1000,
         99,
         99
+       );
+insert into reservation
+(
+    id,
+    dailyRate,
+    endDate,
+    isConfirmed,
+    isNotStarted,
+    isPromoApplied,
+    numDays,
+    startDate,
+    totalRate,
+    guest_id,
+    room_id
+)
+values (
+           100,
+           100,
+           '2000-01-01',
+           0,
+           0,
+           0,
+           10,
+           '2000-01-01',
+           1500,
+           99,
+           99
+       );
+insert into reservation
+(
+    id,
+    dailyRate,
+    endDate,
+    isConfirmed,
+    isNotStarted,
+    isPromoApplied,
+    numDays,
+    startDate,
+    totalRate,
+    guest_id,
+    room_id
+)
+values (
+           101,
+           100,
+           '2000-01-01',
+           0,
+           0,
+           0,
+           10,
+           '2000-01-01',
+           2000,
+           99,
+           99
        );

@@ -20,8 +20,11 @@ public class Payment {
     @OneToOne
     private Reservation reservation;
 
-    private String paymentInfo;
-    private int totalBilled;
+    private String paymentInfo = "EMPTY";
+    private int totalToBill;
+    private int totalCollected = 0;
+    private boolean isPaymentProcessed = false;
+    private boolean isCorporate = false;
 
     //TODO: remove these? they are contained in reservation class
 //    private int totalDaysReserved;
@@ -29,6 +32,7 @@ public class Payment {
 
     public void setReservation(Reservation pReservation){
         this.reservation = pReservation;
-        this.totalBilled = reservation.getTotalRate();
+        this.totalToBill = reservation.getTotalRate();
+        this.paymentInfo = "PENDING";
     }
 }
