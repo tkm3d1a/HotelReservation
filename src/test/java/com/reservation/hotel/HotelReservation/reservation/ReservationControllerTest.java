@@ -63,14 +63,14 @@ class ReservationControllerTest {
     void getAllReservationsShouldReturnTestReservationPage() {
         String template = reservationController.getAllReservations(model);
 
-        Assertions.assertEquals("test-reservation", template);
+        Assertions.assertEquals("view-reservations", template);
     }
 
     @Test
     void getGuestReservationsShouldReturnTestReservationPage() {
         String template = reservationController.getGuestReservations(model, 1);
 
-        Assertions.assertEquals("test-reservation", template);
+        Assertions.assertEquals("view-reservations", template);
     }
 
     @Test

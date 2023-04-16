@@ -70,14 +70,14 @@ public class ReservationController {
     public String getGuestReservations(Model model, @PathVariable int guest_id){
         List<Reservation> guestReservations = reservationService.findAllReservationsByGuestID(guest_id);
         model.addAttribute("allReservations", guestReservations);
-        return "test-reservation";
+        return "view-reservations";
     }
 
     @GetMapping("/view/confirmed")
     public String getGuestReservations(Model model){
         List<Reservation> confirmedReservations = reservationRepository.findAllByIsConfirmed(true);
         model.addAttribute("allReservations", confirmedReservations);
-        return "test-reservation";
+        return "view-reservations";
     }
 
     @GetMapping("/edit/{resId}")
