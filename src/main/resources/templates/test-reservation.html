@@ -67,20 +67,38 @@
 				<td th:text="*{reservation.isConfirmed}">confirmed</td>
 				<td>
 					<table class="d-flex justify-content-center mb-2">
-						<tr>
-							<td th:if="*{!reservation.isConfirmed() and reservation.isNotStarted()}">
+						<tr th:if="*{reservation.isNotStarted()}">
+							<td th:if="*{!reservation.isConfirmed()}">
 								<form th:action="@{/reservation/confirm/stage/{resID}(resID = *{reservation.id})}" method="post">
 									<button class="btn btn-success">Confirm</button>
 								</form>
 							</td>
-							<td th:if="*{reservation.isConfirmed() and reservation.isNotStarted()}">
+							<td th:if="*{reservation.isConfirmed()}">
 								<form th:action="@{/reservation/edit/{resId}(resId = *{reservation.id})}" method="get">
 									<button class="btn btn-info">Modify</button>
 								</form>
 							</td>
-							<td th:if="*{reservation.isNotStarted()}">
+							<td>
 								<form th:action="@{/reservation/delete/{resID}(resID = *{reservation.id})}" th:method="delete">
 									<button class="btn btn-warning">Cancel</button>
+								</form>
+							</td>
+						</tr>
+						<tr th:if="*{!reservation.isNotStarted()}">
+							<td>
+								<form th:action="@{/payment}" th:method="get">
+									<button class="btn btn-warning">Check In</button>
+								</form>
+							</td>
+							<td>
+								<form th:action="@{/payment}" th:method="get">
+									<button class="btn btn-warning">Check Out</button>
+								</form>
+							</td>
+							<td>
+								<form action="#" th:action="@{/payment/view}" th:method="POST">
+									<input type="hidden" th:attr="value=*{reservation.id}" name="reservation" />
+									<button class="btn btn-warning">Print Receipt</button>
 								</form>
 							</td>
 						</tr>

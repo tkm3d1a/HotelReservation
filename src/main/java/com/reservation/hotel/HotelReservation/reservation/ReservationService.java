@@ -82,9 +82,10 @@ public class ReservationService {
                 saveReservation(reservation);
             } else {
                 log.warn("Reservation does not match logged in user");
+                log.warn("Only user '{}' can confirm this reservation", reservation.getGuest().getUsername());
             }
         } else {
-            log.warn("No reservation found with that ID");
+            log.warn("No reservation found with this ID: {}", resID);
         }
         //TODO: update availability table?
     }
@@ -175,9 +176,10 @@ public class ReservationService {
             if(reservation.getGuest().getUsername().equals(currentUser)){
                 return reservation;
             } else {
-                log.warn("Reservation does not match logged in user");
+                log.warn("Reservation does not match logged in user: '{}'", currentUser);
             }
-            log.warn("No reservation found with that ID");
+        } else {
+            log.warn("No reservation found with the ID {}", resID);
         }
 
         return reservation;

@@ -1,6 +1,8 @@
 package com.reservation.hotel.HotelReservation.reservation;
 
 import com.reservation.hotel.HotelReservation.hotelroom.SearchCriteria;
+import com.reservation.hotel.HotelReservation.payment.Payment;
+import com.reservation.hotel.HotelReservation.payment.PaymentService;
 import com.reservation.hotel.HotelReservation.util.FormEncapsulate;
 import jakarta.annotation.Resource;
 import lombok.AllArgsConstructor;
@@ -29,6 +31,9 @@ public class ReservationController {
 
     @Resource
     ReservationService reservationService;
+
+    @Resource
+    PaymentService paymentService;
 
     //TODO: should this move to service or stay here?
     @GetMapping("/view")
@@ -88,8 +93,9 @@ public class ReservationController {
         return "edit-reservation";
     }
 
-    @PostMapping("/edit/{resId}")
+    @PostMapping("/edit")
     public String postEditReservation(@ModelAttribute("reservation") Reservation reservation){
+        log.info("Editing reservation: {}", reservation);
         reservationService.updateReservation(reservation);
         return "redirect:/reservation/view";
     }
@@ -154,6 +160,7 @@ public class ReservationController {
         String currentUser = auth.getName();
 
         reservationService.confirmRoom(resID, currentUser);
+        paymentService.associateReservation(new Payment(), resID);
 
         return "redirect:/reservation/view";
     }

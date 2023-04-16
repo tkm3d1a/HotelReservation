@@ -26,7 +26,13 @@ public class PaymentService{
 
         if(reservation.getGuest() != null) {
             log.info("Reservation with ResID {} found!", reservationID);
-            payment.setReservation(reservation);
+            if(reservation.isConfirmed()){
+                payment.setReservation(reservation);
+                paymentRepository.save(payment);
+                log.info("Reservation was confirmed, created payment record");
+            } else {
+                log.warn("Reservation is not confirmed, cannot create payment record");
+            }
         } else {
             String msg = "Reservation with ResID " + reservationID + " was not found";
             log.warn(msg);
@@ -34,7 +40,6 @@ public class PaymentService{
             throw new RuntimeException(msg);
         }
 
-        paymentRepository.save(payment);
     }
 
     public void enterPaymentInfo(Payment payment, String paymentInfo) {
@@ -70,5 +75,20 @@ public class PaymentService{
 
     public List<Payment> findAllByGuestID(int guestID) {
         return paymentRepository.findAllByReservation_Guest_Id(guestID);
+    }
+
+    public Payment findPaymentForReservation(Reservation reservation) {
+        Optional<Payment> optionalPayment = paymentRepository.findByReservation_Id(reservation.getId());
+        Payment payment = new Payment();
+
+        if(optionalPayment.isPresent()) {
+            log.info("Payment found");
+            payment = optionalPayment.get();
+        } else {
+            log.info("Payment not found, creating initial record");
+            associateReservation(payment, reservation.getId());
+        }
+
+        return payment;
     }
 }

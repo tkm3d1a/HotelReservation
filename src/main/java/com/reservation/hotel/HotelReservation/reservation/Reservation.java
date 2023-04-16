@@ -30,6 +30,7 @@ public class Reservation {
     private boolean isConfirmed = false;
     private boolean isNotStarted = true;
     private boolean isPromoApplied = false;
+    private boolean isCheckedIn = false;
 
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
