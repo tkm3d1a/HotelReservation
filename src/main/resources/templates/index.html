@@ -47,6 +47,9 @@
     <div th:if="${param.error}">
         <p class="text-danger">Check out date must be after check in date!</p>
     </div>
+    <div th:if="${param.exception}">
+        <p class="text-danger">Unable to make reservation for unregistered user!</p>
+    </div>
     <form th:action="@{/rooms/searchAvailableRooms}" th:object="${searchCriteria}" method="post">
         <div class="form-row">
             <div class="form-group col-md-6">

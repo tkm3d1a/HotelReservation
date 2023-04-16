@@ -77,7 +77,7 @@ public class ReservationService {
         Reservation reservation;
         if(reservationOptional.isPresent()){
             reservation = reservationOptional.get();
-            if(reservation.getGuest().getUsername().equals(currentUser)){
+            if(reservation.getGuest().getUsername().equals(currentUser) || hotelUserService.findUserByUsername(currentUser).getRole().equalsIgnoreCase("ROLE_CLERK")){
                 reservation.setConfirmed(true);
                 saveReservation(reservation);
             } else {
@@ -173,7 +173,7 @@ public class ReservationService {
         Reservation reservation = new Reservation();
         if(reservationOptional.isPresent()){
             reservation = reservationOptional.get();
-            if(reservation.getGuest().getUsername().equals(currentUser)){
+            if(reservation.getGuest().getUsername().equals(currentUser) || hotelUserService.findUserByUsername(currentUser).getRole().equalsIgnoreCase("ROLE_CLERK")){
                 return reservation;
             } else {
                 log.warn("Reservation does not match logged in user: '{}'", currentUser);
@@ -194,19 +194,18 @@ public class ReservationService {
                                             String currentUser,
                                             String checkInDate,
                                             String checkOutDate) {
+        Reservation reservation = new Reservation();
+
         Room room = roomService.findRoomByRoomNumber(roomNumber);
         HotelUser hotelUser = hotelUserService.findUserByUsername(currentUser);
-        if(!hotelUser.getRole().equals("ROLE_GUEST")) {
-            throw new RuntimeException("Reservation can only be assigned to a guest");
+        if(hotelUser.getRole().equals("ROLE_GUEST")) {
+            reservation.setGuest(hotelUser);
         }
-
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate checkIn = LocalDate.parse(checkInDate, dateTimeFormatter);
         LocalDate checkOut = LocalDate.parse(checkOutDate, dateTimeFormatter);
 
-        Reservation reservation = new Reservation();
         reservation.setRoom(room);
-        reservation.setGuest(hotelUser);
         reservation.setStartDate(checkIn);
         reservation.setEndDate(checkOut);
         updateDailyRate(reservation, room.getBaseRate());

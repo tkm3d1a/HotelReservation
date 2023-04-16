@@ -2,6 +2,8 @@ package com.reservation.hotel.HotelReservation.hotelroom;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -87,6 +89,10 @@ public class RoomController {
 
     @PostMapping("/searchAvailableRooms")
     public String searchAvailableRooms(@ModelAttribute SearchCriteria searchCriteria, Model model) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        log.info("Username from Available Rooms page: {}", username);
 
         if((searchCriteria.getCheckOutDate().isEqual(searchCriteria.getCheckInDate()) ||
                 searchCriteria.getCheckOutDate().isBefore(searchCriteria.getCheckInDate()))

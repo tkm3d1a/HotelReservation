@@ -3,6 +3,8 @@ package com.reservation.hotel.HotelReservation.reservation;
 import com.reservation.hotel.HotelReservation.hotelroom.SearchCriteria;
 import com.reservation.hotel.HotelReservation.payment.Payment;
 import com.reservation.hotel.HotelReservation.payment.PaymentService;
+import com.reservation.hotel.HotelReservation.hoteluser.HotelUser;
+import com.reservation.hotel.HotelReservation.hoteluser.HotelUserService;
 import com.reservation.hotel.HotelReservation.util.FormEncapsulate;
 import jakarta.annotation.Resource;
 import lombok.AllArgsConstructor;
@@ -35,6 +37,9 @@ public class ReservationController {
     @Resource
     PaymentService paymentService;
 
+    @Resource
+    HotelUserService hotelUserService;
+
     //TODO: should this move to service or stay here?
     @GetMapping("/view")
     public String getAllReservations(Model model){
@@ -58,7 +63,7 @@ public class ReservationController {
         model.addAttribute("searchCriteria", searchCriteria);
         model.addAttribute("currentDate", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         model.addAttribute("minCheckOutDate", LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        return "test-reservation";
+        return "view-reservations";
     }
 
     @GetMapping("/view/{guest_id}")
@@ -82,6 +87,10 @@ public class ReservationController {
         FormEncapsulate formFields = new FormEncapsulate();
 
         Reservation reservation = reservationService.findReservationByGuestIDAndReservationID(resId, currentUser);
+
+        if(null == reservation.getRoom() || null == reservation.getGuest()) {
+            return "redirect:/reservation/view?notfound=";
+        }
 
         model.addAttribute("reservation", reservation);
         model.addAttribute("promoCode", formFields);
@@ -122,6 +131,8 @@ public class ReservationController {
     //TODO: handle user not existing and room not existing search results
     public String stageReservation(@ModelAttribute("newReservation") Reservation newReservation){
         log.info("As it comes in: {}", newReservation);
+        HotelUser guest = hotelUserService.findUserByUsername(newReservation.getGuest().getUsername());
+        newReservation.setGuest(guest);
 
         reservationService.findRoomForRes(newReservation);
         reservationService.updateDailyRate(newReservation, newReservation.getRoom().getBaseRate());
@@ -129,6 +140,11 @@ public class ReservationController {
         reservationService.updateTotalRate(newReservation);
 
         log.info("before saving: {}", newReservation);
+        try{
+            reservationService.saveReservation(newReservation);
+        } catch (Exception e) {
+            return "redirect:/?exception=";
+        }
         reservationService.saveReservation(newReservation);
 
         return "redirect:/reservation/view";
