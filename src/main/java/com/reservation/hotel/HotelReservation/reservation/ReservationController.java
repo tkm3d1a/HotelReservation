@@ -105,7 +105,8 @@ public class ReservationController {
     @PostMapping("/edit")
     public String postEditReservation(@ModelAttribute("reservation") Reservation reservation){
         log.info("Editing reservation: {}", reservation);
-        reservationService.updateReservation(reservation);
+        Reservation updateReservation = reservationService.updateReservation(reservation);
+        paymentService.updatePaymentOnReservationModify(updateReservation);
         return "redirect:/reservation/view";
     }
 
@@ -175,9 +176,16 @@ public class ReservationController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = auth.getName();
 
-        reservationService.confirmRoom(resID, currentUser);
+        reservationService.confirmReservation(resID, currentUser);
         paymentService.associateReservation(new Payment(), resID);
 
+        return "redirect:/reservation/view";
+    }
+
+    @PostMapping("/check-in")
+    public String checkInReservationPost(@ModelAttribute Reservation reservation) {
+        log.info("{}", reservation);
+        reservationService.checkInReservation(reservation);
         return "redirect:/reservation/view";
     }
 

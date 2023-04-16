@@ -42,6 +42,21 @@ public class PaymentService{
 
     }
 
+    public void updatePaymentOnReservationModify(Reservation reservation){
+        Optional<Payment> optionalPayment = paymentRepository.findByReservation_Id(reservation.getId());
+        Payment payment;
+
+        if(optionalPayment.isPresent()) {
+            payment = optionalPayment.get();
+            payment.setTotalToBill(reservation.getTotalRate());
+            paymentRepository.save(payment);
+            log.info("{}", payment);
+        } else {
+            log.warn("Payment not found for resID {}", reservation.getId());
+            log.warn("Reservation confirmed: {}", reservation.isConfirmed());
+        }
+    }
+
     public void enterPaymentInfo(Payment payment, String paymentInfo) {
         if(!payment.isPaymentProcessed()){
             log.info("Payment not process yet, able to update payment info");
@@ -58,11 +73,11 @@ public class PaymentService{
     }
 
     public Payment getPaymentByReservationID(int reservationID) {
-        Optional<Payment> oPayment = paymentRepository.findByReservation_Id(reservationID);
+        Optional<Payment> optionalPayment = paymentRepository.findByReservation_Id(reservationID);
         Payment payment = new Payment();
 
-        if(oPayment.isPresent()) {
-            payment = oPayment.get();
+        if(optionalPayment.isPresent()) {
+            payment = optionalPayment.get();
             log.info("{}", payment);
         } else {
             log.warn("Payment not found for resID {}", reservationID);

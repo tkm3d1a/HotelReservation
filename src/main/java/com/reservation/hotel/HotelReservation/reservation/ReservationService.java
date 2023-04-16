@@ -48,13 +48,14 @@ public class ReservationService {
         }
     }
 
-    public void updateReservation(Reservation reservation){
+    public Reservation updateReservation(Reservation reservation){
         Reservation updatedReservation = findReservationByID(reservation.getId());
         updatedReservation.setStartDate(reservation.getStartDate());
         updatedReservation.setEndDate(reservation.getEndDate());
         updateNumDays(updatedReservation);
         updateTotalRate(updatedReservation);
         saveReservation(updatedReservation);
+        return updatedReservation;
     }
 
     public void updateDailyRate(Reservation resToUpdate, int updatedRate){
@@ -72,7 +73,7 @@ public class ReservationService {
         reservation.setTotalRate(totalRate);
     }
 
-    public void confirmRoom(int resID, String currentUser){
+    public void confirmReservation(int resID, String currentUser){
         Optional<Reservation> reservationOptional = reservationRepository.findById(resID);
         Reservation reservation;
         if(reservationOptional.isPresent()){
@@ -88,6 +89,11 @@ public class ReservationService {
             log.warn("No reservation found with this ID: {}", resID);
         }
         //TODO: update availability table?
+    }
+
+    public void checkInReservation(Reservation reservation) {
+        reservation.setCheckedIn(true);
+        reservationRepository.save(reservation);
     }
 
     //Do not remove, may need for setting up res by employee
@@ -133,13 +139,27 @@ public class ReservationService {
 
     public void updateModifiable(List<Reservation> reservationList){
         LocalDate currentDate = LocalDate.now();
-        int compareTo;
+        int compareToStart, compareToEnd;
         for(Reservation reservation : reservationList){
-            compareTo = currentDate.compareTo(reservation.getStartDate());
-            if(compareTo > 0 && reservation.isNotStarted()){
-                reservation.setNotStarted(false);
+            compareToStart = currentDate.compareTo(reservation.getStartDate());
+            compareToEnd = currentDate.compareTo(reservation.getEndDate());
+            if(compareToStart > 0){
+                if(reservation.isNotStarted()) {
+                    reservation.setNotStarted(false);
+                    log.info("Updated Reservation {} to started", reservation.getId());
+                }
+
+                if(compareToEnd >= 0) {
+                    if(!reservation.isCheckedIn()) {
+                        reservation.setCheckedIn(true);
+                        log.info("Updated Reservation {} to force check in", reservation.getId());
+                    }
+                    if(!reservation.isCheckedOut()) {
+                        reservation.setCheckedOut(true);
+                        log.info("Updated Reservation {} to force check out", reservation.getId());
+                    }
+                }
                 saveReservation(reservation);
-                log.info("Updated Reservation {} to started", reservation.getId());
             }
         }
     }

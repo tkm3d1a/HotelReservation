@@ -120,7 +120,7 @@ public class ReservationServiceTest {
         Assertions.assertFalse(reservationFoundBefore.isConfirmed());
         Assertions.assertFalse(reservationFoundBefore.isPromoApplied());
 
-        reservationService.confirmRoom(savedID, "tester");
+        reservationService.confirmReservation(savedID, "tester");
         Reservation reservationFoundAfter = reservationService.findReservationByID(savedID);
         Assertions.assertEquals(100, reservationFoundAfter.getRoom().getRoomNumber());
         Assertions.assertTrue(reservationFoundAfter.isConfirmed());
