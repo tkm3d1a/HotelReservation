@@ -67,6 +67,17 @@ public class PaymentService{
         }
     }
 
+    public void processCheckout(Reservation reservation) {
+        reservationService.checkOutReservation(reservation);
+        Payment payment = getPaymentByReservationID(reservation.getId());
+        String paymentInfoString = reservation.getGuest().getFirstName() +
+                " " +
+                reservation.getGuest().getLastName() +
+                " Is paying with credit card";
+        enterPaymentInfo(payment, paymentInfoString);
+        processPayment(payment);
+    }
+
     public void processPayment(Payment payment) {
         payment.setPaymentProcessed(true);
         paymentRepository.save(payment);

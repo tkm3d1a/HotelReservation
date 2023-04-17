@@ -234,4 +234,9 @@ public class ReservationService {
 
         return reservation;
     }
+
+    public void checkOutReservation(Reservation reservation) {
+        reservation.setCheckedOut(true);
+        reservationRepository.save(reservation);
+    }
 }
