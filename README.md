@@ -11,11 +11,10 @@
   * [System Setup](#system-setup)
     * [Java/Maven Build system](#javamaven-build-system)
     * [Local Database Needs](#local-database-needs)
-    * [Configuring Environment variables](#configuring-environment-variables)
   * [Running the application](#running-the-application)
     * [Initial Setup (from fresh installation)](#initial-setup--from-fresh-installation-)
     * [Basic Functions](#basic-functions)
-    * [Tests](#tests)
+    * [Test Classes](#test-classes)
   * [Feature Highlights](#feature-highlights)
     * [Reserve a room](#reserve-a-room)
     * [Check in / Check out](#check-in--check-out)
@@ -29,34 +28,122 @@ simple web application for the management of a basic hotel and its room and
 reservation.  The application should be able to handle the following requirements:
 
 As a Hotel guest, I should be able to...
-- lorem ipsum
-- ipsum lorem
-- lorem ipsum
+- Create a guest account, and log in/log out.
+- Modify their own guest account.
+- Search available rooms for reservation and browse the information of a selected room.
+- Make a new reservation and change/cancel an existing reservation.
 
 As a hotel Clerk, I should be able to...
-- lorem ipsum
-- ipsum lorem
-- lorem ipsum
+- Log in to the system using a username and a password.
+- Modify their own profile information including password.
+- View the status of all the rooms in the hotel.
+- Modify a reservation.
+- Process check-in/check-out of a guest.
+- Generate billing information for any guest.
+- Make a reservation requested by a guest.
+- Cancel any reservation prior to the reservation start date.
 
 As a Hotel Administrator, I should be able to...
-- lorem ipsum
-- ipsum lorem
-- lorem ipsum
+- Log in to the system using a username and a password.
+- Create a hotel clerk account which contains a username and a default password.
+- Reset the user account password.
+- Enter and modify the information of all rooms.
 
 ## System Setup
 
 ### Java/Maven Build system
 
+  - Java 17 JDK
+  - Maven Version 4.0
   - Dependencies
+```xml
+  <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+  </dependency>
+  <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-thymeleaf</artifactId>
+  </dependency>
+  <dependency>
+      <groupId>org.thymeleaf.extras</groupId>
+      <artifactId>thymeleaf-extras-springsecurity6</artifactId>
+      <!-- Temporary explicit version to fix Thymeleaf bug -->
+      <version>3.1.1.RELEASE</version>
+  </dependency>
+  <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+  </dependency>
+  <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+  </dependency>
+  <dependency>
+      <groupId>org.mariadb.jdbc</groupId>
+      <artifactId>mariadb-java-client</artifactId>
+      <scope>runtime</scope>
+  </dependency>
+  <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <optional>true</optional>
+  </dependency>
+  <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+  </dependency>
+  <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-test</artifactId>
+      <scope>test</scope>
+  </dependency>
+  <dependency>
+  <!--Used for in memory database done during testing-->
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>2.1.214</version>
+  </dependency>
+  <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>5.9.2</version>
+      <scope>test</scope>
+  </dependency>
+  <dependency>
+  <!--Used for controller testing-->
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>4.6.1</version>
+      <scope>test</scope>
+  </dependency>
+```
   - App properties
+```
+spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MariaDBDialect
+spring.datasource.url=jdbc:mariadb://${DB_ADDRESS}:${DB_PORT}/${DB_NAME}
+spring.datasource.username=${DB_USERNAME}
+spring.datasource.password=${DB_PASSWORD}
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+spring.mvc.hiddenmethod.filter.enabled=true
+```
+  - Required Environment Variables
+```xml
+DB_ADDRESS=<address to wherever DB is hosted for project>
+DB_PORT=<port to connect to DB on>
+DB_NAME=<name of database to be used on hosted machine>
+DB_USERNAME=<username of user that can modify the connected DB>
+DB_PASSWORD=<password for the above username>
+```
 
 ### Local Database Needs
 
-  - Installing mariaDB (include version)
-
-### Configuring Environment variables
-
-  - Set up environment variables to run
+  - Current project is built on MariaDB solution
+    - Version 10.6.12
+  - Other Database may be used, but would require replacing the JDBC dependency
+    - No testing has been done on code transfer with different DB Connector
 
 ## Running the application
 
@@ -68,7 +155,15 @@ As a Hotel Administrator, I should be able to...
 
 ### Basic Functions
 
-### Tests
+### Test Classes
+
+- MainControllerTest Class
+- RoomControllerTest Class
+- HotelUserControllerTest Class
+- HotelUserServiceTest Class
+- PaymentServiceTest Class
+- ReservationControllerTest Class
+- ReservationServiceTest Class
 
 ## Feature Highlights
 
