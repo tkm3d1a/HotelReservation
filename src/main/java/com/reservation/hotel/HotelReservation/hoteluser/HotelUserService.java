@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -93,5 +94,12 @@ public class HotelUserService implements UserDetailsService {
             foundUser = foundUserOpt.get();
         }
         return foundUser;
+    }
+
+    public List<HotelUser> findAllGuestUsers(){
+        List<HotelUser> hotelGuestList = hotelUserRepository.findAll();
+        hotelGuestList.removeIf(hotelUserLoop -> !hotelUserLoop.getRole().equals("ROLE_GUEST"));
+
+        return hotelGuestList;
     }
 }

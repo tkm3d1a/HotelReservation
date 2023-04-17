@@ -1,7 +1,7 @@
 package com.reservation.hotel.HotelReservation.hotelroom;
 
-import com.reservation.hotel.HotelReservation.Reservation.Reservation;
-import com.reservation.hotel.HotelReservation.Reservation.ReservationRepository;
+import com.reservation.hotel.HotelReservation.reservation.Reservation;
+import com.reservation.hotel.HotelReservation.reservation.ReservationRepository;
 import com.reservation.hotel.HotelReservation.util.ValidationUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;

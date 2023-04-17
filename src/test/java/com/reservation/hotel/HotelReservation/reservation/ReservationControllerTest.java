@@ -4,6 +4,8 @@ import com.reservation.hotel.HotelReservation.hotelroom.Room;
 import com.reservation.hotel.HotelReservation.hotelroom.RoomRepository;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUser;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUserRepository;
+import com.reservation.hotel.HotelReservation.hoteluser.HotelUserService;
+import com.reservation.hotel.HotelReservation.payment.PaymentService;
 import com.reservation.hotel.HotelReservation.util.FormEncapsulate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,6 +44,12 @@ class ReservationControllerTest {
     ReservationService reservationService;
 
     @Mock
+    PaymentService paymentService;
+
+    @Mock
+    HotelUserService hotelUserService;
+
+    @Mock
     Model model;
 
     @Mock
@@ -52,7 +60,7 @@ class ReservationControllerTest {
 
     @BeforeEach
     public void setUp(){
-        reservationController = new ReservationController(reservationRepository, roomRepository, reservationService);
+        reservationController = new ReservationController(reservationRepository, reservationService, paymentService, hotelUserService);
         saveTestRoom();
         saveTestUser();
         saveTestReservation();
@@ -63,14 +71,14 @@ class ReservationControllerTest {
     void getAllReservationsShouldReturnTestReservationPage() {
         String template = reservationController.getAllReservations(model);
 
-        Assertions.assertEquals("test-reservation", template);
+        Assertions.assertEquals("view-reservations", template);
     }
 
     @Test
     void getGuestReservationsShouldReturnTestReservationPage() {
         String template = reservationController.getGuestReservations(model, 1);
 
-        Assertions.assertEquals("test-reservation", template);
+        Assertions.assertEquals("view-reservations", template);
     }
 
     @Test
@@ -119,7 +127,7 @@ class ReservationControllerTest {
     @Test
     void applyPromoShouldUpdateRatesAndRedirectToReservationConfirmation() {
         when(formEncapsulate.getFormString()).thenReturn("1234");
-        when(reservationService.findreservationByID(anyInt())).thenReturn(getTestReservation());
+        when(reservationService.findReservationByID(anyInt())).thenReturn(getTestReservation());
 
         String template = reservationController.applyPromo(formEncapsulate, getTestReservation(), redirectAttributes);
 
@@ -136,7 +144,7 @@ class ReservationControllerTest {
 
     private Reservation getTestReservation() {
         Reservation testReservation =  new Reservation(1,getTestUser(), getTestRoom(), 1, 1, false,
-                true, false, LocalDate.now(), LocalDate.now().plusDays(2), 2);
+                true, false, false, false, LocalDate.now(), LocalDate.now().plusDays(2), 2);
 
         return testReservation;
     }

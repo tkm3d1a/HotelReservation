@@ -54,11 +54,18 @@
 	                        <button type="submit" class="btn btn-info">Edit Profile</button>
                         </form>
                     </div>
+	                <!--vvvvvv Reservation view buttons vvvvvv-->
                     <div th:if="${hotelUser.role == 'ROLE_GUEST'}" class="d-flex justify-content-center mb-2">
 	                    <form th:action="@{/reservation/view}" method="get">
 	                        <button type="submit" class="btn btn-info">View my reservations</button>
 	                    </form>
                     </div>
+<!--	                <div th:if="${hotelUser.role != 'ROLE_GUEST'}" class="d-flex justify-content-center mb-2">-->
+<!--		                <form th:action="@{/reservation/view}" method="get">-->
+<!--			                <button type="submit" class="btn btn-info">View All reservations</button>-->
+<!--		                </form>-->
+<!--	                </div>-->
+	                <!--^^^^^^ Reservation view buttons ^^^^^^-->
                     <div class="d-flex justify-content-center mb-2">
                         <form th:action="@{/rooms}" method="get">
 	                        <button type="submit" class="btn btn-info">View All Rooms</button>
@@ -68,6 +75,11 @@
 	                    <form th:action="@{/admin}" method="get">
 		                    <button type="submit" class="btn btn-info">Admin Dashboard</button>
 	                    </form>
+                    </div>
+                    <div th:if="${hotelUser.role == 'ROLE_CLERK'}" class="d-flex justify-content-center mb-2">
+                        <form th:action="@{/reservation/view}" method="get">
+                            <button type="submit" class="btn btn-info">View All Reservations</button>
+                        </form>
                     </div>
                 </div>
             </div>

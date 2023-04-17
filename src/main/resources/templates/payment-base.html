@@ -8,7 +8,7 @@
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-	<title>Hotel</title>
+	<title>The White Lotus Hotel</title>
 </head>
 <body>
 <nav class="navbar navbar-expand-sm navbar-light" style="background-color: #e3f2fd;">
@@ -22,8 +22,10 @@
 			<li class="nav-item active">
 				<a class="nav-link" th:href="@{/}">Home</a>
 			</li>
+			<!--            <li class="nav-item">-->
+			<!--                <a class="nav-link" href="#">Link</a>-->
+			<!--            </li>-->
 		</ul>
-
 		<span class="form-inline my-2 my-lg-0">
 	        <div sec:authorize="isAuthenticated()" class="btn-group mr-2" role="group" aria-label="View Profile">
                 <a th:href="@{/profile}" class="btn btn-light active" role="button" aria-pressed="true">View Profile</a>
@@ -38,59 +40,97 @@
 	</div>
 </nav>
 
-<div class="container">
-	<h3 class="text-center">Edit your Reservation</h3>
-	<div th:if="${param.error}">
-		<p class="text-danger">There was an error updating your reservation, please try again</p>
-	</div>
-	<div>
-		<form action="#" th:action="@{/reservation/edit}" method="post" th:object="${reservation}">
-			<div class="form-row">
-				<div class="form-group col-md-6">
-					<label>Room Number</label>
-					<p th:text="*{room.roomNumber}" />
-				</div>
-				<div class="form-group col-md-6">
-					<label>Total Rate</label>
-					<p th:text="*{totalRate}" />
-				</div>
-			</div>
-			<div class="form-row">
-				<div class="form-group col-md-4">
-					<label for="checkIndate">Check-in Date</label>
-					<input type="date" th:field="*{startDate}"  th:min="${minCheckInDate}" th:max="${maxCheckInDate}"
-						   class="form-control" id="checkIndate" placeholder="Check in date" required/>
-				</div>
-				<div class="form-group col-md-4">
-					<label for="checkOutDate">Check-out Date</label>
-					<input type="date" th:field="*{endDate}"  th:min="${minCheckOutDate}" th:max="${maxCheckOutDate}"
-						   class="form-control" id="checkOutDate" placeholder="Check in date" required>
-				</div>
-				<div class="form-group col-md-4">
-					<label >Total nights</label>
-					<p th:text="*{numDays}"> 5 </p>
-				</div>
-			</div>
-			<input type="hidden" th:field="*{id}"/>
-			<button type="submit" class="btn btn-info">Update reservation</button>
-		</form>
-		<div>
-			<p>&nbsp</p>
-		</div>
-		<div th:if="${!reservation.isPromoApplied()}">
-			<form action="#" th:action="@{/reservation/apply-promo}" th:object="${promoCode}" method="post" >
-				<div class="form-row">
-					<div class="form-group col-md-4">
-						<label for="promoCode">Promotional Code</label>
-						<input type="text" th:field="*{formString}" class="form-control" id="promoCode" placeholder="enter promotional Code here" required>
+<div class="container" th:object="${payment}">
+	<h3 class="text-center">
+		View Payment Details
+	</h3>
+	<div class="col-lg-12">
+		<div class="card mb-4" style="background-color: #e3f2fd;">
+			<div class="card-body">
+				<div class="row">
+					<div class="col-sm-3">
+						<p class="mb-0">Reservation ID</p>
+					</div>
+					<div class="col-sm-9">
+						<p class="text-muted mb-0" th:text="*{reservation.getId()}"></p>
 					</div>
 				</div>
-				<input type="hidden" th:field="${reservation.id}">
-				<button type="submit" class="btn btn-info">Apply Promotional code</button>
-			</form>
+				<hr>
+<!--				<div class="col-lg-12">-->
+					<div class="row">
+						<div class="col-sm-3">
+							<p class="mb-0">Room</p>
+						</div>
+						<div class="col-sm-9">
+							<p class="text-muted mb-0" th:text="*{reservation.getRoom().getRoomNumber()}"/>
+						</div>
+					</div>
+					<hr>
+					<div class="row">
+						<div class="col-sm-3">
+							<p class="mb-0">Total To Bill</p>
+						</div>
+						<div class="col-sm-9">
+							<p class="text-muted mb-0" th:text="*{totalToBill}"/>
+						</div>
+					</div>
+<!--				</div>-->
+				<hr>
+				<div class="row">
+					<div class="col-sm-3">
+						<p class="mb-0">Guest</p>
+					</div>
+					<div class="col-sm-9">
+						<p class="text-muted mb-0" th:text="*{reservation.getGuest().getFirstName() + ' ' + reservation.getGuest().getLastName()}"/>
+					</div>
+				</div>
+				<hr>
+				<div class="row">
+					<div class="col-sm-3">
+						<p class="mb-0">Start Date</p>
+					</div>
+					<div class="col-sm-9">
+						<p class="text-muted mb-0" th:text="*{reservation.getStartDate()}"></p>
+					</div>
+				</div>
+				<hr>
+				<div class="row">
+					<div class="col-sm-3">
+						<p class="mb-0">End Date</p>
+					</div>
+					<div class="col-sm-9">
+						<p class="text-muted mb-0" th:text="*{reservation.getEndDate()}"></p>
+					</div>
+				</div>
+				<hr>
+				<div class="row">
+					<div class="col-sm-3">
+						<p class="mb-0">Payment Info</p>
+					</div>
+					<div class="col-sm-9">
+						<p class="text-muted mb-0" th:text="*{paymentInfo}"></p>
+					</div>
+				</div>
+				<hr>
+				<div class="row">
+					<div class="col-sm-3">
+						<p class="mb-0">Payment processed?</p>
+					</div>
+					<div class="col-sm-9">
+						<p class="text-muted mb-0" th:text="*{isPaymentProcessed()}"></p>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
+	<form th:action="@{/reservation/view}" method="get">
+		<div class="mt-5 text-center">
+			<button type="submit" class="btn btn-info">View Reservations</button>
+		</div>
+	</form>
 </div>
+
+
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -93,9 +94,12 @@ public class MainController {
     @GetMapping("/admin")
     public String adminDashboard(@ModelAttribute HotelUser hotelUser, Model model){
         model.addAttribute("newEmployee", hotelUser);
-        List<HotelUser> hotelUserList = hotelUserRepository.findAll();
-        hotelUserList.removeIf(hotelUserLoop -> hotelUserLoop.getRole().equals("ROLE_GUEST"));
-        model.addAttribute("employeeList", hotelUserList);
+        List<HotelUser> hotelEmployeeList = hotelUserRepository.findAll();
+        List<HotelUser> hotelGuestList = hotelUserRepository.findAll();
+        hotelEmployeeList.removeIf(hotelUserLoop -> hotelUserLoop.getRole().equals("ROLE_GUEST"));
+        hotelGuestList.removeIf(hotelUserLoop -> !hotelUserLoop.getRole().equals("ROLE_GUEST"));
+        model.addAttribute("employeeList", hotelEmployeeList);
+        model.addAttribute("guestList", hotelGuestList);
         return "admin-dashboard";
     }
 
@@ -109,6 +113,15 @@ public class MainController {
             return "redirect:/admin?error=";
         }
         return "redirect:/admin?success=" + hotelUser.getUsername();
+    }
+
+    @GetMapping("/admin/resetUserPassword/{username}")
+    public String resetUserPassword(@PathVariable String username){
+        HotelUser user = hotelUserService.findUserByUsername(username);
+        user.setPassword(bCryptPasswordEncoder.encode(username));
+        hotelUserRepository.save(user);
+
+        return "redirect:/admin?resetok=" + username;
     }
 
     @GetMapping("/setup/addAdmin")

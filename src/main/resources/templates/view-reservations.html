@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+	<title>Reservations</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-sm navbar-light" style="background-color: #e3f2fd;">
+	<a class="navbar-brand" href="#">Welcome to The White Lotus</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+
+	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item active">
+				<a class="nav-link" th:href="@{/}">Home <span class="sr-only">(current)</span></a>
+			</li>
+		</ul>
+
+		<span class="form-inline my-2 my-lg-0">
+	        <div sec:authorize="isAuthenticated()" class="btn-group mr-2" role="group" aria-label="View Profile">
+                <a th:href="@{/profile}" class="btn btn-light active" role="button" aria-pressed="true">View Profile</a>
+            </div>
+            <div sec:authorize="isAnonymous()" class="btn-group mr-2" role="group" aria-label="Login">
+                <a th:href="@{/login}" class="btn btn-light active" role="button" aria-pressed="true">Login</a>
+            </div>
+            <div sec:authorize="isAuthenticated()" class="btn-group mr-2" role="group" aria-label="Logout">
+                <a th:href="@{/logout}" class="btn btn-light active" role="button" aria-pressed="true">Logout</a>
+            </div>
+        </span>
+	</div>
+</nav>
+<div class="container">
+	<h3 class="text-center">
+		Start a new search...
+	</h3>
+	<div th:if="${param.error}">
+		<p class="text-danger">Check out date must be after check in date!</p>
+	</div>
+	<form th:action="@{/rooms/searchAvailableRooms}" th:object="${searchCriteria}" method="post">
+		<div class="form-row">
+			<div class="form-group col-md-6">
+				<label for="checkin">&nbspCheck In</label>
+				<input type="date" th:field="*{checkInDate}" th:min="${currentDate}" class="form-control" id="checkin" placeholder="Check in date" required>
+			</div>
+			<div class="form-group col-md-6">
+				<label for="checkOut">&nbspCheck Out</label>
+				<input type="date" th:field="*{checkOutDate}" th:min="${minCheckOutDate}" class="form-control" id="checkOut" placeholder="Check out date" required>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="checkbox" th:field="*{executive}" id="executiveCheck" value="allowExecutive">
+				<label class="form-check-label" for="executiveCheck">Executive</label>
+			</div>
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="checkbox" th:field="*{business}" id="businessCheck" value="allowBusiness">
+				<label class="form-check-label" for="businessCheck">Business</label>
+			</div>
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="checkbox" th:field="*{comfort}" id="comfortCheck" value="allowComfort">
+				<label class="form-check-label" for="comfortCheck">Comfort</label>
+			</div>
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="checkbox" th:field="*{economy}" id="economyCheck" value="allowEconomy">
+				<label class="form-check-label" for="economyCheck">Economy</label>
+			</div>
+			<input type="hidden" name="sourceform" th:field="*{sourceForm}">
+		</div>
+		<button type="submit" class="btn btn-info">Search Available Rooms</button>
+	</form>
+</div>
+<div class="container" >
+	<div th:if="${param.notfound}">
+		<p class="text-danger">Reservation does not exist!</p>
+	</div>
+	<h3 class="text-center">
+		Current Reservations
+	</h3>
+	<div class="table-responsive">
+		<table class="table table-striped table-bordered">
+			<thead>
+				<tr class="table-header text-center">
+					<!--TODO: update room view table-->
+					<!--TODO: add sorting by ?room number/room type?-->
+					<th>Total Rate</th>
+					<th>Guest Name</th>
+					<th>Room Number</th>
+					<th>Start Date</th>
+					<th>End Date</th>
+					<th>Confirmed?</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="reservationNot: ${allNotStartedReservations}">
+					<td th:text="*{reservationNot.totalRate}">rate</td>
+					<td	th:text="*{reservationNot.guest.getFirstName() + ' ' + reservationNot.guest.getLastName()}">gID</td>
+					<td th:text="*{reservationNot.room.getRoomNumber()}">rID</td>
+					<td th:text="*{reservationNot.startDate}">startDate</td>
+					<td th:text="*{reservationNot.endDate}">endDate</td>
+					<td th:text="*{reservationNot.isConfirmed}">confirmed</td>
+					<td>
+						<table class="d-flex justify-content-center mb-2">
+							<tr>
+								<td th:if="*{!reservationNot.isConfirmed()}">
+									<form th:action="@{/reservation/confirm/stage/{resID}(resID = *{reservationNot.id})}" method="post">
+										<button class="btn btn-success">Confirm</button>
+									</form>
+								</td>
+								<td th:if="*{reservationNot.isConfirmed()}">
+									<form th:action="@{/reservation/edit/{resId}(resId = *{reservationNot.id})}" method="get">
+										<button class="btn btn-info">Modify</button>
+									</form>
+								</td>
+								<td>
+									<form th:action="@{/reservation/delete/{resID}(resID = *{reservationNot.id})}" th:method="delete">
+										<button class="btn btn-warning">Cancel</button>
+									</form>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<div class="container" >
+	<h3 class="text-center">
+		Past Reservations
+	</h3>
+	<div class="table-responsive">
+		<table class="table table-striped table-bordered">
+			<thead>
+			<tr class="table-header text-center">
+				<!--TODO: update room view table-->
+				<!--TODO: add sorting by ?room number/room type?-->
+				<th>Total Rate</th>
+				<th>Guest Name</th>
+				<th>Room Number</th>
+				<th>Start Date</th>
+				<th>End Date</th>
+				<th>Confirmed?</th>
+				<th>Actions</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr th:each="reservation: ${allStartedReservations}">
+				<td th:text="*{reservation.totalRate}">rate</td>
+				<td	th:text="*{reservation.guest.getFirstName() + ' ' + reservation.guest.getLastName()}">gID</td>
+				<td th:text="*{reservation.room.getRoomNumber()}">rID</td>
+				<td th:text="*{reservation.startDate}">startDate</td>
+				<td th:text="*{reservation.endDate}">endDate</td>
+				<td th:text="*{reservation.isConfirmed}">confirmed</td>
+				<td>
+					<table class="d-flex justify-content-center mb-2">
+						<tr>
+							<td th:if="*{!reservation.isCheckedIn()
+								and reservation.isConfirmed()
+								and userRole != 'ROLE_GUEST'}">
+								<form th:action="@{/reservation/check-in}" th:method="POST">
+									<input type="hidden" th:attr="value=*{reservation.id}" name="reservation" />
+									<button class="btn btn-success">Check In</button>
+								</form>
+							</td>
+							<td th:if="*{reservation.isCheckedIn()
+								and !reservation.isCheckedOut()
+								and reservation.isConfirmed()
+								and userRole != 'ROLE_GUEST'}">
+								<form th:action="@{/payment/checkout}" th:method="POST">
+									<input type="hidden" th:attr="value=*{reservation.id}" name="reservation" />
+									<button class="btn btn-success">Check Out</button>
+								</form>
+							</td>
+							<td th:if="*{reservation.isConfirmed() and reservation.isCheckedOut()}">
+								<form action="#" th:action="@{/payment/view}" th:method="POST">
+									<input type="hidden" th:attr="value=*{reservation.id}" name="reservation" />
+									<button class="btn btn-info">Print Receipt</button>
+								</form>
+							</td>
+							<td th:if="*{!reservation.isConfirmed()}">
+								<form th:action="@{/reservation/delete/{resID}(resID = *{reservation.id})}" th:method="delete">
+									<button class="btn btn-danger">Remove record</button>
+								</form>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<br>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>

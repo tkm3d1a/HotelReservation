@@ -1,9 +1,11 @@
-package com.reservation.hotel.HotelReservation.Reservation;
+package com.reservation.hotel.HotelReservation.reservation;
 
 import com.reservation.hotel.HotelReservation.hotelroom.Room;
 import com.reservation.hotel.HotelReservation.hotelroom.RoomService;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUser;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUserService;
+import com.reservation.hotel.HotelReservation.payment.Payment;
+import com.reservation.hotel.HotelReservation.payment.PaymentRepository;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,9 @@ public class ReservationService {
     @Resource
     private RoomService roomService;
 
+    @Resource
+    PaymentRepository paymentRepository;
+
     public void applyPromo(String promoCode, int resID){
         Optional<Reservation> reservationOptional = reservationRepository.findById(resID);
         Reservation reservation;
@@ -48,13 +53,14 @@ public class ReservationService {
         }
     }
 
-    public void updateReservation(Reservation reservation){
+    public Reservation updateReservation(Reservation reservation){
         Reservation updatedReservation = findReservationByID(reservation.getId());
         updatedReservation.setStartDate(reservation.getStartDate());
         updatedReservation.setEndDate(reservation.getEndDate());
         updateNumDays(updatedReservation);
         updateTotalRate(updatedReservation);
         saveReservation(updatedReservation);
+        return updatedReservation;
     }
 
     public void updateDailyRate(Reservation resToUpdate, int updatedRate){
@@ -72,21 +78,27 @@ public class ReservationService {
         reservation.setTotalRate(totalRate);
     }
 
-    public void confirmRoom(int resID, String currentUser){
+    public void confirmReservation(int resID, String currentUser){
         Optional<Reservation> reservationOptional = reservationRepository.findById(resID);
         Reservation reservation;
         if(reservationOptional.isPresent()){
             reservation = reservationOptional.get();
-            if(reservation.getGuest().getUsername().equals(currentUser)){
+            if(reservation.getGuest().getUsername().equals(currentUser) || hotelUserService.findUserByUsername(currentUser).getRole().equalsIgnoreCase("ROLE_CLERK")){
                 reservation.setConfirmed(true);
                 saveReservation(reservation);
             } else {
                 log.warn("Reservation does not match logged in user");
+                log.warn("Only user '{}' can confirm this reservation", reservation.getGuest().getUsername());
             }
         } else {
-            log.warn("No reservation found with that ID");
+            log.warn("No reservation found with this ID: {}", resID);
         }
         //TODO: update availability table?
+    }
+
+    public void checkInReservation(Reservation reservation) {
+        reservation.setCheckedIn(true);
+        reservationRepository.save(reservation);
     }
 
     //Do not remove, may need for setting up res by employee
@@ -127,18 +139,34 @@ public class ReservationService {
     }
 
     public void cancelReservation(int resID){
+        Optional<Payment> payment = paymentRepository.findByReservation_Id(resID);
+        paymentRepository.deleteById(payment.get().getId());
         reservationRepository.deleteById(resID);
     }
 
     public void updateModifiable(List<Reservation> reservationList){
         LocalDate currentDate = LocalDate.now();
-        int compareTo;
+        int compareToStart, compareToEnd;
         for(Reservation reservation : reservationList){
-            compareTo = currentDate.compareTo(reservation.getStartDate());
-            if(compareTo > 0 && reservation.isNotStarted()){
-                reservation.setNotStarted(false);
+            compareToStart = currentDate.compareTo(reservation.getStartDate());
+            compareToEnd = currentDate.compareTo(reservation.getEndDate());
+            if(compareToStart > 0){
+                if(reservation.isNotStarted()) {
+                    reservation.setNotStarted(false);
+                    log.info("Updated Reservation {} to started", reservation.getId());
+                }
+
+                if(compareToEnd >= 0) {
+                    if(!reservation.isCheckedIn()) {
+                        reservation.setCheckedIn(true);
+                        log.info("Updated Reservation {} to force check in", reservation.getId());
+                    }
+                    if(!reservation.isCheckedOut()) {
+                        reservation.setCheckedOut(true);
+                        log.info("Updated Reservation {} to force check out", reservation.getId());
+                    }
+                }
                 saveReservation(reservation);
-                log.info("Updated Reservation {} to started", reservation.getId());
             }
         }
     }
@@ -172,12 +200,13 @@ public class ReservationService {
         Reservation reservation = new Reservation();
         if(reservationOptional.isPresent()){
             reservation = reservationOptional.get();
-            if(reservation.getGuest().getUsername().equals(currentUser)){
+            if(reservation.getGuest().getUsername().equals(currentUser) || hotelUserService.findUserByUsername(currentUser).getRole().equalsIgnoreCase("ROLE_CLERK")){
                 return reservation;
             } else {
-                log.warn("Reservation does not match logged in user");
+                log.warn("Reservation does not match logged in user: '{}'", currentUser);
             }
-            log.warn("No reservation found with that ID");
+        } else {
+            log.warn("No reservation found with the ID {}", resID);
         }
 
         return reservation;
@@ -192,19 +221,18 @@ public class ReservationService {
                                             String currentUser,
                                             String checkInDate,
                                             String checkOutDate) {
+        Reservation reservation = new Reservation();
+
         Room room = roomService.findRoomByRoomNumber(roomNumber);
         HotelUser hotelUser = hotelUserService.findUserByUsername(currentUser);
-        if(!hotelUser.getRole().equals("ROLE_GUEST")) {
-            throw new RuntimeException("Reservation can only be assigned to a guest");
+        if(hotelUser.getRole().equals("ROLE_GUEST")) {
+            reservation.setGuest(hotelUser);
         }
-
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate checkIn = LocalDate.parse(checkInDate, dateTimeFormatter);
         LocalDate checkOut = LocalDate.parse(checkOutDate, dateTimeFormatter);
 
-        Reservation reservation = new Reservation();
         reservation.setRoom(room);
-        reservation.setGuest(hotelUser);
         reservation.setStartDate(checkIn);
         reservation.setEndDate(checkOut);
         updateDailyRate(reservation, room.getBaseRate());
@@ -212,5 +240,10 @@ public class ReservationService {
         updateTotalRate(reservation);
 
         return reservation;
+    }
+
+    public void checkOutReservation(Reservation reservation) {
+        reservation.setCheckedOut(true);
+        reservationRepository.save(reservation);
     }
 }

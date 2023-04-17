@@ -1,6 +1,10 @@
-package com.reservation.hotel.HotelReservation.Reservation;
+package com.reservation.hotel.HotelReservation.reservation;
 
 import com.reservation.hotel.HotelReservation.hotelroom.SearchCriteria;
+import com.reservation.hotel.HotelReservation.payment.Payment;
+import com.reservation.hotel.HotelReservation.payment.PaymentService;
+import com.reservation.hotel.HotelReservation.hoteluser.HotelUser;
+import com.reservation.hotel.HotelReservation.hoteluser.HotelUserService;
 import com.reservation.hotel.HotelReservation.util.FormEncapsulate;
 import jakarta.annotation.Resource;
 import lombok.AllArgsConstructor;
@@ -15,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -30,6 +35,12 @@ public class ReservationController {
     @Resource
     ReservationService reservationService;
 
+    @Resource
+    PaymentService paymentService;
+
+    @Resource
+    HotelUserService hotelUserService;
+
     //TODO: should this move to service or stay here?
     @GetMapping("/view")
     public String getAllReservations(Model model){
@@ -44,30 +55,43 @@ public class ReservationController {
         } else {
             reservationsList = reservationService.findAllReservations();
         }
-
         reservationService.updateModifiable(reservationsList);
 
-        model.addAttribute("allReservations", reservationsList);
+        List<Reservation> notStartedReservations = new ArrayList<>();
+        List<Reservation> startedReservations = new ArrayList<>();
+
+        for(Reservation reservation : reservationsList) {
+            if(reservation.isNotStarted()){
+                notStartedReservations.add(reservation);
+            } else {
+                startedReservations.add(reservation);
+            }
+        }
+
         SearchCriteria searchCriteria = new SearchCriteria();
         searchCriteria.setSourceForm("reservationsPage");
+
+        model.addAttribute("allNotStartedReservations", notStartedReservations);
+        model.addAttribute("allStartedReservations", startedReservations);
+        model.addAttribute("userRole", userRole);
         model.addAttribute("searchCriteria", searchCriteria);
         model.addAttribute("currentDate", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         model.addAttribute("minCheckOutDate", LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        return "test-reservation";
+        return "view-reservations";
     }
 
     @GetMapping("/view/{guest_id}")
     public String getGuestReservations(Model model, @PathVariable int guest_id){
         List<Reservation> guestReservations = reservationService.findAllReservationsByGuestID(guest_id);
         model.addAttribute("allReservations", guestReservations);
-        return "test-reservation";
+        return "view-reservations";
     }
 
     @GetMapping("/view/confirmed")
     public String getGuestReservations(Model model){
         List<Reservation> confirmedReservations = reservationRepository.findAllByIsConfirmed(true);
         model.addAttribute("allReservations", confirmedReservations);
-        return "test-reservation";
+        return "view-reservations";
     }
 
     @GetMapping("/edit/{resId}")
@@ -77,6 +101,10 @@ public class ReservationController {
         FormEncapsulate formFields = new FormEncapsulate();
 
         Reservation reservation = reservationService.findReservationByGuestIDAndReservationID(resId, currentUser);
+
+        if(null == reservation.getRoom() || null == reservation.getGuest()) {
+            return "redirect:/reservation/view?notfound=";
+        }
 
         model.addAttribute("reservation", reservation);
         model.addAttribute("promoCode", formFields);
@@ -88,9 +116,11 @@ public class ReservationController {
         return "edit-reservation";
     }
 
-    @PostMapping("/edit/{resId}")
+    @PostMapping("/edit")
     public String postEditReservation(@ModelAttribute("reservation") Reservation reservation){
-        reservationService.updateReservation(reservation);
+        log.info("Editing reservation: {}", reservation);
+        Reservation updateReservation = reservationService.updateReservation(reservation);
+        paymentService.updatePaymentOnReservationModify(updateReservation);
         return "redirect:/reservation/view";
     }
 
@@ -106,7 +136,10 @@ public class ReservationController {
                 checkInDate,
                 checkOutDate);
 
+        List<HotelUser> hotelGuestList = hotelUserService.findAllGuestUsers();
+
         model.addAttribute("reservation", reservation);
+        model.addAttribute("allGuests", hotelGuestList);
         return "make-reservation";
     }
 
@@ -114,6 +147,8 @@ public class ReservationController {
     //TODO: handle user not existing and room not existing search results
     public String stageReservation(@ModelAttribute("newReservation") Reservation newReservation){
         log.info("As it comes in: {}", newReservation);
+        HotelUser guest = hotelUserService.findUserByUsername(newReservation.getGuest().getUsername());
+        newReservation.setGuest(guest);
 
         reservationService.findRoomForRes(newReservation);
         reservationService.updateDailyRate(newReservation, newReservation.getRoom().getBaseRate());
@@ -121,6 +156,11 @@ public class ReservationController {
         reservationService.updateTotalRate(newReservation);
 
         log.info("before saving: {}", newReservation);
+        try{
+            reservationService.saveReservation(newReservation);
+        } catch (Exception e) {
+            return "redirect:/?exception=";
+        }
         reservationService.saveReservation(newReservation);
 
         return "redirect:/reservation/view";
@@ -151,8 +191,16 @@ public class ReservationController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = auth.getName();
 
-        reservationService.confirmRoom(resID, currentUser);
+        reservationService.confirmReservation(resID, currentUser);
+        paymentService.associateReservation(new Payment(), resID);
 
+        return "redirect:/reservation/view";
+    }
+
+    @PostMapping("/check-in")
+    public String checkInReservationPost(@ModelAttribute Reservation reservation) {
+        log.info("{}", reservation);
+        reservationService.checkInReservation(reservation);
         return "redirect:/reservation/view";
     }
 

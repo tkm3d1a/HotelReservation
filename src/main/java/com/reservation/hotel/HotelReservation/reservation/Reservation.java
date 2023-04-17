@@ -1,4 +1,4 @@
-package com.reservation.hotel.HotelReservation.Reservation;
+package com.reservation.hotel.HotelReservation.reservation;
 
 import com.reservation.hotel.HotelReservation.hotelroom.Room;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUser;
@@ -30,6 +30,8 @@ public class Reservation {
     private boolean isConfirmed = false;
     private boolean isNotStarted = true;
     private boolean isPromoApplied = false;
+    private boolean isCheckedIn = false;
+    private boolean isCheckedOut = false;
 
     @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
