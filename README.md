@@ -13,7 +13,7 @@
     * [Local Database Needs](#local-database-needs)
     * [Configuring Environment variables](#configuring-environment-variables)
   * [Running the application](#running-the-application)
-    * [Initial Setup (from fresh installation)](#initial-setup-from-fresh-installation)
+    * [Initial Setup (from fresh installation)](#initial-setup--from-fresh-installation-)
     * [Basic Functions](#basic-functions)
     * [Tests](#tests)
   * [Feature Highlights](#feature-highlights)

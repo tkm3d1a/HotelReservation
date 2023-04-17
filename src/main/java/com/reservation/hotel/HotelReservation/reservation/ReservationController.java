@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -54,12 +55,25 @@ public class ReservationController {
         } else {
             reservationsList = reservationService.findAllReservations();
         }
-
         reservationService.updateModifiable(reservationsList);
 
-        model.addAttribute("allReservations", reservationsList);
+        List<Reservation> notStartedReservations = new ArrayList<>();
+        List<Reservation> startedReservations = new ArrayList<>();
+
+        for(Reservation reservation : reservationsList) {
+            if(reservation.isNotStarted()){
+                notStartedReservations.add(reservation);
+            } else {
+                startedReservations.add(reservation);
+            }
+        }
+
         SearchCriteria searchCriteria = new SearchCriteria();
         searchCriteria.setSourceForm("reservationsPage");
+
+        model.addAttribute("allNotStartedReservations", notStartedReservations);
+        model.addAttribute("allStartedReservations", startedReservations);
+        model.addAttribute("userRole", userRole);
         model.addAttribute("searchCriteria", searchCriteria);
         model.addAttribute("currentDate", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         model.addAttribute("minCheckOutDate", LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
