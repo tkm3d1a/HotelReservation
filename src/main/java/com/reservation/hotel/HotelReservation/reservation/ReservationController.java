@@ -129,8 +129,6 @@ public class ReservationController {
                               @PathVariable String checkOutDate, Model model){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = auth.getName();
-//        model("formFields", formFields)
-//        formFields.username = currentUser;
 
         Reservation reservation = reservationService.createNewReservation(
                 roomNumber,
@@ -138,7 +136,10 @@ public class ReservationController {
                 checkInDate,
                 checkOutDate);
 
+        List<HotelUser> hotelGuestList = hotelUserService.findAllGuestUsers();
+
         model.addAttribute("reservation", reservation);
+        model.addAttribute("allGuests", hotelGuestList);
         return "make-reservation";
     }
 
