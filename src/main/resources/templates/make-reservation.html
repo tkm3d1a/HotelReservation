@@ -52,7 +52,6 @@
 			<div sec:authorize="hasRole('ROLE_CLERK')" class="form-group col-md-3">
 				<label for="username">Guest username</label>
 				<select id="username" class="form-control" th:field="*{guest.username}" required>
-					<option value = "Select guest">None</option>
 					<option th:each="guest: ${allGuests}"
 							th:value="${guest.username}"
 							th:text="${guest.username}">

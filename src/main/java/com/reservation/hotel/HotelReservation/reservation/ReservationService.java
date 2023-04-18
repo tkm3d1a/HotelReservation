@@ -140,7 +140,7 @@ public class ReservationService {
 
     public void cancelReservation(int resID){
         Optional<Payment> payment = paymentRepository.findByReservation_Id(resID);
-        paymentRepository.deleteById(payment.get().getId());
+        payment.ifPresent(value -> paymentRepository.deleteById(value.getId()));
         reservationRepository.deleteById(resID);
     }
 

@@ -91,6 +91,7 @@
 				<tr class="table-header text-center">
 					<!--TODO: update room view table-->
 					<!--TODO: add sorting by ?room number/room type?-->
+					<th>RESERVATION ID</th>
 					<th>Total Rate</th>
 					<th>Guest Name</th>
 					<th>Room Number</th>
@@ -102,6 +103,7 @@
 			</thead>
 			<tbody>
 				<tr th:each="reservationNot: ${allNotStartedReservations}">
+					<td th:text="*{reservationNot.id}">resID</td>
 					<td th:text="*{reservationNot.totalRate}">rate</td>
 					<td	th:text="*{reservationNot.guest.getFirstName() + ' ' + reservationNot.guest.getLastName()}">gID</td>
 					<td th:text="*{reservationNot.room.getRoomNumber()}">rID</td>
@@ -144,6 +146,7 @@
 			<tr class="table-header text-center">
 				<!--TODO: update room view table-->
 				<!--TODO: add sorting by ?room number/room type?-->
+				<th>RESERVATION ID</th>
 				<th>Total Rate</th>
 				<th>Guest Name</th>
 				<th>Room Number</th>
@@ -155,6 +158,7 @@
 			</thead>
 			<tbody>
 			<tr th:each="reservation: ${allStartedReservations}">
+				<td th:text="*{reservation.id}">resID</td>
 				<td th:text="*{reservation.totalRate}">rate</td>
 				<td	th:text="*{reservation.guest.getFirstName() + ' ' + reservation.guest.getLastName()}">gID</td>
 				<td th:text="*{reservation.room.getRoomNumber()}">rID</td>
