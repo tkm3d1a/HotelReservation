@@ -201,6 +201,7 @@ public class ReservationController {
     public String checkInReservationPost(@ModelAttribute Reservation reservation) {
         log.info("{}", reservation);
         reservationService.checkInReservation(reservation);
+        paymentService.enterPaymentInfo(reservation, "Checked In Payment Update");
         return "redirect:/reservation/view";
     }
 
