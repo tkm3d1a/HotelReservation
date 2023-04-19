@@ -4,6 +4,7 @@ import com.reservation.hotel.HotelReservation.hotelroom.Room;
 import com.reservation.hotel.HotelReservation.hotelroom.RoomService;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUser;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUserService;
+
 import com.reservation.hotel.HotelReservation.payment.Payment;
 import com.reservation.hotel.HotelReservation.payment.PaymentRepository;
 import jakarta.annotation.Resource;
@@ -246,4 +247,5 @@ public class ReservationService {
         reservation.setCheckedOut(true);
         reservationRepository.save(reservation);
     }
+
 }

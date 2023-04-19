@@ -90,6 +90,10 @@ public class RoomController {
     @PostMapping("/searchAvailableRooms")
     public String searchAvailableRooms(@ModelAttribute SearchCriteria searchCriteria, Model model) {
 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        log.info("Username from Available Rooms page: {}", username);
+
         if((searchCriteria.getCheckOutDate().isEqual(searchCriteria.getCheckInDate()) ||
                 searchCriteria.getCheckOutDate().isBefore(searchCriteria.getCheckInDate()))
                 && searchCriteria.getSourceForm().equalsIgnoreCase("indexPage")) {

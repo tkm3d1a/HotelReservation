@@ -55,6 +55,7 @@ public class ReservationController {
         } else {
             reservationsList = reservationService.findAllReservations();
         }
+
         reservationService.updateModifiable(reservationsList);
 
         List<Reservation> notStartedReservations = new ArrayList<>();
