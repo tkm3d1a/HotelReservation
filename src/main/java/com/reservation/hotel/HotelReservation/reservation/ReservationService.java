@@ -4,6 +4,9 @@ import com.reservation.hotel.HotelReservation.hotelroom.Room;
 import com.reservation.hotel.HotelReservation.hotelroom.RoomService;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUser;
 import com.reservation.hotel.HotelReservation.hoteluser.HotelUserService;
+
+import com.reservation.hotel.HotelReservation.payment.Payment;
+import com.reservation.hotel.HotelReservation.payment.PaymentRepository;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,6 +30,9 @@ public class ReservationService {
 
     @Resource
     private RoomService roomService;
+
+    @Resource
+    PaymentRepository paymentRepository;
 
     public void applyPromo(String promoCode, int resID){
         Optional<Reservation> reservationOptional = reservationRepository.findById(resID);
@@ -134,6 +140,8 @@ public class ReservationService {
     }
 
     public void cancelReservation(int resID){
+        Optional<Payment> payment = paymentRepository.findByReservation_Id(resID);
+        payment.ifPresent(value -> paymentRepository.deleteById(value.getId()));
         reservationRepository.deleteById(resID);
     }
 
@@ -234,4 +242,10 @@ public class ReservationService {
 
         return reservation;
     }
+
+    public void checkOutReservation(Reservation reservation) {
+        reservation.setCheckedOut(true);
+        reservationRepository.save(reservation);
+    }
+
 }

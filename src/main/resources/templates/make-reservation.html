@@ -51,7 +51,12 @@
 			</div>
 			<div sec:authorize="hasRole('ROLE_CLERK')" class="form-group col-md-3">
 				<label for="username">Guest username</label>
-				<input type="text" class="form-control" id="username" placeholder="username" th:field="*{guest.username}">
+				<select id="username" class="form-control" th:field="*{guest.username}" required>
+					<option th:each="guest: ${allGuests}"
+							th:value="${guest.username}"
+							th:text="${guest.username}">
+					</option>
+				</select>
 			</div>
 			<div class="form-group col-md-3">
 				<label for="roomID">Room ID</label>

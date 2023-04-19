@@ -5,6 +5,7 @@
 ## TOC
 
 <!-- TOC -->
+
 * [TOC](#toc)
 * [Project Description](#project-description)
 * [System Setup](#system-setup)
@@ -52,9 +53,11 @@ As a Hotel Administrator, I should be able to...
 
 ### Java/Maven Build system
 
+
 - Java 17 JDK
 - Maven Version 4.0
 - Dependencies
+
 ```xml
   <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -118,7 +121,9 @@ As a Hotel Administrator, I should be able to...
       <scope>test</scope>
   </dependency>
 ```
+
 - App properties
+
 ```
 spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MariaDBDialect
 spring.datasource.url=jdbc:mariadb://${DB_ADDRESS}:${DB_PORT}/${DB_NAME}
@@ -128,7 +133,9 @@ spring.jpa.hibernate.ddl-auto=update
 spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 spring.mvc.hiddenmethod.filter.enabled=true
 ```
+
 - Required Environment Variables
+
 ```xml
 DB_ADDRESS=<address to wherever DB is hosted for project>
 DB_PORT=<port to connect to DB on>
@@ -139,6 +146,7 @@ DB_PASSWORD=<password for the above username>
 
 ### Local Database Needs
 
+
 - Current project is built on MariaDB solution
   - Version 10.6.12
 - Other Database may be used, but would require replacing the JDBC dependency
@@ -147,6 +155,7 @@ DB_PASSWORD=<password for the above username>
 ## Running the application
 
 ### Initial Setup (from fresh installation)
+
 
 - Make default admin
   - navigate to `<baseurl>/setup/admin` to generate an admin user
@@ -188,6 +197,7 @@ The following sections will highlight some features of the applications and will
 cover how to get the most out of each feature.
 
 ### Reserve a room
+
 
 - Exclude rooms not available in the searched window
 - See details of reservation and payment before confirming

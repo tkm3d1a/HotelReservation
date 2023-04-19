@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -57,9 +58,23 @@ public class ReservationController {
 
         reservationService.updateModifiable(reservationsList);
 
-        model.addAttribute("allReservations", reservationsList);
+        List<Reservation> notStartedReservations = new ArrayList<>();
+        List<Reservation> startedReservations = new ArrayList<>();
+
+        for(Reservation reservation : reservationsList) {
+            if(reservation.isNotStarted()){
+                notStartedReservations.add(reservation);
+            } else {
+                startedReservations.add(reservation);
+            }
+        }
+
         SearchCriteria searchCriteria = new SearchCriteria();
         searchCriteria.setSourceForm("reservationsPage");
+
+        model.addAttribute("allNotStartedReservations", notStartedReservations);
+        model.addAttribute("allStartedReservations", startedReservations);
+        model.addAttribute("userRole", userRole);
         model.addAttribute("searchCriteria", searchCriteria);
         model.addAttribute("currentDate", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         model.addAttribute("minCheckOutDate", LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
@@ -115,8 +130,6 @@ public class ReservationController {
                               @PathVariable String checkOutDate, Model model){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = auth.getName();
-//        model("formFields", formFields)
-//        formFields.username = currentUser;
 
         Reservation reservation = reservationService.createNewReservation(
                 roomNumber,
@@ -124,7 +137,10 @@ public class ReservationController {
                 checkInDate,
                 checkOutDate);
 
+        List<HotelUser> hotelGuestList = hotelUserService.findAllGuestUsers();
+
         model.addAttribute("reservation", reservation);
+        model.addAttribute("allGuests", hotelGuestList);
         return "make-reservation";
     }
 
@@ -186,6 +202,7 @@ public class ReservationController {
     public String checkInReservationPost(@ModelAttribute Reservation reservation) {
         log.info("{}", reservation);
         reservationService.checkInReservation(reservation);
+        paymentService.enterPaymentInfo(reservation, "Checked In Payment Update");
         return "redirect:/reservation/view";
     }
 

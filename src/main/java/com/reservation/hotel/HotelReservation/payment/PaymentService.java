@@ -67,8 +67,33 @@ public class PaymentService{
         }
     }
 
+
+    public void enterPaymentInfo(Reservation reservation, String paymentInfo) {
+        Payment payment = findPaymentForReservation(reservation);
+
+        if(!payment.isPaymentProcessed()){
+            log.info("Payment not process yet, able to update payment info");
+            payment.setPaymentInfo(paymentInfo);
+            paymentRepository.save(payment);
+        } else {
+            log.warn("Payment has been processed, unable to update this payment object");
+        }
+    }
+
+    public void processCheckout(Reservation reservation) {
+        reservationService.checkOutReservation(reservation);
+        Payment payment = getPaymentByReservationID(reservation.getId());
+        String paymentInfoString = reservation.getGuest().getFirstName() +
+                " " +
+                reservation.getGuest().getLastName() +
+                " Is paying with credit card";
+        enterPaymentInfo(payment, paymentInfoString);
+        processPayment(payment);
+    }
+
     public void processPayment(Payment payment) {
         payment.setPaymentProcessed(true);
+        payment.setTotalCollected(payment.getTotalToBill());
         paymentRepository.save(payment);
     }
 

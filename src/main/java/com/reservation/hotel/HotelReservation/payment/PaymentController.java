@@ -44,4 +44,13 @@ public class PaymentController {
         redirectAttributes.addFlashAttribute("reservation", reservation);
         return "redirect:/payment/view";
     }
+
+    @PostMapping("/checkout")
+    public String processCheckout(@ModelAttribute Reservation reservation, RedirectAttributes redirectAttributes) {
+        log.info("In process checkout POST");
+        log.info("{}", reservation);
+        paymentService.processCheckout(reservation);
+        redirectAttributes.addFlashAttribute("reservation", reservation);
+        return "redirect:/payment/view";
+    }
 }
