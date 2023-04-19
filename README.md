@@ -5,19 +5,18 @@
 ## TOC
 
 <!-- TOC -->
-* [HotelReservation](#hotelreservation)
-  * [TOC](#toc)
-  * [Project Description](#project-description)
-  * [System Setup](#system-setup)
-    * [Java/Maven Build system](#javamaven-build-system)
-    * [Local Database Needs](#local-database-needs)
-  * [Running the application](#running-the-application)
-    * [Initial Setup (from fresh installation)](#initial-setup--from-fresh-installation-)
-    * [Basic Functions](#basic-functions)
-    * [Test Classes](#test-classes)
-  * [Feature Highlights](#feature-highlights)
-    * [Reserve a room](#reserve-a-room)
-    * [Check in / Check out](#check-in--check-out)
+* [TOC](#toc)
+* [Project Description](#project-description)
+* [System Setup](#system-setup)
+  * [Java/Maven Build system](#javamaven-build-system)
+  * [Local Database Needs](#local-database-needs)
+* [Running the application](#running-the-application)
+  * [Initial Setup (from fresh installation)](#initial-setup--from-fresh-installation-)
+  * [Basic Functions](#basic-functions)
+  * [Test Classes](#test-classes)
+* [Feature Highlights](#feature-highlights)
+  * [Reserve a room](#reserve-a-room)
+  * [Check in / Check out](#check-in--check-out)
 <!-- TOC -->
 
 ---
