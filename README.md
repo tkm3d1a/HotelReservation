@@ -53,9 +53,9 @@ As a Hotel Administrator, I should be able to...
 
 ### Java/Maven Build system
 
-  - Java 17 JDK
-  - Maven Version 4.0
-  - Dependencies
+- Java 17 JDK
+- Maven Version 4.0
+- Dependencies
 ```xml
   <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -119,7 +119,7 @@ As a Hotel Administrator, I should be able to...
       <scope>test</scope>
   </dependency>
 ```
-  - App properties
+- App properties
 ```
 spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MariaDBDialect
 spring.datasource.url=jdbc:mariadb://${DB_ADDRESS}:${DB_PORT}/${DB_NAME}
@@ -129,7 +129,7 @@ spring.jpa.hibernate.ddl-auto=update
 spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 spring.mvc.hiddenmethod.filter.enabled=true
 ```
-  - Required Environment Variables
+- Required Environment Variables
 ```xml
 DB_ADDRESS=<address to wherever DB is hosted for project>
 DB_PORT=<port to connect to DB on>
@@ -140,20 +140,38 @@ DB_PASSWORD=<password for the above username>
 
 ### Local Database Needs
 
-  - Current project is built on MariaDB solution
-    - Version 10.6.12
-  - Other Database may be used, but would require replacing the JDBC dependency
-    - No testing has been done on code transfer with different DB Connector
+- Current project is built on MariaDB solution
+  - Version 10.6.12
+- Other Database may be used, but would require replacing the JDBC dependency
+  - No testing has been done on code transfer with different DB Connector
 
 ## Running the application
 
 ### Initial Setup (from fresh installation)
 
-  - Make default admin
-  - Make your first clerk
-  - Register as a guest
+- Make default admin
+  - navigate to `<baseurl>/setup/admin` to generate an admin user
+  - Admin user login details will be displayed on the screen for teh created user
+  - This step only needs to be completed once
+- Make your first clerk
+  - Clerk accounts can only be made by the admin user
+- Register as a guest
+  - Navigate to the login page and click the option to register a new user
+  - Registrations must be unique on `username` and `email address`
 
 ### Basic Functions
+
+- A guest can reserve a room for themselves
+- A clerk can reserve a room for a guest
+  - When reserving a room as a clerk, the selection is via drop down to prevent errors
+  - Would recommend changing to a fuzzy search or autocomplete option for larger user databases
+- Admin can add and modify rooms
+- Clerks can process check in and check out of users
+- Payment for reservations are generated
+  - Payment occurs in 3 steps
+    - First, a "PENDING" step is generated when a user confirms
+    - Second, the payment is updated when the user checks in with "deposit" information
+    - Third, the payment is processed and finalized when the user checks out
 
 ### Test Classes
 
@@ -172,14 +190,23 @@ cover how to get the most out of each feature.
 
 ### Reserve a room
 
-  - Exclude rooms not available in the searched window
-  - See details of reservation and payment before confirming
-  - Ability to modify length of stay up to start date of reservation
+- Exclude rooms not available in the searched window
+- See details of reservation and payment before confirming
+- Ability to modify length of stay up to start date of reservation
+- Ability to add a promotional code to improve the daily rate of the reservation
+  - Currently only a hard coded promotional code is available
+  - Able to be extended to a database backed list of codes
+- Ability to cancel non-started or non-confirmed reservations
+  - Can also remove reservation records that have "completed" without ever being confirmed or checked in
 
 ### Check in / Check out
 
-  - Clerk can check in a guest
-    - any time up to last day of reservation
-    - if check in after start date, does not alter payment details
-  - Clerk can check out a guest
-    - When checking out, payment details are finalized
+- Clerk can check in a guest
+  - any time up to last day of reservation
+  - if check in after start date, does not alter payment details
+- Clerk can check out a guest
+  - When checking out, payment details are finalized
+
+## Screenshots
+
+//TODO - add screenshots of various steps here
