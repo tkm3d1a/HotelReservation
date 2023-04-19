@@ -205,7 +205,3 @@ cover how to get the most out of each feature.
   - if check in after start date, does not alter payment details
 - Clerk can check out a guest
   - When checking out, payment details are finalized
-
-## Screenshots
-
-//TODO - add screenshots of various steps here
