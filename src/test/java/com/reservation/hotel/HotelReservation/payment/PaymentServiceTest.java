@@ -26,7 +26,7 @@ public class PaymentServiceTest{
     PaymentService paymentService;
 
     Payment payment;
-    int[] reservationID = {99, 100, 101};
+    int[] reservationID = {99, 100, 101, 102};
     int badReservationID = 55;
     int guestID = 99;
 //    int badGuestID = 55;
@@ -45,9 +45,9 @@ public class PaymentServiceTest{
     public void associateReservationTestWithGoodReservationID() {
         Assertions.assertNull(payment.getReservation());
 
-        paymentService.associateReservation(payment, reservationID[0]);
+        paymentService.associateReservation(payment, reservationID[3]);
         log.info("{}", payment);
-        Assertions.assertEquals(1000, payment.getTotalToBill());
+        Assertions.assertEquals(2000, payment.getTotalToBill());
         Assertions.assertFalse(payment.isPaymentProcessed());
     }
 
@@ -89,7 +89,7 @@ public class PaymentServiceTest{
         }
         List<Payment> payments;
         payments = paymentService.findAllByGuestID(guestID);
-        Assertions.assertEquals(3, payments.size());
+        Assertions.assertEquals(reservationID.length, payments.size());
         Assertions.assertEquals(1000, payments.get(0).getTotalToBill());
         Assertions.assertEquals(1500, payments.get(1).getTotalToBill());
         Assertions.assertEquals("PENDING", payments.get(0).getPaymentInfo());
